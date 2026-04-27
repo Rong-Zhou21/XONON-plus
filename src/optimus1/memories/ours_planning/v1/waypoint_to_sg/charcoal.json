@@ -1,0 +1,8 @@
+{
+  "action": {
+    "dig down and mine charcoal": {
+      "success": 0,
+      "failure": 1
+    }
+  }
+}

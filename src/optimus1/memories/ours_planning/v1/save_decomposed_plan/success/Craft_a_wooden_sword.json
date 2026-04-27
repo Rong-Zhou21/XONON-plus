@@ -1,0 +1,50 @@
+{
+  "plan": [
+    {
+      "id": "E3s9nCK6uhsM38kYv87hoT",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_sword",
+      "video": "videos/v1/Craft_a_wooden_sword/forest/success/2026_04_18_13_57_56_craft_wooden_sword_E3s9nCK6uhsM38kYv87hoT.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_sword",
+          "goal": [
+            "wooden_sword",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 841
+    }
+  ]
+}

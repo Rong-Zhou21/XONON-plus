@@ -1,0 +1,96 @@
+{
+  "plan": [
+    {
+      "id": "cwL2qRzkv5S6iTm8jAAw2N",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v1/Craft_a_wooden_shovel/forest/success/2026_04_18_10_35_51_craft_wooden_shovel_cwL2qRzkv5S6iTm8jAAw2N.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1514
+    },
+    {
+      "id": "DVnnd2XqVVJsSyDJurcpvw",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v1/Craft_a_wooden_shovel/forest/success/2026_04_18_11_46_39_craft_wooden_shovel_DVnnd2XqVVJsSyDJurcpvw.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 958
+    }
+  ]
+}

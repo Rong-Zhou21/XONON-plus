@@ -1,0 +1,8 @@
+{
+  "action": {
+    "craft smoker": {
+      "success": 1,
+      "failure": 0
+    }
+  }
+}

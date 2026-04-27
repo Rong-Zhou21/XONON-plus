@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "jGyvVrzmq4gMr2z3Xx5tVA",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 127
+    }
+  ]
+}

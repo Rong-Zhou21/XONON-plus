@@ -1,0 +1,12 @@
+{
+  "action": {
+    "craft redstone": {
+      "success": 0,
+      "failure": 2
+    },
+    "dig down and mine redstone": {
+      "success": 1,
+      "failure": 1
+    }
+  }
+}

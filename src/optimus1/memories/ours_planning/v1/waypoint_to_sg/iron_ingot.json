@@ -1,0 +1,8 @@
+{
+  "action": {
+    "smelt iron_ingot": {
+      "success": 22,
+      "failure": 0
+    }
+  }
+}

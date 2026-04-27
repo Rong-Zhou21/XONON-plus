@@ -1,0 +1,64 @@
+{
+  "plan": [
+    {
+      "id": "m7QyEEmbUJGZpf8XT25P4D",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_sword",
+      "video": "videos/v1/Craft_a_stone_sword/plains/success/2026_04_18_14_37_26_craft_stone_sword_m7QyEEmbUJGZpf8XT25P4D.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            3
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_sword",
+          "goal": [
+            "stone_sword",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1616
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "action": {
+    "craft diamond_axe": {
+      "success": 1,
+      "failure": 0
+    }
+  }
+}

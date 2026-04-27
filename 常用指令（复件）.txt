@@ -1,0 +1,11 @@
+export HF_ENDPOINT=https://hf-mirror.com
+hf镜像
+
+openai.base_url = "https://api.gpt.ge/v1/"
+sk-mZ3BaU0ylqLfr7C837454e066d1a487b89Dd0d7fEe2591D3
+
+conda activate vllm_qwen2_5_vl
+VLLM_USE_V1=1 VLLM_WORKER_MULTIPROC_METHOD=spawn vllm serve Qwen/Qwen2.5-7B-Instruct --trust-remote-code --served-model-name Qwen/Qwen2.5-7B-Instruct --gpu-memory-utilization 0.8 --tensor-parallel-size 1 --port 8000
+启动vllm
+
+

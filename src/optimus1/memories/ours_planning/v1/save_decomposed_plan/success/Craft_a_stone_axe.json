@@ -1,0 +1,64 @@
+{
+  "plan": [
+    {
+      "id": "Dn62UXWcJTpkpnzkuzfSCo",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_axe",
+      "video": "videos/v1/Craft_a_stone_axe/plains/success/2026_04_18_14_06_51_craft_stone_axe_Dn62UXWcJTpkpnzkuzfSCo.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            3
+          ]
+        },
+        {
+          "task": "craft stone_axe",
+          "goal": [
+            "stone_axe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1680
+    }
+  ]
+}

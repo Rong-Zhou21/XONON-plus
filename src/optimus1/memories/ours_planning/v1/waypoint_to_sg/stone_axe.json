@@ -1,0 +1,8 @@
+{
+  "action": {
+    "craft stone_axe": {
+      "success": 1,
+      "failure": 0
+    }
+  }
+}

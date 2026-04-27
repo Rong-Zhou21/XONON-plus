@@ -1,0 +1,8 @@
+{
+  "action": {
+    "craft golden_axe": {
+      "success": 1,
+      "failure": 0
+    }
+  }
+}

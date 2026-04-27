@@ -1,0 +1,8 @@
+{
+  "action": {
+    "craft stone_pickaxe": {
+      "success": 32,
+      "failure": 0
+    }
+  }
+}

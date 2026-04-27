@@ -1,0 +1,8 @@
+{
+  "action": {
+    "craft diamond_hoe": {
+      "success": 1,
+      "failure": 0
+    }
+  }
+}

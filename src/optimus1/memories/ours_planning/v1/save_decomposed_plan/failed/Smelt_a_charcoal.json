@@ -1,0 +1,71 @@
+{
+  "plan": [
+    {
+      "id": "HhyQ3KRdBEFs29fNThqKCD",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "charcoal",
+      "video": "videos/v1/Smelt_a_charcoal/plains/timeout_non_programmatic/2026_04_18_14_30_46_craft_furnace_HhyQ3KRdBEFs29fNThqKCD.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            13
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine charcoal",
+          "goal": [
+            "charcoal",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7139
+    }
+  ]
+}

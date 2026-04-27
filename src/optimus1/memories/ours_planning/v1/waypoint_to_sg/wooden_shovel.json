@@ -1,0 +1,8 @@
+{
+  "action": {
+    "craft wooden_shovel": {
+      "success": 2,
+      "failure": 0
+    }
+  }
+}

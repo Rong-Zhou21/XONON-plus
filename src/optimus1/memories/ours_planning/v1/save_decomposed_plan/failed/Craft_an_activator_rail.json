@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "5RuEurTFHLyGAeF8ek33Yv",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "activator_rail",
+      "video": "",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 111
+    }
+  ]
+}
