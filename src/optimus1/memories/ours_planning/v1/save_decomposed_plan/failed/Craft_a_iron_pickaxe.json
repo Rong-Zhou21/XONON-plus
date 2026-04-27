@@ -80,6 +80,40 @@
       ],
       "status": "failed",
       "steps": 11893
+    },
+    {
+      "id": "cdZBPkqssk3QZtArbfq8fE",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_pickaxe",
+      "video": "videos/v1/Iron_Craft_a_iron_pickaxe/plains/failed/2026_04_27_15_12_48_Craft_a_iron_pickaxe_cdZBPkqssk3QZtArbfq8fE.mp4",
+      "planning": [
+        {
+          "task": "Craft a iron pickaxe",
+          "goal": "iron_pickaxe",
+          "error": "unhashable type: 'numpy.ndarray'"
+        }
+      ],
+      "status": "failed",
+      "steps": 179
+    },
+    {
+      "id": "CC7Fh9b4YCgCBKdktsC73S",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_pickaxe",
+      "video": "videos/v1/Iron_Craft_a_iron_pickaxe/plains/failed/2026_04_27_15_22_04_chop_a_tree_CC7Fh9b4YCgCBKdktsC73S.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 157
     }
   ]
 }

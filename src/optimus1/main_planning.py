@@ -541,7 +541,11 @@ def new_agent_do(
                         cfg["server"], obs, current_sg_prompt, step=env.num_steps,
                         hydra_path=hydra_path, run_uuid=run_uuid
                     )
-                    obs, reward, game_over, info = env.step(action, current_sg_target)
+                    obs, reward, game_over, info = env.step(
+                        action,
+                        current_sg_target,
+                        prompt=current_sg_prompt,
+                    )
                     pbar.update(num_step, advance=1)
                     monitors.update(f"{temp_sg_prompt}_{progress}", env.current_subgoal_finish)
 

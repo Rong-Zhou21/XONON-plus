@@ -1,0 +1,478 @@
+{
+  "run_uuid": "2bM6Qy8uZrXmaHbyyn3g4U",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "golden",
+  "task": "smelt_and_craft_a_gold_ingot",
+  "goal": "gold_ingot",
+  "exp_num": 7305,
+  "biome": "forest",
+  "is_fixed_memory": false,
+  "max_minutes": 30,
+  "success": true,
+  "status_detailed": "success",
+  "video_file": "videos/v1/Gold_Smelt_and_craft_a_gold_ingot/forest/success/2026_04_27_17_03_13_smelt_gold_ingot_2bM6Qy8uZrXmaHbyyn3g4U.mp4",
+  "steps": 5288,
+  "minutes": 4.41,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 951
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 168
+    },
+    "craft crafting_table_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 118
+    },
+    "craft stick_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 88
+    },
+    "craft wooden_pickaxe_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 328
+    },
+    "dig down and mine cobblestone_5": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 393
+    },
+    "craft furnace_6": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 323
+    },
+    "craft stone_pickaxe_7": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 312
+    },
+    "craft stick_8": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 89
+    },
+    "dig down and mine iron_ore_9": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 371
+    },
+    "smelt iron_ingot_10": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 988
+    },
+    "craft iron_pickaxe_11": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 300
+    },
+    "dig down and mine gold_ore_12": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 304
+    },
+    "smelt gold_ingot_13": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 555
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine gold_ore",
+      "goal": [
+        "gold_ore",
+        1
+      ]
+    },
+    {
+      "task": "smelt gold_ingot",
+      "goal": [
+        "gold_ingot",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine gold_ore",
+      "goal": [
+        "gold_ore",
+        1
+      ]
+    },
+    {
+      "task": "smelt gold_ingot",
+      "goal": [
+        "gold_ingot",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [],
+  "remain_plans": [],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine gold_ore",
+      "goal": [
+        "gold_ore",
+        1
+      ]
+    },
+    {
+      "task": "smelt gold_ingot",
+      "goal": [
+        "gold_ingot",
+        1
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine gold_ore",
+      "goal": [
+        "gold_ore",
+        1
+      ]
+    },
+    {
+      "task": "smelt gold_ingot",
+      "goal": [
+        "gold_ingot",
+        1
+      ]
+    }
+  ],
+  "failed_waypoints": []
+}

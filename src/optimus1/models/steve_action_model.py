@@ -49,6 +49,7 @@ class ActionModel(BaseActionModel):
         )
         self.agent.load_weights(in_weights)
         self.agent.reset(text_cond_scale)
+        self._last_prompt: str | None = None
 
     def _get_prompt_embed(self, prompt: str) -> Any:
         prompt_embed = get_prior_embed(prompt, self.mineclip, self.prior, self.device)
@@ -56,6 +57,10 @@ class ActionModel(BaseActionModel):
         return self.prompt_embed
 
     def action(self, prompt: str, observation: List[str]):
+        if prompt != self._last_prompt:
+            self.agent.reset(self.text_cond_scale)
+            self._last_prompt = prompt
+
         obs = image2MineRLArray(observation[-1])
 
         minerl_obs = {"pov": obs}

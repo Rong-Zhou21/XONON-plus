@@ -147,6 +147,24 @@
       ],
       "status": "failed",
       "steps": 11896
+    },
+    {
+      "id": "6MbiTMVQM5dHwMREktFRky",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/v1/Iron_Craft_a_tripwire_hook/plains/failed/2026_04_27_15_51_45_chop_a_tree_6MbiTMVQM5dHwMREktFRky.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11996
     }
   ]
 }

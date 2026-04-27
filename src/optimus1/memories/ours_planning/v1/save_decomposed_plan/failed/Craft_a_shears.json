@@ -73,6 +73,24 @@
       ],
       "status": "failed",
       "steps": 11896
+    },
+    {
+      "id": "V7Rbnnuute3qCFLwRdVyGq",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "shears",
+      "video": "videos/v1/Iron_Craft_a_shears/plains/failed/2026_04_27_15_42_43_chop_a_tree_V7Rbnnuute3qCFLwRdVyGq.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 203
     }
   ]
 }

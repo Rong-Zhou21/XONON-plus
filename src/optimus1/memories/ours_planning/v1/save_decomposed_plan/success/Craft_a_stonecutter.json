@@ -1,0 +1,99 @@
+{
+  "plan": [
+    {
+      "id": "akxxCeeoonK9txypHsNkmm",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stonecutter",
+      "video": "videos/v1/Iron_Craft_a_stonecutter/plains/success/2026_04_27_16_25_55_craft_stonecutter_akxxCeeoonK9txypHsNkmm.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            14
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "smelt stone",
+          "goal": [
+            "stone",
+            3
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft stonecutter",
+          "goal": [
+            "stonecutter",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 11489
+    }
+  ]
+}

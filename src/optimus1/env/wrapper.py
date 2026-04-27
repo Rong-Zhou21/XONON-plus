@@ -4,8 +4,9 @@ import os
 import random
 import threading
 import time
+from collections import deque
 from io import BytesIO
-from typing import Any, Dict, List
+from typing import Any, Deque, Dict, List, Tuple
 
 import gym
 import numpy as np
@@ -198,6 +199,22 @@ class CustomEnvWrapper(gym.Wrapper):
         self.cache = {}
         self.cache["task"] = ""
         self.cache["ypos"] = {}
+        self.cache["last_life_stats"] = {}
+        self.cache["last_progress_step"] = 0
+        self.cache["position_window"] = deque(maxlen=120)
+        self.cache["resource_ledger"] = {
+            "last_inventory": {},
+            "max_inventory": {},
+            "collected": {},
+        }
+
+        self._control_state = {
+            "attack_hold": 0,
+            "escape_ticks": 0,
+            "escape_turn": 1,
+            "movement_stagnant_ticks": 0,
+            "last_prompt": None,
+        }
 
         self._only_once = False
 
@@ -220,21 +237,351 @@ class CustomEnvWrapper(gym.Wrapper):
                     break
         return obs
 
+    def _action_scalar(self, action: Dict[str, Any], key: str) -> float:
+        value = action.get(key, 0)
+        try:
+            arr = np.asarray(value)
+            if arr.size == 0:
+                return 0.0
+            return float(arr.reshape(-1)[0])
+        except Exception:
+            return float(value or 0)
+
+    def _set_button(self, action: Dict[str, Any], key: str, value: int) -> None:
+        action[key] = np.array(value)
+
+    def _button_down(self, action: Dict[str, Any], key: str) -> bool:
+        return self._action_scalar(action, key) > 0
+
+    def _normalise_action(self, action: Dict[str, Any] | List[Dict[str, Any]]) -> Dict[str, Any]:
+        if isinstance(action, list):
+            if not action:
+                return self.env.noop_action()
+            return action[-1]
+        return action
+
+    def _prompt_text(self, goal: tuple[str, int] | None, prompt: str | None) -> str:
+        parts = [prompt or ""]
+        if goal:
+            parts.append(str(goal[0]))
+        return " ".join(parts).lower()
+
+    def _is_resource_acquisition(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        text = self._prompt_text(goal, prompt)
+        return any(token in text for token in ("mine", "dig", "break", "chop", "punch"))
+
+    def _attack_hold_ticks(self, goal: tuple[str, int] | None, prompt: str | None) -> int:
+        text = self._prompt_text(goal, prompt)
+        if any(token in text for token in ("chop", "punch", "tree", "log", "logs")):
+            return int(os.environ.get("XENON_ATTACK_HOLD_WOOD_TICKS", "24"))
+        return int(os.environ.get("XENON_ATTACK_HOLD_MINE_TICKS", "14"))
+
+    def _current_air(self) -> int:
+        life_stats = self.cache.get("last_life_stats") or {}
+        try:
+            return int(np.asarray(life_stats.get("air", 300)).reshape(-1)[0])
+        except Exception:
+            return 300
+
+    def _position_delta(self) -> Tuple[float, float]:
+        window: Deque[Tuple[float, float, float]] = self.cache.get("position_window")
+        if not window or len(window) < 40:
+            return 999.0, 999.0
+        x0, y0, z0 = window[0]
+        x1, y1, z1 = window[-1]
+        horizontal = ((x1 - x0) ** 2 + (z1 - z0) ** 2) ** 0.5
+        vertical = abs(y1 - y0)
+        return horizontal, vertical
+
+    def _inventory_counts(self, plain_inventory: Dict[int, Any]) -> Dict[str, int]:
+        counts: Dict[str, int] = {}
+        for item in plain_inventory.values():
+            if not isinstance(item, dict):
+                continue
+            item_type = self._plain_item_type(item.get("type", "air"))
+            if item_type in ("air", "none", ""):
+                continue
+            quantity = self._plain_item_quantity(item.get("quantity", 0))
+            if quantity <= 0:
+                continue
+            counts[item_type] = counts.get(item_type, 0) + quantity
+        return counts
+
+    def _plain_item_type(self, value: Any) -> str:
+        try:
+            arr = np.asarray(value)
+            if arr.size == 1:
+                value = arr.reshape(-1)[0]
+        except Exception:
+            pass
+        if isinstance(value, bytes):
+            return value.decode("utf-8", errors="ignore")
+        if isinstance(value, np.generic):
+            value = value.item()
+        if isinstance(value, str):
+            return value
+        return str(value)
+
+    def _plain_item_quantity(self, value: Any) -> int:
+        try:
+            arr = np.asarray(value)
+            if arr.size == 0:
+                return 0
+            return int(arr.reshape(-1)[0])
+        except Exception:
+            try:
+                return int(value or 0)
+            except Exception:
+                return 0
+
+    def _record_resource_ledger(self) -> None:
+        ledger = self.cache["resource_ledger"]
+        current = self._inventory_counts(self.status_mod.inventory_with_slot)
+        last = ledger["last_inventory"]
+        for item, quantity in current.items():
+            ledger["max_inventory"][item] = max(ledger["max_inventory"].get(item, 0), quantity)
+            delta = quantity - int(last.get(item, 0))
+            if delta > 0:
+                ledger["collected"][item] = ledger["collected"].get(item, 0) + delta
+        ledger["last_inventory"] = current
+
+    def _ledger_satisfies_goal(self, goal: tuple[str, int] | None) -> bool:
+        if goal is None:
+            return False
+        item, number = goal
+        expanded_items = self.task_checker_mod._expand_item(str(item))
+        ledger = self.cache.get("resource_ledger", {})
+        max_inventory = ledger.get("max_inventory", {})
+        collected = ledger.get("collected", {})
+        observed = sum(int(max_inventory.get(name, 0)) for name in expanded_items)
+        gained = sum(int(collected.get(name, 0)) for name in expanded_items)
+        return observed >= int(number) or gained >= int(number)
+
+    def _used_inventory_slots(self) -> int:
+        used = 0
+        for item in self.status_mod.inventory_with_slot.values():
+            if not isinstance(item, dict):
+                continue
+            item_type = self._plain_item_type(item.get("type", "air"))
+            quantity = self._plain_item_quantity(item.get("quantity", 0))
+            if item_type not in ("air", "none", "") and quantity > 0:
+                used += 1
+        return used
+
+    def _protected_items(self, goal: tuple[str, int] | None, prompt: str | None) -> set[str]:
+        protected = {
+            "crafting_table",
+            "furnace",
+            "chest",
+            "stick",
+            "coal",
+            "charcoal",
+            "cobblestone",
+            "stone",
+            "smooth_stone",
+            "iron_ore",
+            "iron_ingot",
+            "gold_ore",
+            "gold_ingot",
+            "diamond",
+            "redstone",
+        }
+        protected.update(item for item in self.status_mod.inventory if item.endswith("_pickaxe"))
+        protected.update(item for item in self.status_mod.inventory if item.endswith("_axe"))
+        protected.update(item for item in self.status_mod.inventory if item.endswith("_shovel"))
+        protected.update(item for item in self.status_mod.inventory if item.endswith("_hoe"))
+        protected.update(item for item in self.status_mod.inventory if item.endswith("_sword"))
+        protected.update(item for item in self.status_mod.inventory if item.endswith("_log"))
+        protected.update(item for item in self.status_mod.inventory if item.endswith("_planks"))
+        if goal:
+            protected.update(self.task_checker_mod._expand_item(str(goal[0])))
+        return protected
+
+    def _junk_priority(self, item_type: str) -> int | None:
+        low_value_tokens = (
+            "leaves",
+            "flower",
+            "dandelion",
+            "poppy",
+            "tulip",
+            "azure_bluet",
+            "oxeye_daisy",
+            "grass",
+            "fern",
+            "sapling",
+            "seeds",
+        )
+        if any(token in item_type for token in low_value_tokens):
+            return 0
+        if item_type in {"dirt", "gravel", "sand"}:
+            return 1
+        return None
+
+    def _maybe_cleanup_inventory(
+        self,
+        action: Dict[str, Any],
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> Dict[str, Any]:
+        pressure_threshold = int(os.environ.get("XENON_INVENTORY_PRESSURE_SLOTS", "34"))
+        if self._used_inventory_slots() < pressure_threshold:
+            return action
+        if self._button_down(action, "attack") or self._control_state["escape_ticks"] > 0:
+            return action
+
+        protected = self._protected_items(goal, prompt)
+        candidates = []
+        for raw_slot, item in self.status_mod.inventory_with_slot.items():
+            if not isinstance(item, dict):
+                continue
+            try:
+                slot = int(raw_slot)
+            except Exception:
+                continue
+            item_type = self._plain_item_type(item.get("type", "air"))
+            quantity = self._plain_item_quantity(item.get("quantity", 0))
+            if slot > 8 or quantity <= 0 or item_type in protected:
+                continue
+            priority = self._junk_priority(item_type)
+            if priority is not None:
+                candidates.append((priority, -quantity, slot, item_type))
+
+        if not candidates:
+            return action
+
+        _, _, slot, item_type = sorted(candidates)[0]
+        for key in ("attack", "use", "jump", "forward", "back", "left", "right", "sprint", "sneak"):
+            self._set_button(action, key, 0)
+        for i in range(9):
+            self._set_button(action, f"hotbar.{i+1}", 0)
+        self._set_button(action, f"hotbar.{slot+1}", 1)
+        self._set_button(action, "drop", 1)
+        self.logger.info(
+            f"Dropping low-priority hotbar item under inventory pressure: slot={slot}, item={item_type}"
+        )
+        return action
+
+    def _movement_intent(self, action: Dict[str, Any]) -> bool:
+        return any(
+            self._button_down(action, key)
+            for key in ("forward", "back", "left", "right", "jump", "sprint")
+        )
+
+    def _should_escape(self, action: Dict[str, Any], goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        if self._current_air() < int(os.environ.get("XENON_LOW_AIR_THRESHOLD", "280")):
+            return True
+
+        horizontal, vertical = self._position_delta()
+        stagnant = (
+            horizontal < float(os.environ.get("XENON_STAGNANT_HORIZONTAL_DELTA", "0.35"))
+            and vertical < float(os.environ.get("XENON_STAGNANT_VERTICAL_DELTA", "0.25"))
+        )
+        if self._movement_intent(action) and stagnant and not self._button_down(action, "attack"):
+            self._control_state["movement_stagnant_ticks"] += 1
+        else:
+            self._control_state["movement_stagnant_ticks"] = 0
+
+        stale_progress = self.num_steps - int(self.cache.get("last_progress_step", 0))
+        return (
+            self._control_state["movement_stagnant_ticks"]
+            >= int(os.environ.get("XENON_ESCAPE_STAGNANT_TICKS", "80"))
+            and stale_progress >= int(os.environ.get("XENON_ESCAPE_MIN_STALE_PROGRESS", "240"))
+            and not self._is_resource_acquisition(goal, prompt)
+        )
+
+    def _escape_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
+        self._control_state["escape_ticks"] -= 1
+        if self._control_state["escape_ticks"] % 20 == 0:
+            self._control_state["escape_turn"] *= -1
+
+        for key in ("attack", "use", "back", "left", "right", "sneak", "inventory", "drop"):
+            self._set_button(action, key, 0)
+        for key in ("forward", "jump", "sprint"):
+            self._set_button(action, key, 1)
+        action["camera"] = np.array([-8, 10 * self._control_state["escape_turn"]])
+        return action
+
+    def _stabilize_action(
+        self,
+        action: Dict[str, Any] | List[Dict[str, Any]],
+        goal: tuple[str, int] | None = None,
+        prompt: str | None = None,
+    ) -> Dict[str, Any]:
+        action = self._normalise_action(action)
+        if prompt != self._control_state.get("last_prompt"):
+            self._control_state["attack_hold"] = 0
+            self._control_state["movement_stagnant_ticks"] = 0
+            self._control_state["last_prompt"] = prompt
+
+        if self._control_state["escape_ticks"] <= 0 and self._should_escape(action, goal, prompt):
+            self._control_state["escape_ticks"] = int(os.environ.get("XENON_ESCAPE_TICKS", "80"))
+            self.logger.info(
+                "Activating movement recovery primitive: "
+                f"air={self._current_air()}, stagnant_ticks={self._control_state['movement_stagnant_ticks']}"
+            )
+
+        if self._control_state["escape_ticks"] > 0:
+            return self._escape_action(action)
+
+        original_attack = self._button_down(action, "attack")
+        if original_attack and self._is_resource_acquisition(goal, prompt):
+            self._control_state["attack_hold"] = max(
+                int(self._control_state["attack_hold"]),
+                self._attack_hold_ticks(goal, prompt),
+            )
+
+        if self._control_state["attack_hold"] > 0:
+            self._set_button(action, "attack", 1)
+            locked_keys = ("jump", "forward", "back", "left", "right", "sprint", "sneak", "use")
+            if original_attack:
+                locked_keys = ("jump", "left", "right", "sprint", "sneak", "use")
+            for key in locked_keys:
+                self._set_button(action, key, 0)
+            if not original_attack:
+                action["camera"] = np.array([0, 0])
+            self._control_state["attack_hold"] -= 1
+        elif original_attack:
+            for key in ("jump", "left", "right", "sprint", "sneak"):
+                self._set_button(action, key, 0)
+
+        return action
+
+    def _record_step_state(self, observation: Dict[str, Any]) -> None:
+        self.cache["last_life_stats"] = observation.get("life_stats", {})
+        loc = observation.get("location_stats", {})
+        try:
+            pos = (
+                float(np.asarray(loc["xpos"]).reshape(-1)[0]),
+                float(np.asarray(loc["ypos"]).reshape(-1)[0]),
+                float(np.asarray(loc["zpos"]).reshape(-1)[0]),
+            )
+            self.cache["position_window"].append(pos)
+        except Exception:
+            pass
+        self._record_resource_ledger()
+        if self.status_mod.inventory_change:
+            self.cache["last_progress_step"] = self.num_steps
+
     def raw_step(self, action: Dict[str, Any]):
+        action = self._stabilize_action(action)
         if not self.can_change_hotbar:
             for i in range(9):
                 action[f"hotbar.{i+1}"] = np.array(0)
         # ban drop(Q) action
         action["drop"] = 0
         # attack时不乱动
-        if action["attack"] > 0:
+        if self._button_down(action, "attack"):
             action["jump"] = action["left"] = action["right"] = np.array(0)
             action["sneak"] = action["sprint"] = np.array(0)
         observation, reward, done, info = self.env.step(action)
+        if isinstance(info, dict) and info.get("error"):
+            info["isGuiOpen"] = observation.get("isGuiOpen", False)
+            return observation, reward, done, info
         # 推送 POV 到宿主机 monitor_server（异步、O(1)、失败静默）
         _push_pov_to_monitor(observation)
         self.record_mod.step(observation, None, action)
         self.status_mod.step(observation, action, self.num_steps)
+        self._record_step_state(observation)
 
         info.update(self.status_mod.get_status())
 
@@ -248,6 +595,7 @@ class CustomEnvWrapper(gym.Wrapper):
         goal: tuple[str, int] | None = None,
         prompt: str | None = None,
     ):
+        action = self._stabilize_action(action, goal, prompt)
         if not self.can_change_hotbar:
             for i in range(9):
                 action[f"hotbar.{i+1}"] = np.array(0)
@@ -261,8 +609,13 @@ class CustomEnvWrapper(gym.Wrapper):
         if not self.can_open_inventory:
             action["inventory"] = np.array(0)
         action["drop"] = np.array(0)
+        action = self._maybe_cleanup_inventory(action, goal, prompt)
 
         observation, reward, done, info = self.env.step(action)
+        if isinstance(info, dict) and info.get("error"):
+            info.update({"killed": 0})
+            info["isGuiOpen"] = observation.get("isGuiOpen", False)
+            return observation, reward, done, info
 
         if goal is not None and goal[0] != self.cache["task"]:
             self.task_checker_mod.reset(observation["inventory"])
@@ -270,6 +623,7 @@ class CustomEnvWrapper(gym.Wrapper):
 
         self.record_mod.step(observation, prompt, action)
         self.status_mod.step(observation, action, self.num_steps)
+        self._record_step_state(observation)
 
         info.update(self.status_mod.get_status())
         info.update({"killed": 0})
@@ -309,6 +663,9 @@ class CustomEnvWrapper(gym.Wrapper):
             self._current_task_finish = self.task_checker_mod.step(
                 observation["inventory"], goal
             )
+            if not self._current_task_finish and self._ledger_satisfies_goal(goal):
+                self._current_task_finish = True
+                self.logger.info(f"Goal satisfied by resource ledger: {goal}")
         except Exception as e:
             print("Error ", e)
             self._current_task_finish = True
@@ -515,4 +872,7 @@ class CustomEnvWrapper(gym.Wrapper):
     #     self.env.execute_cmd("/effect give @a night_vision 99999 250 true")
 
     def get_status(self):
-        return self.status_mod.get_status()
+        status = self.status_mod.get_status()
+        status["resource_ledger"] = copy.deepcopy(self.cache.get("resource_ledger", {}))
+        status["inventory_slots_used"] = self._used_inventory_slots()
+        return status

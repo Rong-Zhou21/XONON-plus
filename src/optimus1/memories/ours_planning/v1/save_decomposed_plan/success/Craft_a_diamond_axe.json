@@ -102,6 +102,108 @@
       ],
       "status": "success",
       "steps": 10281
+    },
+    {
+      "id": "CiWLiFDPiaLdQA8YPEHzqR",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_axe",
+      "video": "videos/v1/Diamond_Craft_a_diamond_axe/forest/success/2026_04_27_17_13_47_craft_diamond_axe_CiWLiFDPiaLdQA8YPEHzqR.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            3
+          ]
+        },
+        {
+          "task": "craft diamond_axe",
+          "goal": [
+            "diamond_axe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5474
     }
   ]
 }

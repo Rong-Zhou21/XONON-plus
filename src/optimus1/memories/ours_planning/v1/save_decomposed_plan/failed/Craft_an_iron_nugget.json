@@ -73,6 +73,24 @@
       ],
       "status": "failed",
       "steps": 11896
+    },
+    {
+      "id": "HtBoHkgNuSuChnDVuf5wrz",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_nugget",
+      "video": "videos/v1/Iron_Craft_an_iron_nugget/plains/failed/2026_04_27_16_09_04_chop_a_tree_HtBoHkgNuSuChnDVuf5wrz.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11996
     }
   ]
 }
