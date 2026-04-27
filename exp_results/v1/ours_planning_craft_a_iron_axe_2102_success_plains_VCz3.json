@@ -1,55 +1,63 @@
 {
-  "run_uuid": "BZdb89aqDZYZVxD25JuBJY",
+  "run_uuid": "VCz3yATimpdYxmxq24YWbX",
   "seed": 0,
   "prefix": "ours_planning",
-  "benchmark": "stone",
-  "task": "craft_a_smoker",
-  "goal": "smoker",
-  "exp_num": 1005,
+  "benchmark": "iron",
+  "task": "craft_a_iron_axe",
+  "goal": "iron_axe",
+  "exp_num": 2102,
   "biome": "plains",
   "is_fixed_memory": false,
-  "max_minutes": 6,
-  "success": false,
-  "status_detailed": "failed",
-  "video_file": "videos/v1/Stone_Craft_a_smoker/plains/failed/2026_04_27_08_43_58_craft_furnace_BZdb89aqDZYZVxD25JuBJY.mp4",
-  "steps": 3409,
-  "minutes": 2.84,
+  "max_minutes": 10,
+  "success": true,
+  "status_detailed": "success",
+  "video_file": "videos/v1/Iron_Craft_a_iron_axe/plains/success/2026_04_27_11_21_22_craft_iron_axe_VCz3yATimpdYxmxq24YWbX.mp4",
+  "steps": 6565,
+  "minutes": 5.47,
   "metrics": {
     "chop a tree_0": {
       "SuccessMonitor": 1,
-      "StepMonitor": 1298
+      "StepMonitor": 675
     },
     "craft planks_1": {
       "SuccessMonitor": 1,
-      "StepMonitor": 374
+      "StepMonitor": 207
     },
-    "chop a tree_2": {
+    "craft stick_2": {
       "SuccessMonitor": 1,
-      "StepMonitor": 118
+      "StepMonitor": 111
     },
     "craft crafting_table_3": {
       "SuccessMonitor": 1,
       "StepMonitor": 108
     },
-    "craft stick_4": {
+    "craft wooden_pickaxe_4": {
       "SuccessMonitor": 1,
-      "StepMonitor": 95
+      "StepMonitor": 327
     },
-    "craft wooden_pickaxe_5": {
+    "dig down and mine cobblestone_5": {
       "SuccessMonitor": 1,
-      "StepMonitor": 323
+      "StepMonitor": 623
     },
-    "dig down and mine cobblestone_6": {
+    "craft furnace_6": {
       "SuccessMonitor": 1,
-      "StepMonitor": 763
+      "StepMonitor": 327
     },
-    "craft furnace_7": {
+    "craft stone_pickaxe_7": {
       "SuccessMonitor": 1,
-      "StepMonitor": 315
+      "StepMonitor": 308
     },
-    "craft smoker_8": {
-      "SuccessMonitor": 0,
-      "StepMonitor": 15
+    "dig down and mine iron_ore_8": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 2165
+    },
+    "smelt iron_ingot_9": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1415
+    },
+    "craft iron_axe_10": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 299
     }
   },
   "completed_subgoals": [
@@ -57,21 +65,21 @@
       "task": "chop a tree",
       "goal": [
         "logs",
-        8
+        7
       ]
     },
     {
       "task": "craft planks",
       "goal": [
         "planks",
-        13
+        21
       ]
     },
     {
-      "task": "chop a tree",
+      "task": "craft stick",
       "goal": [
-        "logs",
-        1
+        "stick",
+        6
       ]
     },
     {
@@ -79,13 +87,6 @@
       "goal": [
         "crafting_table",
         1
-      ]
-    },
-    {
-      "task": "craft stick",
-      "goal": [
-        "stick",
-        2
       ]
     },
     {
@@ -99,13 +100,41 @@
       "task": "dig down and mine cobblestone",
       "goal": [
         "cobblestone",
-        8
+        11
       ]
     },
     {
       "task": "craft furnace",
       "goal": [
         "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_axe",
+      "goal": [
+        "iron_axe",
         1
       ]
     }
@@ -115,21 +144,21 @@
       "task": "chop a tree",
       "goal": [
         "logs",
-        8
+        7
       ]
     },
     {
       "task": "craft planks",
       "goal": [
         "planks",
-        13
+        21
       ]
     },
     {
-      "task": "chop a tree",
+      "task": "craft stick",
       "goal": [
-        "logs",
-        1
+        "stick",
+        6
       ]
     },
     {
@@ -137,13 +166,6 @@
       "goal": [
         "crafting_table",
         1
-      ]
-    },
-    {
-      "task": "craft stick",
-      "goal": [
-        "stick",
-        2
       ]
     },
     {
@@ -157,7 +179,7 @@
       "task": "dig down and mine cobblestone",
       "goal": [
         "cobblestone",
-        8
+        11
       ]
     },
     {
@@ -166,46 +188,58 @@
         "furnace",
         1
       ]
-    }
-  ],
-  "failed_subgoals": [
+    },
     {
-      "task": "craft smoker",
+      "task": "craft stone_pickaxe",
       "goal": [
-        "smoker",
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_axe",
+      "goal": [
+        "iron_axe",
         1
       ]
     }
   ],
-  "remain_plans": [
-    {
-      "task": "craft smoker",
-      "goal": [
-        "smoker",
-        1
-      ]
-    }
-  ],
+  "failed_subgoals": [],
+  "remain_plans": [],
   "all_subgoals": [
     {
       "task": "chop a tree",
       "goal": [
         "logs",
-        8
+        7
       ]
     },
     {
       "task": "craft planks",
       "goal": [
         "planks",
-        13
+        21
       ]
     },
     {
-      "task": "chop a tree",
+      "task": "craft stick",
       "goal": [
-        "logs",
-        1
+        "stick",
+        6
       ]
     },
     {
@@ -213,13 +247,6 @@
       "goal": [
         "crafting_table",
         1
-      ]
-    },
-    {
-      "task": "craft stick",
-      "goal": [
-        "stick",
-        2
       ]
     },
     {
@@ -233,7 +260,7 @@
       "task": "dig down and mine cobblestone",
       "goal": [
         "cobblestone",
-        8
+        11
       ]
     },
     {
@@ -244,9 +271,30 @@
       ]
     },
     {
-      "task": "craft smoker",
+      "task": "craft stone_pickaxe",
       "goal": [
-        "smoker",
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_axe",
+      "goal": [
+        "iron_axe",
         1
       ]
     }
@@ -256,21 +304,21 @@
       "task": "chop a tree",
       "goal": [
         "logs",
-        8
+        7
       ]
     },
     {
       "task": "craft planks",
       "goal": [
         "planks",
-        13
+        21
       ]
     },
     {
-      "task": "chop a tree",
+      "task": "craft stick",
       "goal": [
-        "logs",
-        1
+        "stick",
+        6
       ]
     },
     {
@@ -278,13 +326,6 @@
       "goal": [
         "crafting_table",
         1
-      ]
-    },
-    {
-      "task": "craft stick",
-      "goal": [
-        "stick",
-        2
       ]
     },
     {
@@ -298,7 +339,7 @@
       "task": "dig down and mine cobblestone",
       "goal": [
         "cobblestone",
-        8
+        11
       ]
     },
     {
@@ -309,14 +350,33 @@
       ]
     },
     {
-      "task": "craft smoker",
+      "task": "craft stone_pickaxe",
       "goal": [
-        "smoker",
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_axe",
+      "goal": [
+        "iron_axe",
         1
       ]
     }
   ],
-  "failed_waypoints": [
-    "smoker"
-  ]
+  "failed_waypoints": []
 }

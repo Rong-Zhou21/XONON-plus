@@ -102,6 +102,8 @@ The two `stopped_by_user` cases come from interrupted runs after the user reques
 
 ## Notes For Analysis
 
+Update: some failures in this first Stone/Iron batch were later identified as runtime/helper bugs rather than agent-performance failures. See `docs/experiment_summaries/2026-04-27_bugfix_reruns.md` for root-cause analysis and corrected rerun results.
+
 - Stone failures:
   - `smelt_a_charcoal` timed out at `charcoal`.
   - `craft_a_smoker` failed at `smoker`.

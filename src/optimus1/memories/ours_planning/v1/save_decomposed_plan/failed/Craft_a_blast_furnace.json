@@ -1,11 +1,11 @@
 {
   "plan": [
     {
-      "id": "Sg39wS6349ZqkGbyfRemzQ",
+      "id": "VRLPsfiA7KKxdEHmnbqmEt",
       "environment": "plains",
       "visual_info": "",
       "goal": "blast_furnace",
-      "video": "videos/v1/Iron_Craft_a_blast_furnace/plains/failed/2026_04_27_10_15_23__Sg39wS6349ZqkGbyfRemzQ.mp4",
+      "video": "videos/v1/Iron_Craft_a_blast_furnace/plains/failed/2026_04_27_12_23_19_dig_down_and_mine_stone_VRLPsfiA7KKxdEHmnbqmEt.mp4",
       "planning": [
         {
           "task": "chop a tree",
@@ -13,10 +13,59 @@
             "logs",
             6
           ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            14
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine stone",
+          "goal": [
+            "stone",
+            3
+          ]
         }
       ],
       "status": "failed",
-      "steps": 111
+      "steps": 11939
     }
   ]
 }

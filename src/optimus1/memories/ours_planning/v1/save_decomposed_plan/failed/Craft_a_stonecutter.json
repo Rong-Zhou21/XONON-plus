@@ -66,6 +66,87 @@
       ],
       "status": "failed",
       "steps": 11938
+    },
+    {
+      "id": "gndhANXgsB5UUyC6Wujnq5",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stonecutter",
+      "video": "videos/v1/Iron_Craft_a_stonecutter/plains/failed/2026_04_27_12_29_46_dig_down_and_mine_iron_ore_gndhANXgsB5UUyC6Wujnq5.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            14
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "smelt stone",
+          "goal": [
+            "stone",
+            3
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11891
     }
   ]
 }

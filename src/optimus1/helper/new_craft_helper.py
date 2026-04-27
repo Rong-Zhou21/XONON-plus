@@ -490,13 +490,12 @@ class NewCraftHelper:
                         num_need += 1
             num_need = num_need * iter_num
 
-            inventory_id = self.find_in_inventory(labels, item, item_type)
-            if not inventory_id:
+            total_available = self._available_inventory_quantity(labels, item, item_type)
+            if total_available <= 0:
                 return False, {item: int(num_need)}
 
-            inventory_num = labels.get(inventory_id).get("quantity")
-            if num_need > inventory_num:
-                return False, {item: int(num_need) - inventory_num}
+            if num_need > total_available:
+                return False, {item: int(num_need) - total_available}
 
         return True, None
 
@@ -525,13 +524,12 @@ class NewCraftHelper:
                 items[item] = 1
 
         for item, num_need in items.items():
-            inventory_id = self.find_in_inventory(labels, item, items_type[item])
-            if not inventory_id:
+            total_available = self._available_inventory_quantity(labels, item, items_type[item])
+            if total_available <= 0:
                 return False, {item: int(num_need * iter_num)}
 
-            inventory_num = labels.get(inventory_id).get("quantity")
-            if num_need * iter_num > inventory_num:
-                return False, {item: int(num_need * iter_num) - inventory_num}
+            if num_need * iter_num > total_available:
+                return False, {item: int(num_need * iter_num) - total_available}
         
         return True, None
 
@@ -906,6 +904,87 @@ class NewCraftHelper:
 
         return None
 
+    def _matching_inventory_slots(self, labels: Dict, item: str, item_type: str = "item"):
+        if item_type == "tag":
+            tag_item_key = "minecraft:" + item
+            if tag_item_key not in self.tag_info:
+                return []
+            accepted = {entry.replace("minecraft:", "") for entry in self.tag_info[tag_item_key]}
+        else:
+            accepted = {item}
+
+        slots = []
+        for slot, value in labels.items():
+            if not slot.startswith("inventory_") or not isinstance(value, dict):
+                continue
+            item_name = value.get("type")
+            quantity = int(value.get("quantity", 0) or 0)
+            if quantity <= 0:
+                continue
+            if item_name in accepted:
+                slots.append((slot, quantity, item_name))
+        return slots
+
+    def _available_inventory_quantity(self, labels: Dict, item: str, item_type: str = "item") -> int:
+        return sum(quantity for _, quantity, _ in self._matching_inventory_slots(labels, item, item_type))
+
+    def _place_items_from_inventory_slots(
+        self,
+        SLOT_POS: Dict,
+        resource_slots: list[str],
+        item: str,
+        item_type: str,
+        target_number: int,
+    ) -> None:
+        labels = self.get_labels()
+        matching_slots = self._matching_inventory_slots(labels, item, item_type)
+        total_needed = len(resource_slots) * target_number
+        self._assert(
+            sum(quantity for _, quantity, _ in matching_slots) >= total_needed,
+            MISSING_MATERIAL_FORMAT.format(item, total_needed),
+        )
+
+        resource_idx = 0
+        remaining_for_resource = target_number
+        for inventory_id, inventory_num, actual_item in matching_slots:
+            if resource_idx >= len(resource_slots):
+                break
+
+            self.move_to_slot(SLOT_POS, inventory_id)
+            self._null_action(1)
+            self._select_item()
+            self._null_action(1)
+
+            carried = inventory_num
+            while carried > 0 and resource_idx < len(resource_slots):
+                resource_slot = resource_slots[resource_idx]
+                place_count = min(carried, remaining_for_resource)
+                if "resource" in resource_slot:
+                    self.resource_record[resource_slot] = {
+                        "type": actual_item,
+                        "quantity": place_count,
+                    }
+                self.move_to_slot(SLOT_POS, resource_slot)
+                self._null_action(1)
+                for _ in range(place_count):
+                    self._use_item()
+                    self._null_action(1)
+                carried -= place_count
+                remaining_for_resource -= place_count
+                if remaining_for_resource == 0:
+                    resource_idx += 1
+                    remaining_for_resource = target_number
+
+            if carried > 0:
+                self.move_to_slot(SLOT_POS, inventory_id)
+                self._null_action(1)
+                self._select_item()
+                self._null_action(1)
+
+            self.random_move_or_stay()
+
+        self._assert(resource_idx == len(resource_slots), MISSING_MATERIAL_FORMAT.format(item, total_needed))
+
     # crafting once
     def crafting_once(
         self, target: str, iter_num: int, recipe_info: Dict, target_num: int
@@ -994,21 +1073,22 @@ class NewCraftHelper:
             labels = self.get_labels()
 
             # clculate the amount needed
+            resource_slots = []
             num_need = 0
             for i in range(len(pattern)):
                 for j in range(len(pattern[i])):
                     if pattern[i][j] == signal:
                         num_need += 1
+                        table_width = 3 if "table" in self.current_gui_type else 2
+                        resource_slots.append("resource_" + str(i * table_width + j))
             num_need = num_need * iter_num
             # HERE!!!
             inventory_id = self.find_in_inventory(labels, item, item_type)
             self._assert(inventory_id, MISSING_MATERIAL_FORMAT.format(item, num_need))
             inventory_num = labels.get(inventory_id).get("quantity")
-            self._assert(
-                num_need <= inventory_num,
-                MISSING_MATERIAL_FORMAT.format(item, num_need - inventory_num),
-                # MISSING_MATERIAL_FORMAT.format(item, num_need),
-            )
+            if num_need > inventory_num:
+                self._place_items_from_inventory_slots(slot_pos, resource_slots, item, item_type, iter_num)
+                continue
             # place
             resource_idx = 0
             first_pull = 1
@@ -1074,13 +1154,14 @@ class NewCraftHelper:
                 inventory_id, MISSING_MATERIAL_FORMAT.format(item, num_need * iter_num)
             )
             inventory_num = labels.get(inventory_id).get("quantity")
-            self._assert(
-                num_need * iter_num <= inventory_num,
-                MISSING_MATERIAL_FORMAT.format(
-                    item, num_need * iter_num - inventory_num
-                    # item, num_need * iter_num
-                ),
-            )
+            if num_need * iter_num > inventory_num:
+                resource_slots = [
+                    "resource_" + str(idx)
+                    for idx in range(resource_idx, resource_idx + num_need)
+                ]
+                self._place_items_from_inventory_slots(slot_pos, resource_slots, item, items_type[item], iter_num)
+                resource_idx += num_need
+                continue
 
             # place
             num_need -= 1

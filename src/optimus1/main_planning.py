@@ -58,6 +58,23 @@ def _video_task_name(benchmark: str, task: str) -> str:
     return f"{benchmark_prefix}_{task}"
 
 
+def _video_action_name(
+    status: str,
+    completed_subgoals: list[Dict[str, Any]],
+    failed_subgoals: list[Any],
+    task: str,
+) -> str:
+    if status != "success" and failed_subgoals:
+        failed = failed_subgoals[0]
+        if isinstance(failed, dict) and failed.get("task"):
+            return failed["task"]
+        if isinstance(failed, str):
+            return failed
+    if completed_subgoals:
+        return completed_subgoals[-1].get("task") or task
+    return task
+
+
 def _malmo_log_has_fatal_error(env_malmo_logger_path: str, logger: logging.Logger) -> bool:
     """Treat MineRL log exceptions as diagnostic unless they are clearly fatal.
 
@@ -568,8 +585,12 @@ def new_agent_do(
                             return "env_malmo_logger_error", None, None, None, None
 
                     if game_over:
-                        logger.warning("[red]:warning: Timeout![/red]")
-                        status = "timeout_non_programmatic"
+                        if isinstance(info, dict) and info.get("error"):
+                            logger.warning(f"[red]:warning: MineRL step error: {info.get('error')}[/red]")
+                            status = "env_step_timeout"
+                        else:
+                            logger.warning("[red]:warning: Timeout![/red]")
+                            status = "timeout_non_programmatic"
                         failed_subgoals = [current_sg]
                         failed_waypoints.append(waypoint)
                         break
@@ -773,7 +794,7 @@ def main(cfg: DictConfig):
             failed_waypoints = list(set(failed_waypoints))
             failed_waypoints.sort()
 
-            done_final_task = completed_subgoals[-1]["task"] if len(completed_subgoals) > 0 else None
+            done_final_task = _video_action_name(status, completed_subgoals, failed_subgoals, task)
             biome = cfg["env"]["prefer_biome"]
 
             status_detailed = copy.deepcopy(status)

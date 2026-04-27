@@ -1,11 +1,11 @@
 {
   "plan": [
     {
-      "id": "k2x7Zgz6QPiX3ZLfbL7cvP",
+      "id": "Z6SBpVP3aqpSPV869mHBmw",
       "environment": "plains",
       "visual_info": "",
-      "goal": "iron_nugget",
-      "video": "videos/v1/Iron_Craft_an_iron_nugget/plains/failed/2026_04_27_12_38_05_dig_down_and_mine_iron_ore_k2x7Zgz6QPiX3ZLfbL7cvP.mp4",
+      "goal": "bucket",
+      "video": "videos/v1/Iron_Craft_a_bucket/plains/success/2026_04_27_11_26_19_craft_bucket_Z6SBpVP3aqpSPV869mHBmw.mp4",
       "planning": [
         {
           "task": "chop a tree",
@@ -67,12 +67,26 @@
           "task": "dig down and mine iron_ore",
           "goal": [
             "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft bucket",
+          "goal": [
+            "bucket",
             1
           ]
         }
       ],
-      "status": "failed",
-      "steps": 11896
+      "status": "success",
+      "steps": 7960
     }
   ]
 }

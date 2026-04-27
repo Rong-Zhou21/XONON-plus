@@ -1,24 +1,31 @@
 {
   "plan": [
     {
-      "id": "k2x7Zgz6QPiX3ZLfbL7cvP",
+      "id": "VCz3yATimpdYxmxq24YWbX",
       "environment": "plains",
       "visual_info": "",
-      "goal": "iron_nugget",
-      "video": "videos/v1/Iron_Craft_an_iron_nugget/plains/failed/2026_04_27_12_38_05_dig_down_and_mine_iron_ore_k2x7Zgz6QPiX3ZLfbL7cvP.mp4",
+      "goal": "iron_axe",
+      "video": "videos/v1/Iron_Craft_a_iron_axe/plains/success/2026_04_27_11_21_22_craft_iron_axe_VCz3yATimpdYxmxq24YWbX.mp4",
       "planning": [
         {
           "task": "chop a tree",
           "goal": [
             "logs",
-            6
+            7
           ]
         },
         {
           "task": "craft planks",
           "goal": [
             "planks",
-            19
+            21
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
           ]
         },
         {
@@ -26,13 +33,6 @@
           "goal": [
             "crafting_table",
             1
-          ]
-        },
-        {
-          "task": "craft stick",
-          "goal": [
-            "stick",
-            4
           ]
         },
         {
@@ -67,12 +67,26 @@
           "task": "dig down and mine iron_ore",
           "goal": [
             "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_axe",
+          "goal": [
+            "iron_axe",
             1
           ]
         }
       ],
-      "status": "failed",
-      "steps": 11896
+      "status": "success",
+      "steps": 6565
     }
   ]
 }

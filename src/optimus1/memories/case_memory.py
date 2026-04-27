@@ -350,22 +350,30 @@ class CaseBasedMemory:
         )
 
     def _best_exact_success_case(self, waypoint: str) -> Dict[str, Any] | None:
-        candidates = []
+        action_scores: Dict[str, int] = {}
+        action_success_counts: Dict[str, int] = {}
+        representatives: Dict[str, Dict[str, Any]] = {}
         for case in self.cases:
             if _normalise_waypoint(case.get("waypoint", "")) != _normalise_waypoint(waypoint):
                 continue
-            if not case.get("selected_action"):
+            action = case.get("selected_action")
+            if not action:
                 continue
             outcome = case.get("outcome", {})
-            if outcome.get("success") is not True:
-                continue
             success_count = int(outcome.get("success_count", 1))
             failure_count = int(outcome.get("failure_count", 0))
-            net_score = success_count - failure_count
-            if net_score <= -self.plan_failure_threshold:
-                continue
-            candidates.append((net_score, success_count, case))
+            if outcome.get("success") is True:
+                action_scores[action] = action_scores.get(action, 0) + success_count - failure_count
+                action_success_counts[action] = action_success_counts.get(action, 0) + success_count
+                representatives.setdefault(action, case)
+            elif outcome.get("success") is False:
+                action_scores[action] = action_scores.get(action, 0) - max(1, failure_count)
 
+        candidates = [
+            (score, action_success_counts.get(action, 0), representatives[action])
+            for action, score in action_scores.items()
+            if action in representatives and score > -self.plan_failure_threshold
+        ]
         if not candidates:
             return None
         return sorted(candidates, key=lambda item: (item[0], item[1]), reverse=True)[0][2]

@@ -1,24 +1,24 @@
 {
   "plan": [
     {
-      "id": "k2x7Zgz6QPiX3ZLfbL7cvP",
+      "id": "P6Qpfu2MsBGECdsRYhyyHN",
       "environment": "plains",
       "visual_info": "",
-      "goal": "iron_nugget",
-      "video": "videos/v1/Iron_Craft_an_iron_nugget/plains/failed/2026_04_27_12_38_05_dig_down_and_mine_iron_ore_k2x7Zgz6QPiX3ZLfbL7cvP.mp4",
+      "goal": "charcoal",
+      "video": "videos/v1/Stone_Smelt_a_charcoal/plains/success/2026_04_27_11_07_50_smelt_charcoal_P6Qpfu2MsBGECdsRYhyyHN.mp4",
       "planning": [
         {
           "task": "chop a tree",
           "goal": [
             "logs",
-            6
+            5
           ]
         },
         {
           "task": "craft planks",
           "goal": [
             "planks",
-            19
+            13
           ]
         },
         {
@@ -32,7 +32,7 @@
           "task": "craft stick",
           "goal": [
             "stick",
-            4
+            2
           ]
         },
         {
@@ -46,7 +46,7 @@
           "task": "dig down and mine cobblestone",
           "goal": [
             "cobblestone",
-            11
+            8
           ]
         },
         {
@@ -57,22 +57,15 @@
           ]
         },
         {
-          "task": "craft stone_pickaxe",
+          "task": "smelt charcoal",
           "goal": [
-            "stone_pickaxe",
-            1
-          ]
-        },
-        {
-          "task": "dig down and mine iron_ore",
-          "goal": [
-            "iron_ore",
+            "charcoal",
             1
           ]
         }
       ],
-      "status": "failed",
-      "steps": 11896
+      "status": "success",
+      "steps": 2397
     }
   ]
 }
