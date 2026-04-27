@@ -1,0 +1,254 @@
+{
+  "run_uuid": "K8vGnMvN7PumA8kqKLXctp",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "stone",
+  "task": "craft_a_torch",
+  "goal": "torch",
+  "exp_num": 1008,
+  "biome": "plains",
+  "is_fixed_memory": false,
+  "max_minutes": 6,
+  "success": true,
+  "status_detailed": "success",
+  "video_file": "videos/v1/Stone_Craft_a_torch/plains/success/2026_04_27_08_52_54_craft_torch_K8vGnMvN7PumA8kqKLXctp.mp4",
+  "steps": 2440,
+  "minutes": 2.03,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 382
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 115
+    },
+    "craft stick_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 88
+    },
+    "craft crafting_table_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 113
+    },
+    "craft wooden_pickaxe_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 393
+    },
+    "dig down and mine coals_5": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1240
+    },
+    "craft torch_6": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 109
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        11
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine coals",
+      "goal": [
+        "coals",
+        1
+      ]
+    },
+    {
+      "task": "craft torch",
+      "goal": [
+        "torch",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        11
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine coals",
+      "goal": [
+        "coals",
+        1
+      ]
+    },
+    {
+      "task": "craft torch",
+      "goal": [
+        "torch",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [],
+  "remain_plans": [],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        11
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine coals",
+      "goal": [
+        "coals",
+        1
+      ]
+    },
+    {
+      "task": "craft torch",
+      "goal": [
+        "torch",
+        1
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        11
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine coals",
+      "goal": [
+        "coals",
+        1
+      ]
+    },
+    {
+      "task": "craft torch",
+      "goal": [
+        "torch",
+        1
+      ]
+    }
+  ],
+  "failed_waypoints": []
+}

@@ -89,7 +89,7 @@ class RecorderMod(Mod):
         if self.export_video:
             # dir/{task}/{status}/{time}.mp4
             task = task.replace(" ", "_")
-            actual_done_final_task = actual_done_final_task.replace(" ", "_")
+            actual_done_final_task = (actual_done_final_task or "").replace(" ", "_")
             video_dir = os.path.join(self.output_video_path, task, biome, status)
             os.makedirs(video_dir, exist_ok=True)
             time = get_time()
@@ -116,6 +116,10 @@ class RecorderMod(Mod):
                 if is_sub_task is False
                 else self.action_sub_task_frames
             )
+            if not video_frames:
+                self.logger.warning("No video frames recorded; skip video export.")
+                return None
+
             with self._lock:
                 if self.export_action:
                     save_bin(action_frames, output_action_filepath)

@@ -91,6 +91,52 @@
       ],
       "status": "success",
       "steps": 958
+    },
+    {
+      "id": "AcEtFRo5nvcqeTSz79HCbV",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v1/Craft_a_wooden_shovel/forest/success/2026_04_27_06_59_59_craft_wooden_shovel_AcEtFRo5nvcqeTSz79HCbV.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1584
     }
   ]
 }

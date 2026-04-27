@@ -88,6 +88,101 @@
       ],
       "status": "success",
       "steps": 6829
+    },
+    {
+      "id": "SKRQGroaUwUtEPog4PHBCH",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_shovel",
+      "video": "videos/v1/Iron_Craft_a_iron_shovel/plains/success/2026_04_27_08_56_09_craft_iron_shovel_SKRQGroaUwUtEPog4PHBCH.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_shovel",
+          "goal": [
+            "iron_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5919
     }
   ]
 }

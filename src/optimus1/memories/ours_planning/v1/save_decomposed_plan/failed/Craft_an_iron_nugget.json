@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "HubSoyS4mLuquE4y3hPkbi",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_nugget",
+      "video": "videos/v1/Iron_Craft_an_iron_nugget/plains/failed/2026_04_27_10_10_22__HubSoyS4mLuquE4y3hPkbi.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 120
+    }
+  ]
+}

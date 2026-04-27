@@ -1,0 +1,50 @@
+{
+  "plan": [
+    {
+      "id": "HnFpKWjZNfSzmNN2tWCUmK",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "ladder",
+      "video": "videos/v1/Craft_a_ladder/forest/success/2026_04_27_08_05_12_craft_ladder_HnFpKWjZNfSzmNN2tWCUmK.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            7
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft ladder",
+          "goal": [
+            "ladder",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 2179
+    }
+  ]
+}

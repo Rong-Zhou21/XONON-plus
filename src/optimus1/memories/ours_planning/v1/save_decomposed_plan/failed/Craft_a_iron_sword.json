@@ -1,0 +1,78 @@
+{
+  "plan": [
+    {
+      "id": "AjYG9EF9bgEvX6oxQhxNxt",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_sword",
+      "video": "videos/v1/Iron_Craft_a_iron_sword/plains/failed/2026_04_27_09_35_30_craft_stone_pickaxe_AjYG9EF9bgEvX6oxQhxNxt.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            21
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            5
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11893
+    }
+  ]
+}

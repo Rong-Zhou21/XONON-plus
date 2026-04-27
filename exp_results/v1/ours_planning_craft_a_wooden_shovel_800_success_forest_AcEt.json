@@ -1,0 +1,190 @@
+{
+  "run_uuid": "AcEtFRo5nvcqeTSz79HCbV",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "wooden",
+  "task": "craft_a_wooden_shovel",
+  "goal": "wooden_shovel",
+  "exp_num": 800,
+  "biome": "forest",
+  "is_fixed_memory": false,
+  "max_minutes": 10,
+  "success": true,
+  "status_detailed": "success",
+  "video_file": "videos/v1/Wood_Craft_a_wooden_shovel/forest/success/2026_04_27_06_59_59_craft_wooden_shovel_AcEtFRo5nvcqeTSz79HCbV.mp4",
+  "steps": 1584,
+  "minutes": 1.32,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 238
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 99
+    },
+    "craft stick_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 87
+    },
+    "craft crafting_table_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 107
+    },
+    "craft wooden_shovel_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1053
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        3
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        7
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        2
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_shovel",
+      "goal": [
+        "wooden_shovel",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        3
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        7
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        2
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_shovel",
+      "goal": [
+        "wooden_shovel",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [],
+  "remain_plans": [],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        3
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        7
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        2
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_shovel",
+      "goal": [
+        "wooden_shovel",
+        1
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        3
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        7
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        2
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_shovel",
+      "goal": [
+        "wooden_shovel",
+        1
+      ]
+    }
+  ],
+  "failed_waypoints": []
+}

@@ -1,0 +1,43 @@
+{
+  "plan": [
+    {
+      "id": "mMREXpFjQUsjcRcVxarJYo",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "bowl",
+      "video": "videos/v1/Craft_a_bowl/forest/success/2026_04_27_08_03_54_craft_bowl_mMREXpFjQUsjcRcVxarJYo.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft bowl",
+          "goal": [
+            "bowl",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1219
+    }
+  ]
+}

@@ -58,6 +58,10 @@ memory:
   waypoint_to_sg:
     save_path: save_waypoint_to_sg
     path: waypoint_to_sg
+  case_memory:
+    reuse_threshold: 0.72
+    retrieve_threshold: 0.45
+    bootstrap_legacy: True
   decomposed_plan:
     save_path: save_decomposed_plan/<status>
     path: decomposed_plan/<status>

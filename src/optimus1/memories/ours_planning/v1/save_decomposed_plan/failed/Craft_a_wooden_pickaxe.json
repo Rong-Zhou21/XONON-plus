@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "k6NSoMedjTHoz5tGpJgoxR",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_pickaxe",
+      "video": "",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 155
+    }
+  ]
+}

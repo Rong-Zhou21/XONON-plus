@@ -1,0 +1,64 @@
+{
+  "plan": [
+    {
+      "id": "K8vGnMvN7PumA8kqKLXctp",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "torch",
+      "video": "videos/v1/Stone_Craft_a_torch/plains/success/2026_04_27_08_52_54_craft_torch_K8vGnMvN7PumA8kqKLXctp.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            4
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            11
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            3
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine coals",
+          "goal": [
+            "coals",
+            1
+          ]
+        },
+        {
+          "task": "craft torch",
+          "goal": [
+            "torch",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 2440
+    }
+  ]
+}

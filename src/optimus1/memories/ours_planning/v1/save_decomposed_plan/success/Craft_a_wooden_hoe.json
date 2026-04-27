@@ -45,6 +45,52 @@
       ],
       "status": "success",
       "steps": 2116
+    },
+    {
+      "id": "HsEVLWyNovQqVoxfXNrhTn",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_hoe",
+      "video": "videos/v1/Craft_a_wooden_hoe/forest/success/2026_04_27_07_56_41_craft_wooden_hoe_HsEVLWyNovQqVoxfXNrhTn.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_hoe",
+          "goal": [
+            "wooden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1489
     }
   ]
 }

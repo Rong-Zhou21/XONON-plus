@@ -1,0 +1,64 @@
+{
+  "run_uuid": "PKw6QR3Mnd6r3GJDKUr84V",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "stone",
+  "task": "craft_a_furnace",
+  "goal": "furnace",
+  "exp_num": 1007,
+  "biome": "plains",
+  "is_fixed_memory": false,
+  "max_minutes": 6,
+  "success": false,
+  "status_detailed": "timeout_non_programmatic",
+  "video_file": "videos/v1/Stone_Craft_a_furnace/plains/failed/2026_04_27_08_50_47__PKw6QR3Mnd6r3GJDKUr84V.mp4",
+  "steps": 121,
+  "minutes": 0.1,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 121
+    }
+  },
+  "completed_subgoals": [],
+  "completed_plans": [],
+  "failed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    }
+  ],
+  "remain_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    }
+  ],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    }
+  ],
+  "failed_waypoints": [
+    "logs"
+  ]
+}

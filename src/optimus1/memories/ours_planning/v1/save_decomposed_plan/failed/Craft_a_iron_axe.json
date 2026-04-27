@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "XBAioizV4QwK6GzLq8Gm59",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_axe",
+      "video": "videos/v1/Iron_Craft_a_iron_axe/plains/failed/2026_04_27_09_06_11__XBAioizV4QwK6GzLq8Gm59.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 122
+    }
+  ]
+}

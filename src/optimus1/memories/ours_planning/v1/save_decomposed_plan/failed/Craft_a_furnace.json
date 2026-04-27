@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "PKw6QR3Mnd6r3GJDKUr84V",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/v1/Stone_Craft_a_furnace/plains/failed/2026_04_27_08_50_47__PKw6QR3Mnd6r3GJDKUr84V.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            4
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 121
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "VaDXiPCJt45cw2tcuSb452",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "stick",
+      "video": "videos/v1/Craft_a_stick/forest/success/2026_04_27_07_12_48_chop_a_tree_VaDXiPCJt45cw2tcuSb452.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 242
+    }
+  ]
+}

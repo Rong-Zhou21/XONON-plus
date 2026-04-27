@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "B7waVspjXFxYenh7ovYF3b",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_pickaxe",
+      "video": "videos/v1/Iron_Craft_a_iron_pickaxe/plains/failed/2026_04_27_09_01_08__B7waVspjXFxYenh7ovYF3b.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 121
+    }
+  ]
+}

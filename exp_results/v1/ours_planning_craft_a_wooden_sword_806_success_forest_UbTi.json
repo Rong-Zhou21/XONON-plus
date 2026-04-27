@@ -1,0 +1,190 @@
+{
+  "run_uuid": "UbTiT84QMPB7hkG7d9NuSW",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "wooden",
+  "task": "craft_a_wooden_sword",
+  "goal": "wooden_sword",
+  "exp_num": 806,
+  "biome": "forest",
+  "is_fixed_memory": false,
+  "max_minutes": 10,
+  "success": true,
+  "status_detailed": "success",
+  "video_file": "videos/v1/Wood_Craft_a_wooden_sword/forest/success/2026_04_27_07_18_56_craft_wooden_sword_UbTiT84QMPB7hkG7d9NuSW.mp4",
+  "steps": 868,
+  "minutes": 0.72,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 279
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 99
+    },
+    "craft stick_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 90
+    },
+    "craft crafting_table_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 114
+    },
+    "craft wooden_sword_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 286
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        3
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        8
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        1
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_sword",
+      "goal": [
+        "wooden_sword",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        3
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        8
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        1
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_sword",
+      "goal": [
+        "wooden_sword",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [],
+  "remain_plans": [],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        3
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        8
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        1
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_sword",
+      "goal": [
+        "wooden_sword",
+        1
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        3
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        8
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        1
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_sword",
+      "goal": [
+        "wooden_sword",
+        1
+      ]
+    }
+  ],
+  "failed_waypoints": []
+}

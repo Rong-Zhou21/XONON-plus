@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "VTY4WvrchWJFVnMgsgaFXi",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "chest",
+      "video": "",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 178
+    }
+  ]
+}

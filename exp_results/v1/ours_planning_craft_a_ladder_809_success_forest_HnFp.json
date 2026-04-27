@@ -1,0 +1,190 @@
+{
+  "run_uuid": "HnFpKWjZNfSzmNN2tWCUmK",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "wooden",
+  "task": "craft_a_ladder",
+  "goal": "ladder",
+  "exp_num": 809,
+  "biome": "forest",
+  "is_fixed_memory": false,
+  "max_minutes": 10,
+  "success": true,
+  "status_detailed": "success",
+  "video_file": "videos/v1/Wood_Craft_a_ladder/forest/success/2026_04_27_08_05_12_craft_ladder_HnFpKWjZNfSzmNN2tWCUmK.mp4",
+  "steps": 2179,
+  "minutes": 1.82,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 243
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 88
+    },
+    "craft stick_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 111
+    },
+    "craft crafting_table_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 99
+    },
+    "craft ladder_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1638
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        2
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        8
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        7
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft ladder",
+      "goal": [
+        "ladder",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        2
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        8
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        7
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft ladder",
+      "goal": [
+        "ladder",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [],
+  "remain_plans": [],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        2
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        8
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        7
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft ladder",
+      "goal": [
+        "ladder",
+        1
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        2
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        8
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        7
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft ladder",
+      "goal": [
+        "ladder",
+        1
+      ]
+    }
+  ],
+  "failed_waypoints": []
+}

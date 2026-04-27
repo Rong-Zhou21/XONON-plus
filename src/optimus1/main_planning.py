@@ -5,6 +5,7 @@ import os
 import re
 import shutil
 import time
+import traceback
 from typing import Any, Dict
 import sys
 
@@ -24,7 +25,7 @@ import transformers
 
 from optimus1.env import CustomEnvWrapper, env_make, register_custom_env
 from optimus1.helper import NewHelper
-from optimus1.memories import DecomposedMemory
+from optimus1.memories import CaseBasedMemory
 from optimus1.memories import KnowledgeGraph as OracleGraph
 
 from optimus1.monitor import Monitors, StepMonitor, SuccessMonitor
@@ -42,6 +43,56 @@ from optimus1.util import (
 
 MINUTE = 1200
 visual_info = ""
+
+
+def _video_task_name(benchmark: str, task: str) -> str:
+    benchmark_prefix = {
+        "wooden": "Wood",
+        "stone": "Stone",
+        "iron": "Iron",
+        "golden": "Gold",
+        "diamond": "Diamond",
+        "redstone": "Redstone",
+        "armor": "Armor",
+    }.get(benchmark, benchmark.title() if benchmark else "Unknown")
+    return f"{benchmark_prefix}_{task}"
+
+
+def _malmo_log_has_fatal_error(env_malmo_logger_path: str, logger: logging.Logger) -> bool:
+    """Treat MineRL log exceptions as diagnostic unless they are clearly fatal.
+
+    The Minecraft client writes benign Java exceptions for services such as
+    Realms, OpenAL, and narrator initialization. Aborting on every "Exception"
+    prevents failed episodes from being recorded and saved as videos.
+    """
+    if not os.path.exists(env_malmo_logger_path):
+        logger.warning(f"env_malmo_logger_path: {env_malmo_logger_path} does not exist.")
+        return False
+
+    try:
+        with open(env_malmo_logger_path, "r", encoding="utf-8") as file:
+            content = file.read()
+    except OSError as exc:
+        logger.warning(f"Cannot read env_malmo_logger_path {env_malmo_logger_path}: {exc}")
+        return False
+
+    fatal_patterns = [
+        "OutOfMemoryError",
+        "Could not reserve enough space",
+        "The game crashed",
+        "Minecraft has crashed",
+    ]
+    if any(pattern in content for pattern in fatal_patterns):
+        return True
+
+    if "Exception" in content:
+        logger.warning(
+            f"Ignoring non-fatal Minecraft log exception in {env_malmo_logger_path}; "
+            "episode result/video will still be recorded."
+        )
+    else:
+        logger.info(f"normal! env_malmo_logger_path: {env_malmo_logger_path} exists.")
+    return False
 
 def call_planner_with_retry(
     cfg: DictConfig,
@@ -123,8 +174,8 @@ def retrieve_waypoints(
 
 def make_plan(
     original_final_goal: str,
-    inventory: dict,
-    action_memory: DecomposedMemory,
+    env_status: dict,
+    action_memory: CaseBasedMemory,
     waypoint_generator: OracleGraph,
     topK: int,
     cfg: DictConfig,
@@ -136,6 +187,7 @@ def make_plan(
     hydra_path: str,
     run_uuid: str,
 ):
+    inventory = env_status["inventory"]
     wp_list_str = retrieve_waypoints(waypoint_generator, original_final_goal, 1, inventory)
     logger.info(f"In make_plan")
     logger.info(f"wp_list_str: {wp_list_str}")
@@ -147,25 +199,56 @@ def make_plan(
 
     wp_num = int(first_wp_str.split('.')[1].split('need')[1].strip())
 
-    is_succeeded, sg_str = action_memory.is_succeeded_waypoint(wp)
+    state_snapshot = action_memory.create_state_snapshot(env_status, obs, cfg)
+    case_decision = action_memory.select_case_decision(
+        wp,
+        wp_num,
+        state_snapshot,
+        topK,
+        run_uuid,
+        original_final_goal,
+    )
 
     logger.info(f"In make_plan")
     logger.info(f"waypoint: {wp}, waypoint_num: {wp_num}")
-    logger.info(f"is_succeeded: {str(is_succeeded)}")
+    logger.info(f"case_decision: {str(case_decision is not None)}")
 
-    if is_succeeded:
-        subgoal, language_action_str, _ = render_subgoal(sg_str, wp_num)
-        return wp, subgoal, language_action_str, None
+    if case_decision is not None:
+        logger.info(f"Reuse case decision: {json.dumps(case_decision['decision_trace'])}")
+        return wp, case_decision["subgoal"], case_decision["language_action_str"], None
 
     else:
-        logger.info(f"No success experience for waypoint: {wp}, so, call planner to generate a plan.")
+        logger.info(f"No high-confidence case for waypoint: {wp}, so, call planner to generate a plan.")
 
-        similar_wp_sg_dict = action_memory.retrieve_similar_succeeded_waypoints(wp, topK)
+        similar_wp_sg_dict = action_memory.retrieve_similar_succeeded_waypoints(wp, topK, state_snapshot)
         failed_sg_list = action_memory.retrieve_failed_subgoals(wp) # could be empty list, i.e., []
 
         subgoal, language_action_str, error_message = call_planner_with_retry(
             cfg, obs, wp, wp_num, similar_wp_sg_dict, failed_sg_list, hydra_path, run_uuid, logger
         )
+        if error_message is None:
+            action_memory.record_decision(
+                waypoint=wp,
+                waypoint_num=wp_num,
+                state_snapshot=state_snapshot,
+                candidate_actions=[
+                    {
+                        "action": language_action_str,
+                        "source": "planner_selected",
+                    }
+                ],
+                selected_action=language_action_str,
+                selected_subgoal=subgoal,
+                selected_subgoal_str=json.dumps(subgoal),
+                decision_trace={
+                    "source": "planner",
+                    "confidence": None,
+                    "retrieved_examples": similar_wp_sg_dict,
+                    "failed_subgoals": failed_sg_list,
+                },
+                run_uuid=run_uuid,
+                original_final_goal=original_final_goal,
+            )
 
         return wp, subgoal, language_action_str, error_message
 
@@ -244,7 +327,7 @@ def new_agent_do(
     logger: logging.Logger,
     monitors: Monitors,
     reset_obs: Dict[str, Any],
-    action_memory: DecomposedMemory,
+    action_memory: CaseBasedMemory,
     original_task: str,
     original_final_goal: str,
     run_uuid: str
@@ -277,16 +360,8 @@ def new_agent_do(
     env_malmo_logger_port = env.instances[0]._target_port - 9000
     env_malmo_logger_path = os.path.join(hydra_path.split('logs')[0], 'logs', f'mc_{env_malmo_logger_port}.log')
 
-    if not os.path.exists(env_malmo_logger_path):
-        logger.error(f"env_malmo_logger_path: {env_malmo_logger_path} does not exist.")
+    if _malmo_log_has_fatal_error(env_malmo_logger_path, logger):
         return "env_malmo_logger_error", None, None, None, None
-    else:
-        with open(env_malmo_logger_path, 'r', encoding='utf-8') as file:
-            content = file.read()
-        if 'Exception' in content:
-            return "env_malmo_logger_error", None, None, None, None
-
-        logger.info(f"normal! env_malmo_logger_path: {env_malmo_logger_path} exists.")
 
     status = ""
     original_final_goal_success = False
@@ -327,10 +402,9 @@ def new_agent_do(
                     break
 
                 env_status = env.get_status()
-                inventory = env_status["inventory"]
                 waypoint, subgoal, language_action_str, error_message = make_plan(
                     original_final_goal,
-                    inventory,
+                    env_status,
                     action_memory,
                     waypoint_generator,
                     topK,
@@ -400,13 +474,7 @@ def new_agent_do(
                     env.can_open_inventory = False
                     env.can_change_hotbar = False
 
-                    if not os.path.exists(env_malmo_logger_path):
-                        logger.error(f"env_malmo_logger_path: {env_malmo_logger_path} does not exist.")
-                        return "env_malmo_logger_error", None, None, None, None
-
-                    with open(env_malmo_logger_path, 'r', encoding='utf-8') as file:
-                        content = file.read()
-                    if 'Exception' in content:
+                    if _malmo_log_has_fatal_error(env_malmo_logger_path, logger):
                         return "env_malmo_logger_error", None, None, None, None
 
                     fail_env_step = (env.num_steps >= int(cfg["env"]["max_minutes"])*MINUTE)
@@ -427,7 +495,13 @@ def new_agent_do(
                         continue
 
                     failed_waypoints.append(waypoint)
-                    action_memory.save_success_failure(waypoint, language_action_str, is_success=False)
+                    action_memory.save_success_failure(
+                        waypoint,
+                        language_action_str,
+                        is_success=False,
+                        outcome_status="failed",
+                        env_status=env.get_status(),
+                    )
                     subgoal = None
 
                     # NOTE: if a same waypoint is failed multiple times, then end this episode
@@ -490,13 +564,7 @@ def new_agent_do(
                             # })
 
                     if env.num_steps % (MINUTE * 3) == 0:
-                        if not os.path.exists(env_malmo_logger_path):
-                            logger.error(f"env_malmo_logger_path: {env_malmo_logger_path} does not exist.")
-                            return "env_malmo_logger_error", None, None, None, None
-
-                        with open(env_malmo_logger_path, 'r', encoding='utf-8') as file:
-                            content = file.read()
-                        if 'Exception' in content:
+                        if _malmo_log_has_fatal_error(env_malmo_logger_path, logger):
                             return "env_malmo_logger_error", None, None, None, None
 
                     if game_over:
@@ -522,7 +590,13 @@ def new_agent_do(
 
                 waypoint_success = env.check_waypoint_finish([waypoint, 1])
 
-                action_memory.save_success_failure(waypoint, language_action_str, is_success=waypoint_success)
+                action_memory.save_success_failure(
+                    waypoint,
+                    language_action_str,
+                    is_success=waypoint_success,
+                    outcome_status="success" if waypoint_success else "failed",
+                    env_status=env_status,
+                )
                 if waypoint_success:
                     logger.info(f"[green]Achieved waypoint {waypoint}[/green]")
                     completed_waypoints.append(waypoint)
@@ -532,18 +606,19 @@ def new_agent_do(
                 subgoal = None
 
 
-        if not os.path.exists(env_malmo_logger_path):
-            logger.error(f"env_malmo_logger_path: {env_malmo_logger_path} does not exist.")
-            return "env_malmo_logger_error", None, None, None, None
-
-        with open(env_malmo_logger_path, 'r', encoding='utf-8') as file:
-            content = file.read()
-        if 'Exception' in content:
+        if _malmo_log_has_fatal_error(env_malmo_logger_path, logger):
             return "env_malmo_logger_error", None, None, None, None
 
         # end of while loop. game is done.
         if not original_final_goal_success:
-            action_memory.save_success_failure(waypoint, language_action_str, is_success=False)
+            action_memory.save_success_failure(
+                waypoint,
+                language_action_str,
+                is_success=False,
+                outcome_status="failed",
+                env_status=env.get_status(),
+                create_if_missing=False,
+            )
 
         if env.api_thread is not None and env.api_thread_is_alive():
             env.api_thread.join()
@@ -608,7 +683,7 @@ def main(cfg: DictConfig):
 
     env = env_make(cfg["env"]["name"], cfg, logger)
 
-    action_memory = DecomposedMemory(cfg, logger)
+    action_memory = CaseBasedMemory(cfg, logger)
 
     if cfg["task"]["interactive"] and cfg["type"] != "headless":
         raise NotImplementedError("Not implemented yet!")
@@ -660,20 +735,40 @@ def main(cfg: DictConfig):
 
             current_monitos = Monitors([SuccessMonitor(), StepMonitor()])
 
+            try:
+                env.record_mod.step(obs, None, None)
+            except Exception as e:
+                logger.warning(f"Failed to record initial frame: {e}")
+
             # wandb.config.update({
             #     "is_fixed_memory": bool(is_fixed_memory),
             #     "biome": cfg["env"]["prefer_biome"],
             #     "prefix": prefix,
             # }, allow_val_change=True)
 
-            status, steps, completed_subgoals, failed_subgoals, failed_waypoints = new_agent_do(
-                cfg, env, logger, current_monitos, obs, action_memory, task, goal, run_uuid
-            )
+            completed_subgoals = []
+            failed_subgoals = []
+            failed_waypoints = []
+            try:
+                status, steps, completed_subgoals, failed_subgoals, failed_waypoints = new_agent_do(
+                    cfg, env, logger, current_monitos, obs, action_memory, task, goal, run_uuid
+                )
+            except Exception as e:
+                status = f"crash_{type(e).__name__}"
+                steps = getattr(env, "num_steps", current_monitos.all_steps())
+                completed_subgoals = []
+                failed_subgoals = [{"task": task, "goal": goal, "error": str(e)}]
+                failed_waypoints = []
+                logger.error(f"Experiment crashed and will be recorded as failure: {e}")
+                logger.error(traceback.format_exc())
 
             if status == "env_malmo_logger_error":
-                logger.error("env_malmo_logger_error")
-                # wandb.finish(exit_code=1)
-                sys.exit(1)
+                logger.error("env_malmo_logger_error; recording episode as failure instead of exiting")
+
+            steps = steps if steps is not None else getattr(env, "num_steps", current_monitos.all_steps())
+            completed_subgoals = completed_subgoals or []
+            failed_subgoals = failed_subgoals or []
+            failed_waypoints = failed_waypoints or []
 
             failed_waypoints = list(set(failed_waypoints))
             failed_waypoints.sort()
@@ -681,11 +776,17 @@ def main(cfg: DictConfig):
             done_final_task = completed_subgoals[-1]["task"] if len(completed_subgoals) > 0 else None
             biome = cfg["env"]["prefer_biome"]
 
-            video_file = env.save_video(task, status, is_sub_task=False,
-                                        actual_done_final_task=done_final_task, biome=biome, run_uuid=run_uuid)
-
             status_detailed = copy.deepcopy(status)
             status = "failed" if status != "success" else status
+            if status != "success":
+                action_memory.mark_pending_cases_failed(
+                    run_uuid,
+                    reason=status_detailed or "failed",
+                    env_status=env.get_status(),
+                )
+
+            video_file = env.save_video(_video_task_name(benchmark, task), status, is_sub_task=False,
+                                        actual_done_final_task=done_final_task, biome=biome, run_uuid=run_uuid)
 
             video_path = ""
             if video_file is not None:

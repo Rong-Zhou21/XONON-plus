@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "Sg39wS6349ZqkGbyfRemzQ",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "blast_furnace",
+      "video": "videos/v1/Iron_Craft_a_blast_furnace/plains/failed/2026_04_27_10_15_23__Sg39wS6349ZqkGbyfRemzQ.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 111
+    }
+  ]
+}
