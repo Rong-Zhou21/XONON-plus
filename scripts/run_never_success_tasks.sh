@@ -13,6 +13,7 @@ export QWEN_BACKEND=${QWEN_BACKEND:-vllm}
 export QWEN_VLLM_BASE_URL=${QWEN_VLLM_BASE_URL:-http://172.17.0.1:8000/v1}
 export QWEN_VLLM_MODEL=${QWEN_VLLM_MODEL:-Qwen/Qwen2.5-VL-7B-Instruct}
 export XENON_DISABLE_STUCK_KILL=${XENON_DISABLE_STUCK_KILL:-1}
+PYTHON_BIN=${PYTHON_BIN:-/home/yzb/.conda/envs/vllm_qwen2_5_vl/bin/python}
 
 summary=${1:-/tmp/xenon_plus_never_success_summary.log}
 max_attempts=${XENON_MAX_VALID_ATTEMPTS:-3}
@@ -33,7 +34,7 @@ run_task() {
     printf -- "---- category=%s benchmark=%s task=%s exp=%s attempt=%s start %s ----\n" \
       "$category" "$bench" "$task_id" "$run_exp" "$attempt" "$(date +%F_%H:%M:%S)" | tee -a "$summary"
 
-    xvfb-run -a python -u src/optimus1/main_planning.py \
+    xvfb-run -a "$PYTHON_BIN" -u src/optimus1/main_planning.py \
       server.port=9100 env.times=1 benchmark="$bench" \
       evaluate=["$task_id"] prefix=ours_planning exp_num="$run_exp" seed=0 world_seed="$task_id" \
       > "$log" 2>&1
