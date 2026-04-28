@@ -130,10 +130,6 @@ class TaskCheckerMod(Mod):
     # New checker focus on the state to be reached. The agent just needs to have 'number' of items.
     # This function is only used for "check_original_goal"
     def _new_check_number(self, inventory: Dict[str, Any], need_item: List[list]) -> bool:
-        print(f'In _new_check_number()')
-        print(f'inventory: {inventory}')
-        print(f'need_item: {need_item}')
-
         total = 0
         for [item_list, number] in need_item:
             s = 0

@@ -537,6 +537,11 @@ def new_agent_do(
                 while True:
                     env._only_once = True
 
+                    if env.consume_policy_reset_requested():
+                        logger.info("Resetting action server after detected respawn/control-state reset.")
+                        reset_thread = ServerAPI.reset(cfg["server"])
+                        reset_thread.join()
+
                     action = ServerAPI.get_action(
                         cfg["server"], obs, current_sg_prompt, step=env.num_steps,
                         hydra_path=hydra_path, run_uuid=run_uuid
@@ -821,6 +826,7 @@ def main(cfg: DictConfig):
                     video_path = ""
 
             current_planning = completed_subgoals + failed_subgoals
+            final_env_status = env.get_status()
             t = action_memory.save_plan(
                 task,
                 visual_info,
@@ -864,6 +870,9 @@ def main(cfg: DictConfig):
                 "all_subgoals": current_planning,
                 "all_plans": current_planning, # backward compatibility
                 "failed_waypoints": failed_waypoints,
+                "recovery_events": final_env_status.get("recovery_events", {}),
+                "resource_ledger": final_env_status.get("resource_ledger", {}),
+                "inventory_slots_used": final_env_status.get("inventory_slots_used"),
             }
 
             result_file_path = os.path.join(hydra_path, result_file_name)

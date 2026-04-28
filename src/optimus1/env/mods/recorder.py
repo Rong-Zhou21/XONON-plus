@@ -65,11 +65,11 @@ class RecorderMod(Mod):
         action: Dict[str, Any] | None = None,
     ):
         if self.export_video:
-            if prompt:
-                frame = create_video_frame(obs["pov"], prompt)
-                self.with_prompt = True
-            else:
-                frame = obs["pov"].astype(np.uint8)
+            # Keep every frame at the same resolution. Mixing raw POV frames
+            # with prompt-annotated frames corrupts some mp4 outputs because
+            # cv2.VideoWriter is opened with the first frame's dimensions.
+            frame = create_video_frame(obs["pov"], prompt or "")
+            self.with_prompt = True
             self.video_frames.append(frame)
             self.video_sub_task_frames.append(frame)
 
