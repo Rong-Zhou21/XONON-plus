@@ -136,15 +136,28 @@ env_step_timeout
 
 这类记录不进入正式能力统计，也不作为决策器训练的失败样本。
 
-### 4.2 旧 bug 结果 neutralize
+### 4.2 已识别 bug 的机制修复，而不是只屏蔽旧样本
 
-之前已经识别出一些旧结果不是智能体能力失败，而是 helper 或环境 bug，例如：
+这里需要强调：`superseded_bug` 或移出有效训练样本只是旧数据治理，不是主要解决方案。真正要做的是让同类问题在后续实验流程中不再被误判、误记或重复污染案例库。
 
-- smoker 已拿到 furnace 但合成失败
-- furnace/shears 等几秒钟无执行失败
-- 失败视频命名成上一个成功子任务
+目前已经做的机制修复包括：
 
-对应案例已被标记为 `superseded_bug` 或从有效训练样本中移除。
+1. smoker/furnace 相关 helper 问题
+   - 原问题：craft/smelt helper 在部分 recipe tag 和材料 stack 分散时会误判材料不足，导致已经具备前置材料但后续合成失败。
+   - 修复位置：`src/optimus1/helper/new_craft_helper.py`
+   - 修复内容：tag 材料不再只看单个 stack，而是统计多个匹配 inventory slot 的总量，并支持跨 stack 放置 shaped/shapeless recipe 材料。
+
+2. furnace/shears 等几秒钟无执行失败
+   - 原问题：MineRL/Malmo 偶发在很早阶段返回 step error 或 done，旧流程会把它当成普通失败。
+   - 修复位置：`src/optimus1/env/wrapper.py`、`src/optimus1/main_planning.py`、批量实验脚本。
+   - 修复内容：环境 step error 被分类为 `env_step_timeout`，不作为智能体能力失败；批量脚本遇到 `env_step_timeout` 或几秒钟 `logs` 早停会自动重试，直到拿到有效运行或达到重试上限。
+
+3. 失败视频命名成上一个成功子任务
+   - 原问题：失败时视频名取 `completed_subgoals[-1]`，导致 Iron 失败视频常被命名为 `craft_stone_pickaxe`。
+   - 修复位置：`src/optimus1/main_planning.py`
+   - 修复内容：失败时优先使用 `failed_subgoals[0]` 命名视频；只有成功时才使用最后完成的 subgoal。
+
+旧案例被标注或移除的目的，是防止历史错误继续进入后续决策器训练；但这不是替代修复，后续正式实验应以修复后的机制重新产生有效案例。
 
 ### 4.3 精确案例复用改进
 
@@ -187,19 +200,47 @@ src/optimus1/models/steve_action_model.py
 
 ### 6.1 prompt 切换时重置 STEVE-1 hidden state
 
-问题：
+STEVE-1 不是每一帧都独立决策的纯前馈模型。它的策略网络内部保留 recurrent hidden state，用来承接前几帧的动作上下文。例如前面几帧在靠近树、转视角、挥手，后面几帧会受到这个短期状态影响。
 
-STEVE-1 的 recurrent hidden state 过去只在服务 reset 时清空，subgoal 从 `chop a tree` 切到 `dig down and mine iron_ore` 时，动作惯性可能残留。
+原流程的问题是：
 
-修改：
+```text
+subgoal A: chop a tree
+        |
+        | STEVE-1 hidden state 持续积累“靠近树/跳跃/挥手/调整视角”的动作上下文
+        v
+subgoal B: dig down and mine iron_ore
+        |
+        | 只换文本 prompt，但 hidden state 没清空
+        v
+模型仍可能带着上一个 subgoal 的动作惯性输出短跳、短点击或无意义转向
+```
 
-当 language action prompt 改变时，重置 STEVE-1 hidden state。
+这不是简单的“模型偶尔乱动”，而是跨 subgoal 的状态污染。文本 prompt 已经换了，但 recurrent state 还带着上一个任务的动作历史，导致新任务开头的动作分布不干净。
 
-目的：
+XENON-plus 的修改是：
 
-- 减少无意义短跳
-- 减少短点击
-- 降低跨任务动作死循环
+```text
+if prompt != last_prompt:
+    reset STEVE-1 recurrent state
+    last_prompt = prompt
+```
+
+修复位置：
+
+```text
+src/optimus1/models/steve_action_model.py
+```
+
+这样每个新的 language action prompt 都从干净的策略状态开始。它解决的是“跨任务动作惯性”，不是人为禁止某个动作。智能体仍然可以跳、点击、转向，但这些动作必须来自当前 prompt 和当前视觉输入，而不是上一个 subgoal 残留的 hidden state。
+
+这个修改对三类现象有帮助：
+
+1. subgoal 切换后仍延续上一任务动作，例如砍树后进入挖矿仍短跳/挥手。
+2. context-aware reasoning 改写 prompt 后，新 prompt 初期动作受旧 prompt 干扰。
+3. 同一 episode 内多个 waypoint 串行执行时，后一个 waypoint 开头动作不稳定。
+
+它不能单独保证“永远不空跳”，因为模型本身可能在当前视觉输入下选择跳跃；所以后面又配合了 wrapper 层的 attack-hold、movement recovery 和 inventory ledger。hidden state reset 解决的是状态污染这一层问题。
 
 ### 6.2 当前 prompt 传入 wrapper
 
@@ -410,3 +451,9 @@ dig_down_and_mine_iron_ore
 2. 单独复查 Iron 中失败在 `logs` 的视频，判断是否是动作模型导航问题。
 3. 在 result JSON 中显式增加 `valid_for_analysis` 字段，避免以后“已执行”和“有效结果”混淆。
 4. 将 `resource_ledger` 的关键摘要写入实验结果 JSON，方便后续不打开完整 case memory 也能分析资源获取状态。
+
+补充更新：
+
+- `scripts/run_execution_logic_benchmarks.sh`、`scripts/run_remaining_benchmarks.sh` 和 `scripts/rerun_bug_affected_tasks.sh` 已加入或修正有效运行重试逻辑。
+- 默认最多重试 3 次，可通过 `XENON_MAX_VALID_ATTEMPTS` 调整。
+- 重试触发条件：`status_detailed == env_step_timeout`，或步数小于 300 且失败 waypoint 只有 `logs`。

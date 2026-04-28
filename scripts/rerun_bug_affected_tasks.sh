@@ -25,7 +25,7 @@ run_task_with_retry() {
   attempt=1
 
   while [ "$attempt" -le "$max_attempts" ]; do
-    run_exp=$((exp + attempt - 1))
+    run_exp=$((exp + (attempt - 1) * 10000))
     log="/tmp/xenon_plus_bugfix_${bench}_t${task_id}_exp${run_exp}_a${attempt}.log"
     printf -- "---- category=%s benchmark=%s task=%s exp=%s attempt=%s start %s ----\n" \
       "$category" "$bench" "$task_id" "$run_exp" "$attempt" "$(date +%F_%H:%M:%S)" | tee -a "$summary"

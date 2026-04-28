@@ -22,18 +22,23 @@ run_task() {
   bench="$2"
   task_id="$3"
   exp="$4"
-  log="/tmp/xenon_plus_exec_logic_${bench}_t${task_id}_exp${exp}.log"
+  max_attempts="${XENON_MAX_VALID_ATTEMPTS:-3}"
+  attempt=1
 
-  printf -- "---- category=%s benchmark=%s task=%s exp=%s start %s ----\n" \
-    "$category" "$bench" "$task_id" "$exp" "$(date +%F_%H:%M:%S)" | tee -a "$summary"
+  while [ "$attempt" -le "$max_attempts" ]; do
+    run_exp=$((exp + (attempt - 1) * 10000))
+    log="/tmp/xenon_plus_exec_logic_${bench}_t${task_id}_exp${run_exp}_a${attempt}.log"
 
-  xvfb-run -a python -u src/optimus1/main_planning.py \
-    server.port=9100 env.times=1 benchmark="$bench" \
-    evaluate=["$task_id"] prefix=ours_planning exp_num="$exp" seed=0 world_seed="$task_id" \
-    > "$log" 2>&1
-  rc=$?
+    printf -- "---- category=%s benchmark=%s task=%s exp=%s attempt=%s start %s ----\n" \
+      "$category" "$bench" "$task_id" "$run_exp" "$attempt" "$(date +%F_%H:%M:%S)" | tee -a "$summary"
 
-  python - "$bench" "$task_id" "$exp" "$rc" "$log" <<'PY' | tee -a "$summary"
+    xvfb-run -a python -u src/optimus1/main_planning.py \
+      server.port=9100 env.times=1 benchmark="$bench" \
+      evaluate=["$task_id"] prefix=ours_planning exp_num="$run_exp" seed=0 world_seed="$task_id" \
+      > "$log" 2>&1
+    rc=$?
+
+    decision=$(python - "$bench" "$task_id" "$run_exp" "$rc" "$log" <<'PY'
 import glob
 import json
 import os
@@ -47,6 +52,7 @@ if not files:
     print(f"result=NO_RESULT benchmark={bench} task_id={task_id} exp={exp}")
     print(f"log={log}")
     print()
+    print("retry=yes")
     raise SystemExit
 
 p = files[-1]
@@ -57,29 +63,43 @@ except Exception as exc:
     print(f"result=BAD_JSON file=/app/repo/{p} error={exc}")
     print(f"log={log}")
     print()
+    print("retry=yes")
     raise SystemExit
 
 video = data.get("video_file") or ""
+status = data.get("status_detailed")
+steps = int(data.get("steps") or 0)
+failed_waypoints = data.get("failed_waypoints") or []
 print(f"result_file=/app/repo/{p}")
 print(
     "task={task} success={success} status={status} steps={steps} minutes={minutes}".format(
         task=data.get("task"),
         success=data.get("success"),
-        status=data.get("status_detailed"),
-        steps=data.get("steps"),
+        status=status,
+        steps=steps,
         minutes=data.get("minutes"),
     )
 )
-print(f"failed_waypoints={data.get('failed_waypoints')}")
+print(f"failed_waypoints={failed_waypoints}")
 print(f"video={video}")
 print(f"video_exists={bool(video and os.path.exists(video))}")
 print(f"log={log}")
 print()
+infra_early_stop = status == "env_step_timeout" or (steps < 300 and failed_waypoints == ["logs"])
+print("retry=yes" if infra_early_stop else "retry=no")
 PY
+    )
+    printf "%s\n" "$decision" | tee -a "$summary"
 
-  printf -- "---- end category=%s benchmark=%s task=%s exp=%s end %s ----\n\n" \
-    "$category" "$bench" "$task_id" "$exp" "$(date +%F_%H:%M:%S)" >> "$summary"
-  sleep 3
+    printf -- "---- end category=%s benchmark=%s task=%s exp=%s attempt=%s end %s ----\n\n" \
+      "$category" "$bench" "$task_id" "$run_exp" "$attempt" "$(date +%F_%H:%M:%S)" >> "$summary"
+
+    if ! printf "%s\n" "$decision" | grep -q "retry=yes"; then
+      break
+    fi
+    attempt=$((attempt + 1))
+    sleep 3
+  done
 }
 
 # Iron tasks without a canonical success record after the previous uploaded batch.
