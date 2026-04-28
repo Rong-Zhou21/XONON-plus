@@ -1,7 +1,6 @@
 import logging
 import os
 import threading
-import uuid
 from typing import Any, Dict
 
 import numpy as np
@@ -9,7 +8,7 @@ from omegaconf import DictConfig
 
 from optimus1.util.thread import MultiThreadServerAPI
 from optimus1.util.utils import get_time, save_bin
-from optimus1.util.video import create_video_frame, save_frames_as_video, write_video
+from optimus1.util.video import write_video
 
 from .mod import Mod
 
@@ -65,11 +64,8 @@ class RecorderMod(Mod):
         action: Dict[str, Any] | None = None,
     ):
         if self.export_video:
-            # Keep every frame at the same resolution. Mixing raw POV frames
-            # with prompt-annotated frames corrupts some mp4 outputs because
-            # cv2.VideoWriter is opened with the first frame's dimensions.
-            frame = create_video_frame(obs["pov"], prompt or "")
-            self.with_prompt = True
+            frame = np.asarray(obs["pov"], dtype=np.uint8).copy()
+            self.with_prompt = False
             self.video_frames.append(frame)
             self.video_sub_task_frames.append(frame)
 
@@ -124,10 +120,7 @@ class RecorderMod(Mod):
                 if self.export_action:
                     save_bin(action_frames, output_action_filepath)
 
-                if self.with_prompt:
-                    save_frames_as_video(video_frames, output_video_filepath)
-                else:
-                    write_video(output_video_filepath, video_frames)
+                write_video(output_video_filepath, video_frames)
 
                 # if is_sub_task:
                 #     self.video_sub_task_frames = []

@@ -88,17 +88,26 @@ def create_video_frame(gameplay_pov, prompt):
 def write_video(
     file_name: str,
     frames: Union[List[np.ndarray], bytes],
-    width: int = 640,
-    height: int = 360,
+    width: int | None = None,
+    height: int | None = None,
     fps: int = FPS,
 ) -> None:
 
     """Write video frames to video files. """
+    if not frames:
+        return
+    first = np.asarray(frames[0], dtype=np.uint8)
+    inferred_height, inferred_width = first.shape[:2]
+    width = int(width or inferred_width)
+    height = int(height or inferred_height)
     with av.open(file_name, mode="w", format="mp4") as container:
         stream = container.add_stream("h264", rate=fps)
         stream.width = width
         stream.height = height
         for frame in frames:
+            frame = np.asarray(frame, dtype=np.uint8)
+            if frame.shape[1] != width or frame.shape[0] != height:
+                frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_LINEAR)
             frame = av.VideoFrame.from_ndarray(frame, format="rgb24")
             for packet in stream.encode(frame):
                 container.mux(packet)
