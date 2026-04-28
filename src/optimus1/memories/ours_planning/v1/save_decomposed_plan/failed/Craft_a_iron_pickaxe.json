@@ -166,6 +166,22 @@
       ],
       "status": "failed",
       "steps": 198
+    },
+    {
+      "id": "gBxJjJ8hGw8wcNfUbDQ28X",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_pickaxe",
+      "video": "videos/v1/Iron_Craft_a_iron_pickaxe/plains/failed/2026_04_28_09_25_15_Craft_a_iron_pickaxe_gBxJjJ8hGw8wcNfUbDQ28X.mp4",
+      "planning": [
+        {
+          "task": "Craft a iron pickaxe",
+          "goal": "iron_pickaxe",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12001
     }
   ]
 }

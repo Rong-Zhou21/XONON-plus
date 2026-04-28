@@ -239,6 +239,60 @@
       ],
       "status": "failed",
       "steps": 11997
+    },
+    {
+      "id": "YdzDPmD53AzXycbPFZvoRD",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_sword",
+      "video": "videos/v1/Iron_Craft_a_iron_sword/plains/failed/2026_04_28_09_41_57_chop_a_tree_YdzDPmD53AzXycbPFZvoRD.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 170
+    },
+    {
+      "id": "jGuRWCbFvBfbJewWFU7FfE",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_sword",
+      "video": "videos/v1/Iron_Craft_a_iron_sword/plains/failed/2026_04_28_09_47_10_chop_a_tree_jGuRWCbFvBfbJewWFU7FfE.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 159
+    },
+    {
+      "id": "PoGgC5N5PByDyxHfSv6QnW",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_sword",
+      "video": "videos/v1/Iron_Craft_a_iron_sword/plains/failed/2026_04_28_09_56_52_chop_a_tree_PoGgC5N5PByDyxHfSv6QnW.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }

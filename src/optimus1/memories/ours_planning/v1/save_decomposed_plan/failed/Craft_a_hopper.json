@@ -366,6 +366,24 @@
       ],
       "status": "failed",
       "steps": 203
+    },
+    {
+      "id": "VTYeaM4DmvQuAAVz7m8s2M",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/v1/Iron_Craft_a_hopper/plains/failed/2026_04_28_09_36_28_chop_a_tree_VTYeaM4DmvQuAAVz7m8s2M.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }
