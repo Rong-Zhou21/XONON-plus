@@ -13,7 +13,11 @@ export QWEN_BACKEND=${QWEN_BACKEND:-vllm}
 export QWEN_VLLM_BASE_URL=${QWEN_VLLM_BASE_URL:-http://172.17.0.1:8000/v1}
 export QWEN_VLLM_MODEL=${QWEN_VLLM_MODEL:-Qwen/Qwen2.5-VL-7B-Instruct}
 export XENON_DISABLE_STUCK_KILL=${XENON_DISABLE_STUCK_KILL:-1}
-PYTHON_BIN=${PYTHON_BIN:-/home/yzb/.conda/envs/vllm_qwen2_5_vl/bin/python}
+
+# Use the Python from the already prepared experiment environment. Do not
+# silently switch to another conda env, because MineRL/Malmo compatibility is
+# sensitive to the exact runtime used for previous successful runs.
+PYTHON_BIN=${PYTHON_BIN:-python}
 
 summary=${1:-/tmp/xenon_plus_never_success_summary.log}
 max_attempts=${XENON_MAX_VALID_ATTEMPTS:-3}
