@@ -1,0 +1,574 @@
+{
+  "run_uuid": "nEjPLWEHqAZ2HuyKBVEoTR",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "armor",
+  "task": "craft_diamond_chestplate",
+  "goal": "diamond_chestplate",
+  "exp_num": 10906,
+  "biome": "forest",
+  "is_fixed_memory": false,
+  "max_minutes": 20,
+  "success": false,
+  "status_detailed": "timeout_non_programmatic",
+  "infra_early_stop": false,
+  "video_file": "videos/v1/Armor_Craft_diamond_chestplate/forest/failed/2026_04_28_13_41_54_dig_down_and_mine_diamond_nEjPLWEHqAZ2HuyKBVEoTR.mp4",
+  "steps": 23858,
+  "minutes": 19.88,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 4072
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 145
+    },
+    "craft crafting_table_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 110
+    },
+    "craft wooden_pickaxe_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 420
+    },
+    "craft stick_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 93
+    },
+    "dig down and mine cobblestone_5": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 618
+    },
+    "craft stone_pickaxe_6": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 317
+    },
+    "craft furnace_7": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 367
+    },
+    "dig down and mine iron_ore_8": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 246
+    },
+    "smelt iron_ingot_9": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1984
+    },
+    "craft iron_pickaxe_10": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 958
+    },
+    "dig down and mine diamond_11": {
+      "SuccessMonitor": 0,
+      "StepMonitor": 14528
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        19
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        19
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [
+    {
+      "task": "dig down and mine diamond",
+      "goal": [
+        "diamond",
+        8
+      ]
+    }
+  ],
+  "remain_plans": [
+    {
+      "task": "dig down and mine diamond",
+      "goal": [
+        "diamond",
+        8
+      ]
+    }
+  ],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        19
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine diamond",
+      "goal": [
+        "diamond",
+        8
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        19
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine diamond",
+      "goal": [
+        "diamond",
+        8
+      ]
+    }
+  ],
+  "failed_waypoints": [
+    "diamond"
+  ],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 9,
+    "collect_drops": 10,
+    "movement_escape": 0,
+    "tunnel_recovery": 43,
+    "respawn_reset": 1,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "furnace": 1,
+      "crafting_table": 1,
+      "apple": 1,
+      "oak_planks": 11,
+      "oak_log": 3,
+      "dirt": 6,
+      "iron_pickaxe": 1,
+      "oak_sapling": 5,
+      "stone_pickaxe": 1,
+      "coal": 1,
+      "dandelion": 1,
+      "cobblestone": 44,
+      "iron_ore": 5,
+      "diorite": 7,
+      "wooden_pickaxe": 1,
+      "granite": 1,
+      "gold_ore": 3,
+      "redstone": 15,
+      "diamond": 5
+    },
+    "last_pickup_stats": {
+      "apple": 1,
+      "coal": 2,
+      "cobblestone": 55,
+      "crafting_table": 4,
+      "dandelion": 1,
+      "diamond": 5,
+      "diorite": 15,
+      "dirt": 6,
+      "furnace": 2,
+      "gold_ore": 3,
+      "granite": 1,
+      "iron_ore": 8,
+      "oak_log": 8,
+      "oak_sapling": 5,
+      "redstone": 15,
+      "stick": 2
+    },
+    "last_mine_block_stats": {
+      "birch_leaves": 2,
+      "birch_log": 1,
+      "coal_ore": 2,
+      "crafting_table": 4,
+      "diamond_ore": 5,
+      "diorite": 7,
+      "dirt": 4,
+      "furnace": 1,
+      "gold_ore": 3,
+      "granite": 1,
+      "grass": 1,
+      "grass_block": 2,
+      "iron_ore": 8,
+      "oak_leaves": 50,
+      "oak_log": 9,
+      "redstone_ore": 3,
+      "stone": 55
+    },
+    "max_inventory": {
+      "oak_log": 8,
+      "stick": 4,
+      "apple": 1,
+      "oak_planks": 20,
+      "crafting_table": 1,
+      "wooden_pickaxe": 1,
+      "dirt": 6,
+      "cobblestone": 44,
+      "diorite": 7,
+      "coal": 2,
+      "stone_pickaxe": 1,
+      "furnace": 1,
+      "iron_ore": 5,
+      "oak_sapling": 5,
+      "iron_ingot": 3,
+      "dandelion": 1,
+      "iron_pickaxe": 1,
+      "granite": 1,
+      "gold_ore": 3,
+      "redstone": 15,
+      "diamond": 5
+    },
+    "collected": {
+      "oak_log": 14,
+      "stick": 8,
+      "apple": 1,
+      "oak_planks": 60,
+      "crafting_table": 7,
+      "wooden_pickaxe": 4,
+      "dirt": 6,
+      "cobblestone": 63,
+      "diorite": 19,
+      "coal": 3,
+      "stone_pickaxe": 2,
+      "furnace": 4,
+      "iron_ore": 8,
+      "oak_sapling": 5,
+      "iron_ingot": 6,
+      "dandelion": 1,
+      "iron_pickaxe": 2,
+      "granite": 1,
+      "gold_ore": 3,
+      "redstone": 15,
+      "diamond": 5
+    },
+    "pickup": {
+      "oak_log": 8,
+      "stick": 2,
+      "apple": 1,
+      "crafting_table": 4,
+      "dirt": 6,
+      "cobblestone": 55,
+      "diorite": 15,
+      "coal": 2,
+      "iron_ore": 8,
+      "oak_sapling": 5,
+      "furnace": 2,
+      "dandelion": 1,
+      "granite": 1,
+      "gold_ore": 3,
+      "redstone": 15,
+      "diamond": 5
+    },
+    "mined_blocks": {
+      "oak_log": 9,
+      "grass": 1,
+      "oak_leaves": 50,
+      "birch_leaves": 2,
+      "birch_log": 1,
+      "crafting_table": 4,
+      "grass_block": 2,
+      "dirt": 4,
+      "stone": 55,
+      "diorite": 7,
+      "coal_ore": 2,
+      "iron_ore": 8,
+      "furnace": 1,
+      "granite": 1,
+      "gold_ore": 3,
+      "redstone_ore": 3,
+      "diamond_ore": 5
+    }
+  },
+  "inventory_slots_used": 19
+}

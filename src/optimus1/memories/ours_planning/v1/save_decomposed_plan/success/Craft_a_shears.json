@@ -1,0 +1,85 @@
+{
+  "plan": [
+    {
+      "id": "JLny3a3MPqECgaYnGCyTkh",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "shears",
+      "video": "videos/v1/Iron_Craft_a_shears/plains/success/2026_04_28_12_46_26_craft_shears_JLny3a3MPqECgaYnGCyTkh.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft shears",
+          "goal": [
+            "shears",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7665
+    }
+  ]
+}

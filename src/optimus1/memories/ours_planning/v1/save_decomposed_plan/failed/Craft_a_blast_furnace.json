@@ -158,6 +158,73 @@
       ],
       "status": "failed",
       "steps": 11954
+    },
+    {
+      "id": "mKsUm2CvrmiXdzCKs8LdrV",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "blast_furnace",
+      "video": "videos/v1/Iron_Craft_a_blast_furnace/plains/failed/2026_04_28_12_53_58_dig_down_and_mine_smooth_stone_mKsUm2CvrmiXdzCKs8LdrV.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            14
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "smelt stone",
+          "goal": [
+            "stone",
+            3
+          ]
+        },
+        {
+          "task": "dig down and mine smooth_stone",
+          "goal": [
+            "smooth_stone",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11953
     }
   ]
 }
