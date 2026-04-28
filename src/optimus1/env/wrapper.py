@@ -203,6 +203,8 @@ class CustomEnvWrapper(gym.Wrapper):
         self.cache["last_progress_step"] = 0
         self.cache["last_goal_progress_step"] = 0
         self.cache["last_target_block_step"] = 0
+        self.cache["last_surface_search_step"] = -1000000
+        self.cache["last_collect_drop_step"] = -1000000
         self.cache["position_window"] = deque(maxlen=120)
         self.cache["resource_ledger"] = {
             "last_inventory": {},
@@ -710,6 +712,10 @@ class CustomEnvWrapper(gym.Wrapper):
             return False
         if self._ledger_satisfies_goal(goal):
             return False
+        if self.num_steps - int(self.cache.get("last_collect_drop_step", -1000000)) < int(
+            os.environ.get("XENON_COLLECT_DROPS_COOLDOWN_TICKS", "180")
+        ):
+            return False
         pending = self._pending_relevant_drops(goal)
         if pending <= 0:
             return False
@@ -719,6 +725,10 @@ class CustomEnvWrapper(gym.Wrapper):
         if not self._is_surface_resource_acquisition(goal, prompt):
             return False
         if self._ledger_satisfies_goal(goal):
+            return False
+        if self.num_steps - int(self.cache.get("last_surface_search_step", -1000000)) < int(
+            os.environ.get("XENON_SURFACE_SEARCH_COOLDOWN_TICKS", "260")
+        ):
             return False
         return self._stale_goal_progress_ticks() >= int(os.environ.get("XENON_SURFACE_SEARCH_STALE_TICKS", "220"))
 
@@ -779,15 +789,15 @@ class CustomEnvWrapper(gym.Wrapper):
 
     def _surface_search_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
         self._control_state["surface_search_ticks"] -= 1
-        if self._control_state["surface_search_ticks"] % 24 == 0:
+        if self._control_state["surface_search_ticks"] % 60 == 0:
             self._control_state["escape_turn"] *= -1
 
         for key in ("attack", "use", "back", "left", "right", "sneak", "inventory", "drop"):
             self._set_button(action, key, 0)
         self._set_button(action, "forward", 1)
         self._set_button(action, "sprint", 1)
-        self._set_button(action, "jump", 1 if self._control_state["surface_search_ticks"] % 35 == 0 else 0)
-        action["camera"] = np.array([-2, 10 * self._control_state["escape_turn"]])
+        self._set_button(action, "jump", 1 if self._control_state["surface_search_ticks"] % 45 == 0 else 0)
+        action["camera"] = np.array([-1, 3 * self._control_state["escape_turn"]])
         return action
 
     def _tunnel_recovery_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
@@ -846,6 +856,8 @@ class CustomEnvWrapper(gym.Wrapper):
         ):
             self._control_state["collect_drop_ticks"] = int(os.environ.get("XENON_COLLECT_DROPS_TICKS", "45"))
             self._control_state["attack_hold"] = 0
+            self.cache["last_collect_drop_step"] = self.num_steps
+            self.cache["last_goal_progress_step"] = self.num_steps
             self._control_state["recovery_events"]["collect_drops"] += 1
             self.logger.info(
                 "Activating resource drop collection primitive: "
@@ -860,6 +872,8 @@ class CustomEnvWrapper(gym.Wrapper):
         ):
             self._control_state["surface_search_ticks"] = int(os.environ.get("XENON_SURFACE_SEARCH_TICKS", "90"))
             self._control_state["attack_hold"] = 0
+            self.cache["last_surface_search_step"] = self.num_steps
+            self.cache["last_goal_progress_step"] = self.num_steps
             self._control_state["recovery_events"]["surface_search"] += 1
             self.logger.info(
                 "Activating surface resource search primitive: "
