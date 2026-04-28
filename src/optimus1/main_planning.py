@@ -846,6 +846,7 @@ def main(cfg: DictConfig):
             logger.info(f"Summary: {current_monitos.get_metric()}")
 
             result_file_name = f"{prefix}_{task.replace(' ', '_').lower()}_{cfg['exp_num']:003}_{status}_{biome}_{run_uuid[:4]}.json"
+            infra_early_stop = status_detailed == "env_step_timeout" and int(steps or 0) < 300
             result_data = {
                 "run_uuid": run_uuid,
                 "seed": seed,
@@ -859,6 +860,7 @@ def main(cfg: DictConfig):
                 "max_minutes": cfg["env"]["max_minutes"],
                 "success": bool(status=="success"),
                 "status_detailed": status_detailed,
+                "infra_early_stop": infra_early_stop,
                 "video_file": video_path,
                 "steps": steps,
                 "minutes": round(steps / MINUTE, 2),

@@ -204,8 +204,12 @@ class CustomEnvWrapper(gym.Wrapper):
         self.cache["position_window"] = deque(maxlen=120)
         self.cache["resource_ledger"] = {
             "last_inventory": {},
+            "last_pickup_stats": {},
+            "last_mine_block_stats": {},
             "max_inventory": {},
             "collected": {},
+            "pickup": {},
+            "mined_blocks": {},
         }
 
         self._control_state = {
@@ -225,6 +229,8 @@ class CustomEnvWrapper(gym.Wrapper):
                 "tunnel_recovery": 0,
                 "respawn_reset": 0,
                 "checker_error": 0,
+                "inventory_cleanup": 0,
+                "inventory_cleanup_blocked": 0,
             },
         }
 
@@ -354,8 +360,12 @@ class CustomEnvWrapper(gym.Wrapper):
         if isinstance(value, np.generic):
             value = value.item()
         if isinstance(value, str):
-            return value
-        return str(value)
+            item_type = value
+        else:
+            item_type = str(value)
+        if ":" in item_type:
+            item_type = item_type.split(":")[-1]
+        return item_type
 
     def _plain_item_quantity(self, value: Any) -> int:
         try:
@@ -369,7 +379,48 @@ class CustomEnvWrapper(gym.Wrapper):
             except Exception:
                 return 0
 
-    def _record_resource_ledger(self) -> None:
+    def _stat_counts(self, value: Any) -> Dict[str, int]:
+        counts: Dict[str, int] = {}
+        if value is None:
+            return counts
+        if isinstance(value, dict):
+            for key, nested in value.items():
+                item_type = self._plain_item_type(key)
+                if isinstance(nested, dict):
+                    for nested_key, nested_value in self._stat_counts(nested).items():
+                        merged_key = nested_key if nested_key != "value" else item_type
+                        counts[merged_key] = counts.get(merged_key, 0) + nested_value
+                    continue
+                quantity = self._plain_item_quantity(nested)
+                if quantity > 0 and item_type not in ("air", "none", ""):
+                    counts[item_type] = counts.get(item_type, 0) + quantity
+            return counts
+        quantity = self._plain_item_quantity(value)
+        if quantity > 0:
+            counts["value"] = quantity
+        return counts
+
+    def _record_stat_deltas(
+        self,
+        ledger: Dict[str, Any],
+        current_key: str,
+        last_key: str,
+        total_key: str,
+        observation: Dict[str, Any],
+    ) -> None:
+        raw_stats = observation.get(current_key)
+        if raw_stats is None and isinstance(observation.get("stat"), dict):
+            raw_stats = observation["stat"].get(current_key)
+        current = self._stat_counts(raw_stats)
+        last = ledger.get(last_key, {})
+        totals = ledger.setdefault(total_key, {})
+        for item, quantity in current.items():
+            delta = int(quantity) - int(last.get(item, 0))
+            if delta > 0:
+                totals[item] = int(totals.get(item, 0)) + delta
+        ledger[last_key] = current
+
+    def _record_resource_ledger(self, observation: Dict[str, Any]) -> None:
         ledger = self.cache["resource_ledger"]
         current = self._inventory_counts(self.status_mod.inventory_with_slot)
         last = ledger["last_inventory"]
@@ -379,6 +430,8 @@ class CustomEnvWrapper(gym.Wrapper):
             if delta > 0:
                 ledger["collected"][item] = ledger["collected"].get(item, 0) + delta
         ledger["last_inventory"] = current
+        self._record_stat_deltas(ledger, "pickup", "last_pickup_stats", "pickup", observation)
+        self._record_stat_deltas(ledger, "mine_block", "last_mine_block_stats", "mined_blocks", observation)
 
     def _ledger_satisfies_goal(self, goal: tuple[str, int] | None) -> bool:
         if goal is None:
@@ -388,9 +441,11 @@ class CustomEnvWrapper(gym.Wrapper):
         ledger = self.cache.get("resource_ledger", {})
         max_inventory = ledger.get("max_inventory", {})
         collected = ledger.get("collected", {})
+        pickup = ledger.get("pickup", {})
         observed = sum(int(max_inventory.get(name, 0)) for name in expanded_items)
         gained = sum(int(collected.get(name, 0)) for name in expanded_items)
-        return observed >= int(number) or gained >= int(number)
+        picked_up = sum(int(pickup.get(name, 0)) for name in expanded_items)
+        return observed >= int(number) or gained >= int(number) or picked_up >= int(number)
 
     def _used_inventory_slots(self) -> int:
         used = 0
@@ -414,12 +469,8 @@ class CustomEnvWrapper(gym.Wrapper):
             "cobblestone",
             "stone",
             "smooth_stone",
-            "iron_ore",
             "iron_ingot",
-            "gold_ore",
             "gold_ingot",
-            "diamond",
-            "redstone",
         }
         protected.update(item for item in self.status_mod.inventory if item.endswith("_pickaxe"))
         protected.update(item for item in self.status_mod.inventory if item.endswith("_axe"))
@@ -445,12 +496,22 @@ class CustomEnvWrapper(gym.Wrapper):
             "fern",
             "sapling",
             "seeds",
+            "dead_bush",
+            "vine",
+            "lily_pad",
         )
         if any(token in item_type for token in low_value_tokens):
             return 0
-        if item_type in {"dirt", "gravel", "sand"}:
+        if item_type in {"dirt", "gravel", "sand", "clay", "flint", "rotten_flesh"}:
             return 1
+        if item_type in {"granite", "diorite", "andesite", "tuff", "deepslate", "netherrack"}:
+            return 2
         return None
+
+    def _inventory_pressure_threshold(self, goal: tuple[str, int] | None, prompt: str | None) -> int:
+        if self._is_resource_acquisition(goal, prompt):
+            return int(os.environ.get("XENON_RESOURCE_INVENTORY_PRESSURE_SLOTS", "28"))
+        return int(os.environ.get("XENON_INVENTORY_PRESSURE_SLOTS", "34"))
 
     def _maybe_cleanup_inventory(
         self,
@@ -458,10 +519,18 @@ class CustomEnvWrapper(gym.Wrapper):
         goal: tuple[str, int] | None,
         prompt: str | None,
     ) -> Dict[str, Any]:
-        pressure_threshold = int(os.environ.get("XENON_INVENTORY_PRESSURE_SLOTS", "34"))
-        if self._used_inventory_slots() < pressure_threshold:
+        used_slots = self._used_inventory_slots()
+        pressure_threshold = self._inventory_pressure_threshold(goal, prompt)
+        if used_slots < pressure_threshold:
             return action
-        if self._button_down(action, "attack") or self._control_state["escape_ticks"] > 0:
+        if self._control_state["escape_ticks"] > 0:
+            return action
+        severe_pressure = used_slots >= int(os.environ.get("XENON_SEVERE_INVENTORY_PRESSURE_SLOTS", "35"))
+        stale_resource = (
+            self._is_resource_acquisition(goal, prompt)
+            and self._stale_progress_ticks() >= int(os.environ.get("XENON_INVENTORY_CLEANUP_STALE_TICKS", "180"))
+        )
+        if self._button_down(action, "attack") and not (severe_pressure or stale_resource):
             return action
 
         protected = self._protected_items(goal, prompt)
@@ -478,21 +547,27 @@ class CustomEnvWrapper(gym.Wrapper):
             if slot > 8 or quantity <= 0 or item_type in protected:
                 continue
             priority = self._junk_priority(item_type)
+            if priority is None and (severe_pressure or stale_resource):
+                priority = 20
             if priority is not None:
                 candidates.append((priority, -quantity, slot, item_type))
 
         if not candidates:
+            self._control_state["recovery_events"]["inventory_cleanup_blocked"] += 1
             return action
 
         _, _, slot, item_type = sorted(candidates)[0]
+        self._control_state["attack_hold"] = 0
         for key in ("attack", "use", "jump", "forward", "back", "left", "right", "sprint", "sneak"):
             self._set_button(action, key, 0)
         for i in range(9):
             self._set_button(action, f"hotbar.{i+1}", 0)
         self._set_button(action, f"hotbar.{slot+1}", 1)
         self._set_button(action, "drop", 1)
+        self._control_state["recovery_events"]["inventory_cleanup"] += 1
         self.logger.info(
-            f"Dropping low-priority hotbar item under inventory pressure: slot={slot}, item={item_type}"
+            "Dropping non-waypoint hotbar item under inventory pressure: "
+            f"slot={slot}, item={item_type}, used_slots={used_slots}, goal={goal}"
         )
         return action
 
@@ -677,7 +752,7 @@ class CustomEnvWrapper(gym.Wrapper):
                 "Detected death/respawn transition; clearing low-level control state "
                 "and requesting STEVE-1 policy reset."
             )
-        self._record_resource_ledger()
+        self._record_resource_ledger(observation)
         if self.status_mod.inventory_change:
             self.cache["last_progress_step"] = self.num_steps
 

@@ -70,6 +70,8 @@ class CustomBaseEnvSpec(HumanSurvival):
             handlers.POVObservation(self.resolution),
             handlers.FlatInventoryObservation(ALL_ITEMS),
             PlainInventoryObservation(),
+            handlers.ObserveFromFullStats("pickup"),
+            handlers.ObserveFromFullStats("mine_block"),
         ] + [
             handlers.EquippedItemObservation(
                 items=ALL_ITEMS,
