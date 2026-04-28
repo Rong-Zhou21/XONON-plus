@@ -578,6 +578,23 @@ class CaseBasedMemory:
             self._rebuild_pending_index()
         return updated
 
+    def discard_pending_cases(self, run_uuid: str | None = None) -> int:
+        original_count = len(self.cases)
+        self.cases = [
+            case
+            for case in self.cases
+            if not (
+                case.get("outcome", {}).get("status") == "pending"
+                and (run_uuid is None or case.get("run_uuid") == run_uuid)
+            )
+        ]
+        removed = original_count - len(self.cases)
+        if removed:
+            self._rewrite_cases()
+            self._refresh_embeddings()
+            self._rebuild_pending_index()
+        return removed
+
     def is_succeeded_waypoint(self, waypoint: str):
         action_scores: Dict[str, int] = {}
         for case in self.cases:

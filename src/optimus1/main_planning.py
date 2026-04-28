@@ -807,13 +807,21 @@ def main(cfg: DictConfig):
             biome = cfg["env"]["prefer_biome"]
 
             status_detailed = copy.deepcopy(status)
+            infra_early_stop = status_detailed == "env_step_timeout" and int(steps or 0) < 300
             status = "failed" if status != "success" else status
             if status != "success":
-                action_memory.mark_pending_cases_failed(
-                    run_uuid,
-                    reason=status_detailed or "failed",
-                    env_status=env.get_status(),
-                )
+                if infra_early_stop:
+                    removed_cases = action_memory.discard_pending_cases(run_uuid)
+                    logger.warning(
+                        "Discarded pending cases from infrastructure early stop: "
+                        f"run_uuid={run_uuid}, removed_cases={removed_cases}, steps={steps}"
+                    )
+                else:
+                    action_memory.mark_pending_cases_failed(
+                        run_uuid,
+                        reason=status_detailed or "failed",
+                        env_status=env.get_status(),
+                    )
 
             video_file = env.save_video(_video_task_name(benchmark, task), status, is_sub_task=False,
                                         actual_done_final_task=done_final_task, biome=biome, run_uuid=run_uuid)
@@ -846,7 +854,6 @@ def main(cfg: DictConfig):
             logger.info(f"Summary: {current_monitos.get_metric()}")
 
             result_file_name = f"{prefix}_{task.replace(' ', '_').lower()}_{cfg['exp_num']:003}_{status}_{biome}_{run_uuid[:4]}.json"
-            infra_early_stop = status_detailed == "env_step_timeout" and int(steps or 0) < 300
             result_data = {
                 "run_uuid": run_uuid,
                 "seed": seed,

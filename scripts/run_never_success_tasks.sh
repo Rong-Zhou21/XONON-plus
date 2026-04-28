@@ -20,7 +20,7 @@ export XENON_DISABLE_STUCK_KILL=${XENON_DISABLE_STUCK_KILL:-1}
 PYTHON_BIN=${PYTHON_BIN:-python}
 
 summary=${1:-/tmp/xenon_plus_never_success_summary.log}
-max_attempts=${XENON_MAX_VALID_ATTEMPTS:-1}
+max_attempts=${XENON_MAX_VALID_ATTEMPTS:-3}
 task_cooldown_seconds=${XENON_TASK_COOLDOWN_SECONDS:-10}
 
 printf "=== XENON-plus never-success task rerun ===\nstart: %s\nrepo: %s\nmax_attempts: %s\ncooldown_seconds: %s\n" \
@@ -104,7 +104,7 @@ print(f"recovery_events={data.get('recovery_events')}")
 print(f"video={video}")
 print(f"video_exists={bool(video and os.path.exists(video))}")
 print(f"log={log}")
-infra_early_stop = status == "env_step_timeout" or (steps < 300 and failed_waypoints == ["logs"])
+infra_early_stop = (status == "env_step_timeout" and steps < 300) or (steps < 300 and failed_waypoints == ["logs"])
 print("retry=yes" if infra_early_stop else "retry=no")
 PY
     )
