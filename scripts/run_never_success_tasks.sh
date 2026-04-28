@@ -4,7 +4,7 @@ set -u
 repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repo_dir" || exit 1
 
-export PYTHONPATH="$repo_dir:$repo_dir/src:${PYTHONPATH:-}"
+export PYTHONPATH="$repo_dir:$repo_dir/src:$repo_dir/minerl:${PYTHONPATH:-}"
 export HF_HOME=${HF_HOME:-/app/LLM}
 export HF_ENDPOINT=${HF_ENDPOINT:-https://hf-mirror.com}
 export HF_HUB_OFFLINE=${HF_HUB_OFFLINE:-1}
