@@ -16,7 +16,11 @@ def save_frames_as_video(
     fx: float = 1.0,
     fy: float = 1.0,
 ) -> None:
-    """Save a list of frames as a video to savefile_path"""
+    """Save frames to an mp4 file.
+
+    cv2.VideoWriter expects BGR frames. Frames created by create_video_frame()
+    are already BGR because they are also shown through cv2.imshow().
+    """
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore
     first = cv2.resize(frames[0], None, fx=fx, fy=fy, interpolation=cv2.INTER_LINEAR)
     out = cv2.VideoWriter(savefile_path, fourcc, fps, (first.shape[1], first.shape[0]))
@@ -24,7 +28,6 @@ def save_frames_as_video(
         frame = np.uint8(frame)
         if to_bgr:
             frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)  # type: ignore
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         frame = cv2.resize(
             frame,
             None,
