@@ -20,15 +20,30 @@ export XENON_DISABLE_STUCK_KILL=${XENON_DISABLE_STUCK_KILL:-1}
 PYTHON_BIN=${PYTHON_BIN:-python}
 
 summary=${1:-/tmp/xenon_plus_never_success_summary.log}
-max_attempts=${XENON_MAX_VALID_ATTEMPTS:-3}
+max_attempts=${XENON_MAX_VALID_ATTEMPTS:-1}
+task_cooldown_seconds=${XENON_TASK_COOLDOWN_SECONDS:-10}
 
-printf "=== XENON-plus never-success task rerun ===\nstart: %s\nrepo: %s\n" "$(date)" "$repo_dir" > "$summary"
+printf "=== XENON-plus never-success task rerun ===\nstart: %s\nrepo: %s\nmax_attempts: %s\ncooldown_seconds: %s\n" \
+  "$(date)" "$repo_dir" "$max_attempts" "$task_cooldown_seconds" > "$summary"
+
+cleanup_env_between_tasks() {
+  if [ "${XENON_CLEAN_ENV_BETWEEN_TASKS:-1}" != "1" ]; then
+    sleep "$task_cooldown_seconds"
+    return
+  fi
+  printf "cleanup: stopping possible stale MineRL/Malmo/Xvfb processes, then sleeping %ss\n" \
+    "$task_cooldown_seconds" | tee -a "$summary"
+  pkill -f "java.*(GradleStart|Minecraft|Malmo)" 2>/dev/null || true
+  pkill -f "xvfb-run|Xvfb" 2>/dev/null || true
+  sleep "$task_cooldown_seconds"
+}
 
 run_task() {
   category="$1"
   bench="$2"
   task_id="$3"
   exp="$4"
+  max_minutes="$5"
   attempt=1
 
   while [ "$attempt" -le "$max_attempts" ]; do
@@ -39,7 +54,7 @@ run_task() {
       "$category" "$bench" "$task_id" "$run_exp" "$attempt" "$(date +%F_%H:%M:%S)" | tee -a "$summary"
 
     xvfb-run -a "$PYTHON_BIN" -u src/optimus1/main_planning.py \
-      server.port=9100 env.times=1 benchmark="$bench" \
+      server.port=9100 env.times=1 env.max_minutes="$max_minutes" benchmark="$bench" \
       evaluate=["$task_id"] prefix=ours_planning exp_num="$run_exp" seed=0 world_seed="$task_id" \
       > "$log" 2>&1
     rc=$?
@@ -102,22 +117,28 @@ PY
       break
     fi
     attempt=$((attempt + 1))
-    sleep 3
+    cleanup_env_between_tasks
   done
+  cleanup_env_between_tasks
 }
 
-run_task Gold golden 1 9101
-run_task Gold golden 2 9102
+run_task Iron iron 1 10601 10
+run_task Iron iron 5 10605 10
+run_task Iron iron 7 10607 10
+run_task Iron iron 8 10608 10
+run_task Iron iron 14 10614 10
 
-run_task Diamond diamond 4 9204
-run_task Diamond diamond 5 9205
-run_task Diamond diamond 6 9206
+run_task Diamond diamond 6 10706 20
 
-run_task Iron iron 1 9301
-run_task Iron iron 5 9305
-run_task Iron iron 7 9307
-run_task Iron iron 8 9308
-run_task Iron iron 10 9310
-run_task Iron iron 14 9314
+run_task Redstone redstone 0 10800 20
+run_task Redstone redstone 5 10805 20
+
+run_task Armor armor 5 10905 20
+run_task Armor armor 6 10906 20
+run_task Armor armor 7 10907 20
+run_task Armor armor 8 10908 20
+run_task Armor armor 10 10910 20
+run_task Armor armor 11 10911 20
+run_task Armor armor 12 10912 20
 
 printf "end: %s\n" "$(date)" | tee -a "$summary"
