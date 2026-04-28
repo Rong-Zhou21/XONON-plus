@@ -182,6 +182,24 @@
       ],
       "status": "failed",
       "steps": 12001
+    },
+    {
+      "id": "8UDQD6EEyPekS4EMAzLtyg",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_pickaxe",
+      "video": "videos/v1/Iron_Craft_a_iron_pickaxe/plains/failed/2026_04_28_11_22_40_chop_a_tree_8UDQD6EEyPekS4EMAzLtyg.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }

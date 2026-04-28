@@ -271,6 +271,38 @@ class CustomEnvWrapper(gym.Wrapper):
     def _button_down(self, action: Dict[str, Any], key: str) -> bool:
         return self._action_scalar(action, key) > 0
 
+    def _action_fingerprint(self, action: Dict[str, Any]) -> Dict[str, Any]:
+        keys = ("attack", "use", "jump", "forward", "back", "left", "right", "sprint", "sneak", "drop", "inventory")
+        data = {key: int(self._button_down(action, key)) for key in keys}
+        camera = action.get("camera")
+        try:
+            data["camera"] = np.asarray(camera).reshape(-1).astype(float).round(3).tolist()
+        except Exception:
+            data["camera"] = []
+        return data
+
+    def _maybe_log_action_debug(
+        self,
+        stage: str,
+        before: Dict[str, Any],
+        after: Dict[str, Any],
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> None:
+        if os.environ.get("XENON_ACTION_DEBUG", "0") != "1":
+            return
+        before_fp = self._action_fingerprint(before)
+        after_fp = self._action_fingerprint(after)
+        interval = int(os.environ.get("XENON_ACTION_DEBUG_INTERVAL", "200"))
+        changed = before_fp != after_fp
+        if not changed and interval > 0 and self.num_steps % interval != 0:
+            return
+        self.logger.info(
+            "Action debug: "
+            f"stage={stage}, step={self.num_steps}, prompt={prompt}, goal={goal}, "
+            f"before={before_fp}, after={after_fp}"
+        )
+
     def _normalise_action(self, action: Dict[str, Any] | List[Dict[str, Any]]) -> Dict[str, Any]:
         if isinstance(action, list):
             if not action:
@@ -287,6 +319,13 @@ class CustomEnvWrapper(gym.Wrapper):
     def _is_resource_acquisition(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
         text = self._prompt_text(goal, prompt)
         return any(token in text for token in ("mine", "dig", "break", "chop", "punch"))
+
+    def _is_tunnel_resource_acquisition(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        text = self._prompt_text(goal, prompt)
+        surface_tokens = ("chop", "punch", "tree", "log", "logs", "wood")
+        if any(token in text for token in surface_tokens):
+            return False
+        return any(token in text for token in ("mine", "dig", "ore", "cobblestone", "stone", "diamond", "redstone"))
 
     def _attack_hold_ticks(self, goal: tuple[str, int] | None, prompt: str | None) -> int:
         text = self._prompt_text(goal, prompt)
@@ -591,7 +630,7 @@ class CustomEnvWrapper(gym.Wrapper):
         return self._current_air() < int(os.environ.get("XENON_LOW_AIR_THRESHOLD", "280"))
 
     def _should_movement_escape(self, action: Dict[str, Any], goal: tuple[str, int] | None, prompt: str | None) -> bool:
-        if self._is_resource_acquisition(goal, prompt):
+        if self._is_tunnel_resource_acquisition(goal, prompt):
             return False
         if self._movement_intent(action) and self._stagnant_motion() and not self._button_down(action, "attack"):
             self._control_state["movement_stagnant_ticks"] += 1
@@ -604,7 +643,7 @@ class CustomEnvWrapper(gym.Wrapper):
         )
 
     def _should_tunnel_recovery(self, action: Dict[str, Any], goal: tuple[str, int] | None, prompt: str | None) -> bool:
-        if not self._is_resource_acquisition(goal, prompt):
+        if not self._is_tunnel_resource_acquisition(goal, prompt):
             self._control_state["resource_stagnant_ticks"] = 0
             return False
         if self._stagnant_motion() and self._stale_progress_ticks() >= int(
@@ -650,6 +689,7 @@ class CustomEnvWrapper(gym.Wrapper):
         prompt: str | None = None,
     ) -> Dict[str, Any]:
         action = self._normalise_action(action)
+        original_action = copy.deepcopy(action)
         if prompt != self._control_state.get("last_prompt"):
             self._control_state["attack_hold"] = 0
             self._control_state["movement_stagnant_ticks"] = 0
@@ -686,9 +726,13 @@ class CustomEnvWrapper(gym.Wrapper):
             )
 
         if self._control_state["escape_ticks"] > 0:
-            return self._escape_action(action)
+            action = self._escape_action(action)
+            self._maybe_log_action_debug("stabilize_escape", original_action, action, goal, prompt)
+            return action
         if self._control_state["tunnel_recovery_ticks"] > 0:
-            return self._tunnel_recovery_action(action)
+            action = self._tunnel_recovery_action(action)
+            self._maybe_log_action_debug("stabilize_tunnel", original_action, action, goal, prompt)
+            return action
 
         original_attack = self._button_down(action, "attack")
         if original_attack and self._is_resource_acquisition(goal, prompt):
@@ -711,6 +755,7 @@ class CustomEnvWrapper(gym.Wrapper):
             for key in ("jump", "left", "right", "sprint", "sneak"):
                 self._set_button(action, key, 0)
 
+        self._maybe_log_action_debug("stabilize", original_action, action, goal, prompt)
         return action
 
     def _record_step_state(self, observation: Dict[str, Any]) -> None:
@@ -815,7 +860,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self.task_checker_mod.reset(observation["inventory"])
             self.cache["task"] = goal[0]
 
-        self.record_mod.step(observation, prompt, action)
+        self.record_mod.step(observation, None, action)
         self.status_mod.step(observation, action, self.num_steps)
         self._record_step_state(observation)
 

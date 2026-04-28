@@ -2,7 +2,6 @@ from typing import List, Union
 
 import cv2
 import numpy as np
-import av
 
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 FPS = 20
@@ -21,9 +20,13 @@ def save_frames_as_video(
     cv2.VideoWriter expects BGR frames. Frames created by create_video_frame()
     are already BGR because they are also shown through cv2.imshow().
     """
+    if not frames:
+        return
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore
     first = cv2.resize(frames[0], None, fx=fx, fy=fy, interpolation=cv2.INTER_LINEAR)
     out = cv2.VideoWriter(savefile_path, fourcc, fps, (first.shape[1], first.shape[0]))
+    if not out.isOpened():
+        raise RuntimeError(f"Failed to open video writer: {savefile_path}")
     for frame in frames:
         frame = np.uint8(frame)
         if to_bgr:
@@ -100,16 +103,23 @@ def write_video(
     inferred_height, inferred_width = first.shape[:2]
     width = int(width or inferred_width)
     height = int(height or inferred_height)
-    with av.open(file_name, mode="w", format="mp4") as container:
-        stream = container.add_stream("h264", rate=fps)
-        stream.width = width
-        stream.height = height
-        for frame in frames:
-            frame = np.asarray(frame, dtype=np.uint8)
-            if frame.shape[1] != width or frame.shape[0] != height:
-                frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_LINEAR)
-            frame = av.VideoFrame.from_ndarray(frame, format="rgb24")
-            for packet in stream.encode(frame):
-                container.mux(packet)
-        for packet in stream.encode():
-            container.mux(packet)
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore
+    out = cv2.VideoWriter(file_name, fourcc, fps, (width, height))
+    if not out.isOpened():
+        raise RuntimeError(f"Failed to open video writer: {file_name}")
+    for frame in frames:
+        frame = np.asarray(frame, dtype=np.uint8)
+        if frame.shape[1] != width or frame.shape[0] != height:
+            frame = cv2.resize(frame, (width, height), interpolation=cv2.INTER_LINEAR)
+        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        out.write(frame)
+    out.release()
+
+
+def count_video_frames(file_name: str) -> int:
+    cap = cv2.VideoCapture(file_name)
+    if not cap.isOpened():
+        return -1
+    count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+    cap.release()
+    return count
