@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "8EfetKCbhTpW5QGibiuqYi",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_boots",
+      "video": "videos/v1/Armor_Craft_diamond_boots/forest/failed/2026_04_28_06_29_49_chop_a_tree_8EfetKCbhTpW5QGibiuqYi.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 179
+    }
+  ]
+}

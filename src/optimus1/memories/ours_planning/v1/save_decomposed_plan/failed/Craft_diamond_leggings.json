@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "QcNqRzfjmmzCjErYaJsEXA",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_leggings",
+      "video": "videos/v1/Armor_Craft_diamond_leggings/forest/failed/2026_04_28_06_24_47_chop_a_tree_QcNqRzfjmmzCjErYaJsEXA.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 184
+    }
+  ]
+}

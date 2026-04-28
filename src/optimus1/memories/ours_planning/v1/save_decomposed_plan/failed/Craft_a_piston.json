@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "g42uBijFSYHXcjdrDjgFxy",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "piston",
+      "video": "videos/v1/Redstone_Craft_a_piston/forest/failed/2026_04_28_05_10_01_chop_a_tree_g42uBijFSYHXcjdrDjgFxy.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 185
+    }
+  ]
+}

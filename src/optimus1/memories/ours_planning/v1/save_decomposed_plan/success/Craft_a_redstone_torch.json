@@ -1,0 +1,106 @@
+{
+  "plan": [
+    {
+      "id": "kFSZpeCmnvTLnFJSXNBso3",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "redstone_torch",
+      "video": "videos/v1/Redstone_Craft_a_redstone_torch/forest/success/2026_04_28_05_13_27_craft_redstone_torch_kFSZpeCmnvTLnFJSXNBso3.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            7
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine redstone",
+          "goal": [
+            "redstone",
+            1
+          ]
+        },
+        {
+          "task": "craft redstone_torch",
+          "goal": [
+            "redstone_torch",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5838
+    }
+  ]
+}

@@ -1,0 +1,127 @@
+{
+  "plan": [
+    {
+      "id": "nzi3pSQ76LbVNgodEYmNo7",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "activator_rail",
+      "video": "videos/v1/Redstone_Craft_an_activator_rail/forest/success/2026_04_28_05_16_48_craft_activator_rail_nzi3pSQ76LbVNgodEYmNo7.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            29
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            9
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            5
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            9
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            9
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine redstone",
+          "goal": [
+            "redstone",
+            1
+          ]
+        },
+        {
+          "task": "craft redstone_torch",
+          "goal": [
+            "redstone_torch",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft activator_rail",
+          "goal": [
+            "activator_rail",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7803
+    }
+  ]
+}

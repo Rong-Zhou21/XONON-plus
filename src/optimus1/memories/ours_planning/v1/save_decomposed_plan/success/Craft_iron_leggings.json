@@ -1,0 +1,92 @@
+{
+  "plan": [
+    {
+      "id": "9mpecNRzuFPyHuXt2XEKwj",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_leggings",
+      "video": "videos/v1/Armor_Craft_iron_leggings/forest/success/2026_04_28_05_53_51_craft_iron_leggings_9mpecNRzuFPyHuXt2XEKwj.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            7
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            7
+          ]
+        },
+        {
+          "task": "craft iron_leggings",
+          "goal": [
+            "iron_leggings",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5321
+    }
+  ]
+}

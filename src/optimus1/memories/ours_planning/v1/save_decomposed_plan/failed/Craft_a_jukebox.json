@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "JbNvDxdhhXmiNaMDepK5hw",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "jukebox",
+      "video": "videos/v1/Diamond_Craft_a_jukebox/forest/failed/2026_04_28_04_16_10_chop_a_tree_JbNvDxdhhXmiNaMDepK5hw.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 161
+    }
+  ]
+}
