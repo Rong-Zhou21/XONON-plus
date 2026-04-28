@@ -45,6 +45,11 @@ def created_fitted_text_image(
     height_padding=20,
 ):
     """Create an image with text fitted to the desired width."""
+    if not text:
+        image = np.zeros((2 * height_padding + 16, desired_width, 3), dtype=np.uint8)
+        image[:] = background_color
+        return image
+
     font_scale = 0.1
     text_size, _ = cv2.getTextSize(text, FONT, font_scale, thickness)
     text_width, _ = text_size
