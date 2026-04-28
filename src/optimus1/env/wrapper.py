@@ -201,6 +201,8 @@ class CustomEnvWrapper(gym.Wrapper):
         self.cache["ypos"] = {}
         self.cache["last_life_stats"] = {}
         self.cache["last_progress_step"] = 0
+        self.cache["last_goal_progress_step"] = 0
+        self.cache["last_target_block_step"] = 0
         self.cache["position_window"] = deque(maxlen=120)
         self.cache["resource_ledger"] = {
             "last_inventory": {},
@@ -217,6 +219,8 @@ class CustomEnvWrapper(gym.Wrapper):
             "escape_ticks": 0,
             "escape_turn": 1,
             "tunnel_recovery_ticks": 0,
+            "surface_search_ticks": 0,
+            "collect_drop_ticks": 0,
             "resource_stagnant_ticks": 0,
             "movement_stagnant_ticks": 0,
             "last_prompt": None,
@@ -225,6 +229,8 @@ class CustomEnvWrapper(gym.Wrapper):
             "policy_reset_requested": False,
             "recovery_events": {
                 "surface_escape": 0,
+                "surface_search": 0,
+                "collect_drops": 0,
                 "movement_escape": 0,
                 "tunnel_recovery": 0,
                 "respawn_reset": 0,
@@ -319,6 +325,10 @@ class CustomEnvWrapper(gym.Wrapper):
     def _is_resource_acquisition(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
         text = self._prompt_text(goal, prompt)
         return any(token in text for token in ("mine", "dig", "break", "chop", "punch"))
+
+    def _is_surface_resource_acquisition(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        text = self._prompt_text(goal, prompt)
+        return any(token in text for token in ("chop", "punch", "tree", "log", "logs", "wood"))
 
     def _is_tunnel_resource_acquisition(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
         text = self._prompt_text(goal, prompt)
@@ -418,6 +428,45 @@ class CustomEnvWrapper(gym.Wrapper):
             except Exception:
                 return 0
 
+    def _goal_item_names(self, goal: tuple[str, int] | None) -> List[str]:
+        if goal is None:
+            return []
+        try:
+            return list(self.task_checker_mod._expand_item(str(goal[0])))
+        except Exception:
+            return [str(goal[0])]
+
+    def _goal_quantity(self, goal: tuple[str, int] | None) -> int:
+        if goal is None:
+            return 0
+        try:
+            return int(goal[1])
+        except Exception:
+            return 1
+
+    def _items_total(self, counts: Dict[str, Any], items: List[str]) -> int:
+        return sum(int(counts.get(name, 0)) for name in items)
+
+    def _relevant_inventory_delta(
+        self,
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> Dict[str, int]:
+        if not self.status_mod.inventory_change:
+            return {}
+        diff = self.status_mod.inventory_change_what()
+        if not diff:
+            return {}
+        if goal is None:
+            return {item: int(quantity) for item, quantity in diff.items() if int(quantity) > 0}
+
+        goal_items = set(self._goal_item_names(goal))
+        relevant: Dict[str, int] = {}
+        for item, quantity in diff.items():
+            if item in goal_items:
+                relevant[item] = int(quantity)
+        return relevant
+
     def _stat_counts(self, value: Any) -> Dict[str, int]:
         counts: Dict[str, int] = {}
         if value is None:
@@ -446,44 +495,54 @@ class CustomEnvWrapper(gym.Wrapper):
         last_key: str,
         total_key: str,
         observation: Dict[str, Any],
-    ) -> None:
+    ) -> Dict[str, int]:
         raw_stats = observation.get(current_key)
         if raw_stats is None and isinstance(observation.get("stat"), dict):
             raw_stats = observation["stat"].get(current_key)
         current = self._stat_counts(raw_stats)
         last = ledger.get(last_key, {})
         totals = ledger.setdefault(total_key, {})
+        deltas: Dict[str, int] = {}
         for item, quantity in current.items():
             delta = int(quantity) - int(last.get(item, 0))
             if delta > 0:
                 totals[item] = int(totals.get(item, 0)) + delta
+                deltas[item] = delta
         ledger[last_key] = current
+        return deltas
 
-    def _record_resource_ledger(self, observation: Dict[str, Any]) -> None:
+    def _record_resource_ledger(self, observation: Dict[str, Any]) -> Dict[str, Dict[str, int]]:
         ledger = self.cache["resource_ledger"]
         current = self._inventory_counts(self.status_mod.inventory_with_slot)
         last = ledger["last_inventory"]
+        inventory_delta: Dict[str, int] = {}
         for item, quantity in current.items():
             ledger["max_inventory"][item] = max(ledger["max_inventory"].get(item, 0), quantity)
             delta = quantity - int(last.get(item, 0))
             if delta > 0:
                 ledger["collected"][item] = ledger["collected"].get(item, 0) + delta
+                inventory_delta[item] = delta
         ledger["last_inventory"] = current
-        self._record_stat_deltas(ledger, "pickup", "last_pickup_stats", "pickup", observation)
-        self._record_stat_deltas(ledger, "mine_block", "last_mine_block_stats", "mined_blocks", observation)
+        pickup_delta = self._record_stat_deltas(ledger, "pickup", "last_pickup_stats", "pickup", observation)
+        mine_delta = self._record_stat_deltas(ledger, "mine_block", "last_mine_block_stats", "mined_blocks", observation)
+        return {
+            "inventory": inventory_delta,
+            "pickup": pickup_delta,
+            "mine_block": mine_delta,
+        }
 
     def _ledger_satisfies_goal(self, goal: tuple[str, int] | None) -> bool:
         if goal is None:
             return False
-        item, number = goal
-        expanded_items = self.task_checker_mod._expand_item(str(item))
+        expanded_items = self._goal_item_names(goal)
+        number = self._goal_quantity(goal)
         ledger = self.cache.get("resource_ledger", {})
         max_inventory = ledger.get("max_inventory", {})
         collected = ledger.get("collected", {})
         pickup = ledger.get("pickup", {})
-        observed = sum(int(max_inventory.get(name, 0)) for name in expanded_items)
-        gained = sum(int(collected.get(name, 0)) for name in expanded_items)
-        picked_up = sum(int(pickup.get(name, 0)) for name in expanded_items)
+        observed = self._items_total(max_inventory, expanded_items)
+        gained = self._items_total(collected, expanded_items)
+        picked_up = self._items_total(pickup, expanded_items)
         return observed >= int(number) or gained >= int(number) or picked_up >= int(number)
 
     def _used_inventory_slots(self) -> int:
@@ -626,6 +685,43 @@ class CustomEnvWrapper(gym.Wrapper):
     def _stale_progress_ticks(self) -> int:
         return self.num_steps - int(self.cache.get("last_progress_step", 0))
 
+    def _stale_goal_progress_ticks(self) -> int:
+        return self.num_steps - int(self.cache.get("last_goal_progress_step", 0))
+
+    def _relevant_delta_total(self, deltas: Dict[str, int], goal: tuple[str, int] | None) -> int:
+        goal_items = self._goal_item_names(goal)
+        return self._items_total(deltas, goal_items)
+
+    def _pending_relevant_drops(self, goal: tuple[str, int] | None) -> int:
+        goal_items = self._goal_item_names(goal)
+        if not goal_items:
+            return 0
+        ledger = self.cache.get("resource_ledger", {})
+        mined = self._items_total(ledger.get("mined_blocks", {}), goal_items)
+        observed = max(
+            self._items_total(ledger.get("max_inventory", {}), goal_items),
+            self._items_total(ledger.get("pickup", {}), goal_items),
+            self._items_total(ledger.get("collected", {}), goal_items),
+        )
+        return max(0, mined - observed)
+
+    def _should_collect_drops(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        if goal is None or not self._is_resource_acquisition(goal, prompt):
+            return False
+        if self._ledger_satisfies_goal(goal):
+            return False
+        pending = self._pending_relevant_drops(goal)
+        if pending <= 0:
+            return False
+        return self._stale_goal_progress_ticks() >= int(os.environ.get("XENON_COLLECT_DROPS_STALE_TICKS", "70"))
+
+    def _should_surface_search(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        if not self._is_surface_resource_acquisition(goal, prompt):
+            return False
+        if self._ledger_satisfies_goal(goal):
+            return False
+        return self._stale_goal_progress_ticks() >= int(os.environ.get("XENON_SURFACE_SEARCH_STALE_TICKS", "220"))
+
     def _should_surface_escape(self) -> bool:
         return self._current_air() < int(os.environ.get("XENON_LOW_AIR_THRESHOLD", "280"))
 
@@ -668,6 +764,32 @@ class CustomEnvWrapper(gym.Wrapper):
         action["camera"] = np.array([-8, 10 * self._control_state["escape_turn"]])
         return action
 
+    def _collect_drop_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
+        self._control_state["collect_drop_ticks"] -= 1
+        if self._control_state["collect_drop_ticks"] % 12 == 0:
+            self._control_state["escape_turn"] *= -1
+
+        for key in ("attack", "use", "back", "left", "right", "sneak", "inventory", "drop"):
+            self._set_button(action, key, 0)
+        self._set_button(action, "forward", 1)
+        self._set_button(action, "sprint", 1)
+        self._set_button(action, "jump", 1 if self._control_state["collect_drop_ticks"] % 18 == 0 else 0)
+        action["camera"] = np.array([4, 6 * self._control_state["escape_turn"]])
+        return action
+
+    def _surface_search_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
+        self._control_state["surface_search_ticks"] -= 1
+        if self._control_state["surface_search_ticks"] % 24 == 0:
+            self._control_state["escape_turn"] *= -1
+
+        for key in ("attack", "use", "back", "left", "right", "sneak", "inventory", "drop"):
+            self._set_button(action, key, 0)
+        self._set_button(action, "forward", 1)
+        self._set_button(action, "sprint", 1)
+        self._set_button(action, "jump", 1 if self._control_state["surface_search_ticks"] % 35 == 0 else 0)
+        action["camera"] = np.array([-2, 10 * self._control_state["escape_turn"]])
+        return action
+
     def _tunnel_recovery_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
         self._control_state["tunnel_recovery_ticks"] -= 1
         if self._control_state["tunnel_recovery_ticks"] % 20 == 0:
@@ -695,7 +817,11 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["movement_stagnant_ticks"] = 0
             self._control_state["resource_stagnant_ticks"] = 0
             self._control_state["tunnel_recovery_ticks"] = 0
+            self._control_state["surface_search_ticks"] = 0
+            self._control_state["collect_drop_ticks"] = 0
             self._control_state["last_prompt"] = prompt
+            self.cache["last_progress_step"] = self.num_steps
+            self.cache["last_goal_progress_step"] = self.num_steps
 
         if self._control_state["escape_ticks"] <= 0 and self._should_surface_escape():
             self._control_state["escape_ticks"] = int(os.environ.get("XENON_ESCAPE_TICKS", "80"))
@@ -714,6 +840,33 @@ class CustomEnvWrapper(gym.Wrapper):
             )
         elif (
             self._control_state["escape_ticks"] <= 0
+            and self._control_state["collect_drop_ticks"] <= 0
+            and self._control_state["surface_search_ticks"] <= 0
+            and self._should_collect_drops(goal, prompt)
+        ):
+            self._control_state["collect_drop_ticks"] = int(os.environ.get("XENON_COLLECT_DROPS_TICKS", "45"))
+            self._control_state["attack_hold"] = 0
+            self._control_state["recovery_events"]["collect_drops"] += 1
+            self.logger.info(
+                "Activating resource drop collection primitive: "
+                f"pending={self._pending_relevant_drops(goal)}, "
+                f"stale_goal_progress={self._stale_goal_progress_ticks()}, prompt={prompt}"
+            )
+        elif (
+            self._control_state["escape_ticks"] <= 0
+            and self._control_state["collect_drop_ticks"] <= 0
+            and self._control_state["surface_search_ticks"] <= 0
+            and self._should_surface_search(goal, prompt)
+        ):
+            self._control_state["surface_search_ticks"] = int(os.environ.get("XENON_SURFACE_SEARCH_TICKS", "90"))
+            self._control_state["attack_hold"] = 0
+            self._control_state["recovery_events"]["surface_search"] += 1
+            self.logger.info(
+                "Activating surface resource search primitive: "
+                f"stale_goal_progress={self._stale_goal_progress_ticks()}, prompt={prompt}, goal={goal}"
+            )
+        elif (
+            self._control_state["escape_ticks"] <= 0
             and self._control_state["tunnel_recovery_ticks"] <= 0
             and self._should_tunnel_recovery(action, goal, prompt)
         ):
@@ -728,6 +881,14 @@ class CustomEnvWrapper(gym.Wrapper):
         if self._control_state["escape_ticks"] > 0:
             action = self._escape_action(action)
             self._maybe_log_action_debug("stabilize_escape", original_action, action, goal, prompt)
+            return action
+        if self._control_state["collect_drop_ticks"] > 0:
+            action = self._collect_drop_action(action)
+            self._maybe_log_action_debug("stabilize_collect_drops", original_action, action, goal, prompt)
+            return action
+        if self._control_state["surface_search_ticks"] > 0:
+            action = self._surface_search_action(action)
+            self._maybe_log_action_debug("stabilize_surface_search", original_action, action, goal, prompt)
             return action
         if self._control_state["tunnel_recovery_ticks"] > 0:
             action = self._tunnel_recovery_action(action)
@@ -758,7 +919,12 @@ class CustomEnvWrapper(gym.Wrapper):
         self._maybe_log_action_debug("stabilize", original_action, action, goal, prompt)
         return action
 
-    def _record_step_state(self, observation: Dict[str, Any]) -> None:
+    def _record_step_state(
+        self,
+        observation: Dict[str, Any],
+        goal: tuple[str, int] | None = None,
+        prompt: str | None = None,
+    ) -> None:
         previous_health = self._control_state.get("last_health")
         previous_position = self._control_state.get("last_position")
         life_stats = observation.get("life_stats", {})
@@ -788,6 +954,8 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["attack_hold"] = 0
             self._control_state["escape_ticks"] = 0
             self._control_state["tunnel_recovery_ticks"] = 0
+            self._control_state["surface_search_ticks"] = 0
+            self._control_state["collect_drop_ticks"] = 0
             self._control_state["movement_stagnant_ticks"] = 0
             self._control_state["resource_stagnant_ticks"] = 0
             self._control_state["policy_reset_requested"] = True
@@ -797,9 +965,18 @@ class CustomEnvWrapper(gym.Wrapper):
                 "Detected death/respawn transition; clearing low-level control state "
                 "and requesting STEVE-1 policy reset."
             )
-        self._record_resource_ledger(observation)
-        if self.status_mod.inventory_change:
+        deltas = self._record_resource_ledger(observation)
+        relevant_inventory = self._relevant_inventory_delta(goal, prompt)
+        relevant_pickup = self._relevant_delta_total(deltas.get("pickup", {}), goal)
+        relevant_mined = self._relevant_delta_total(deltas.get("mine_block", {}), goal)
+        if goal is None and self.status_mod.inventory_change:
             self.cache["last_progress_step"] = self.num_steps
+            self.cache["last_goal_progress_step"] = self.num_steps
+        elif relevant_inventory or relevant_pickup:
+            self.cache["last_progress_step"] = self.num_steps
+            self.cache["last_goal_progress_step"] = self.num_steps
+        if relevant_mined:
+            self.cache["last_target_block_step"] = self.num_steps
 
     def raw_step(self, action: Dict[str, Any]):
         action = self._stabilize_action(action)
@@ -862,7 +1039,7 @@ class CustomEnvWrapper(gym.Wrapper):
 
         self.record_mod.step(observation, None, action)
         self.status_mod.step(observation, action, self.num_steps)
-        self._record_step_state(observation)
+        self._record_step_state(observation, goal, prompt)
 
         info.update(self.status_mod.get_status())
         info.update({"killed": 0})
