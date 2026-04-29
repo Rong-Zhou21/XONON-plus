@@ -1190,7 +1190,12 @@ class CustomEnvWrapper(gym.Wrapper):
         self.logger.info(f"item_str: {item_str}")
         self.logger.info(f"current_inventory: {current_inventory}")
 
-        return self._check_goal_inventory_delta(current_inventory, item_str, item_num)
+        if self._check_goal_inventory_delta(current_inventory, item_str, item_num):
+            return True
+        if self._ledger_satisfies_goal([item_str, item_num]):
+            self.logger.info(f"Waypoint satisfied by resource ledger: {waypoint}")
+            return True
+        return False
 
     def save_video(
         self,
