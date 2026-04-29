@@ -584,8 +584,14 @@ class CaseBasedMemory:
             case
             for case in self.cases
             if not (
-                case.get("outcome", {}).get("status") == "pending"
-                and (run_uuid is None or case.get("run_uuid") == run_uuid)
+                (
+                    run_uuid is not None
+                    and case.get("run_uuid") == run_uuid
+                )
+                or (
+                    run_uuid is None
+                    and case.get("outcome", {}).get("status") == "pending"
+                )
             )
         ]
         removed = original_count - len(self.cases)

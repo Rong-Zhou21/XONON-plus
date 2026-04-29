@@ -1,0 +1,1543 @@
+{
+  "run_uuid": "3ja7xeHoHTMF3aiXgsqqND",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "armor",
+  "task": "craft_golden_leggings",
+  "goal": "golden_leggings",
+  "exp_num": 29010,
+  "biome": "forest",
+  "is_fixed_memory": false,
+  "max_minutes": 20,
+  "success": false,
+  "status_detailed": "timeout_non_programmatic",
+  "infra_early_stop": false,
+  "video_file": "videos/v1/Armor_Craft_golden_leggings/forest/failed/2026_04_29_10_27_40_dig_down_and_mine_gold_ore_3ja7xeHoHTMF3aiXgsqqND.mp4",
+  "steps": 23871,
+  "minutes": 19.89,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1772
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 174
+    },
+    "craft crafting_table_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 114
+    },
+    "craft stick_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 87
+    },
+    "craft wooden_pickaxe_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 322
+    },
+    "dig down and mine cobblestone_5": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 615
+    },
+    "craft furnace_6": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 325
+    },
+    "craft stone_pickaxe_7": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 353
+    },
+    "craft stick_8": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 88
+    },
+    "dig down and mine iron_ore_9": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 221
+    },
+    "smelt iron_ingot_10": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 993
+    },
+    "craft iron_pickaxe_11": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 292
+    },
+    "dig down and mine cobblestone_12": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_13": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_14": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_15": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_16": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_17": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_18": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_19": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_20": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_21": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_22": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_23": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_24": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_25": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_26": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_27": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_28": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_29": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_30": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_31": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_32": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_33": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_34": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_35": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_36": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_37": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_38": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_39": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_40": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine cobblestone_41": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1
+    },
+    "dig down and mine gold_ore_42": {
+      "SuccessMonitor": 0,
+      "StepMonitor": 18485
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        2
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        2
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    }
+  ],
+  "failed_subgoals": [
+    {
+      "task": "dig down and mine gold_ore",
+      "goal": [
+        "gold_ore",
+        7
+      ]
+    }
+  ],
+  "remain_plans": [
+    {
+      "task": "dig down and mine gold_ore",
+      "goal": [
+        "gold_ore",
+        7
+      ]
+    }
+  ],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        2
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine gold_ore",
+      "goal": [
+        "gold_ore",
+        7
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        2
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        3
+      ]
+    },
+    {
+      "task": "smelt iron_ingot",
+      "goal": [
+        "iron_ingot",
+        3
+      ]
+    },
+    {
+      "task": "craft iron_pickaxe",
+      "goal": [
+        "iron_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        4
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        3
+      ]
+    },
+    {
+      "task": "dig down and mine gold_ore",
+      "goal": [
+        "gold_ore",
+        7
+      ]
+    }
+  ],
+  "failed_waypoints": [
+    "cobblestone",
+    "gold_ore"
+  ],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 0,
+    "collect_drops": 0,
+    "movement_escape": 0,
+    "tunnel_recovery": 1,
+    "respawn_reset": 0,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0,
+    "horizontal_mining": 1
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "wooden_pickaxe": 1,
+      "stone_pickaxe": 1,
+      "oak_planks": 17,
+      "dirt": 3,
+      "furnace": 1,
+      "crafting_table": 1,
+      "diorite": 8,
+      "coal": 1,
+      "iron_pickaxe": 1,
+      "cobblestone": 15,
+      "oak_log": 1,
+      "granite": 6,
+      "iron_ore": 6,
+      "stick": 3,
+      "gold_ore": 4,
+      "redstone": 5
+    },
+    "last_pickup_stats": {
+      "coal": 2,
+      "cobblestone": 26,
+      "crafting_table": 4,
+      "diorite": 8,
+      "dirt": 3,
+      "furnace": 2,
+      "gold_ore": 4,
+      "granite": 6,
+      "iron_ore": 9,
+      "oak_log": 8,
+      "redstone": 5,
+      "stick": 2
+    },
+    "last_mine_block_stats": {
+      "andesite": 7,
+      "coal_ore": 2,
+      "crafting_table": 4,
+      "diorite": 16,
+      "dirt": 2,
+      "furnace": 1,
+      "gold_ore": 4,
+      "granite": 2,
+      "grass_block": 1,
+      "iron_ore": 9,
+      "oak_leaves": 22,
+      "oak_log": 8,
+      "redstone_ore": 1,
+      "stone": 34
+    },
+    "max_inventory": {
+      "oak_log": 8,
+      "stick": 5,
+      "oak_planks": 28,
+      "crafting_table": 1,
+      "wooden_pickaxe": 1,
+      "dirt": 3,
+      "cobblestone": 15,
+      "diorite": 8,
+      "coal": 2,
+      "furnace": 1,
+      "stone_pickaxe": 1,
+      "granite": 6,
+      "iron_ore": 6,
+      "iron_ingot": 3,
+      "iron_pickaxe": 1,
+      "gold_ore": 4,
+      "redstone": 5
+    },
+    "collected": {
+      "oak_log": 10,
+      "stick": 22,
+      "oak_planks": 110,
+      "crafting_table": 6,
+      "wooden_pickaxe": 3,
+      "dirt": 3,
+      "cobblestone": 29,
+      "diorite": 8,
+      "coal": 3,
+      "furnace": 4,
+      "stone_pickaxe": 2,
+      "granite": 6,
+      "iron_ore": 9,
+      "iron_ingot": 6,
+      "iron_pickaxe": 2,
+      "gold_ore": 4,
+      "redstone": 5
+    },
+    "pickup": {
+      "oak_log": 8,
+      "stick": 2,
+      "crafting_table": 4,
+      "dirt": 3,
+      "cobblestone": 26,
+      "diorite": 8,
+      "coal": 2,
+      "granite": 6,
+      "iron_ore": 9,
+      "furnace": 2,
+      "gold_ore": 4,
+      "redstone": 5
+    },
+    "mined_blocks": {
+      "oak_log": 8,
+      "oak_leaves": 22,
+      "crafting_table": 4,
+      "grass_block": 1,
+      "dirt": 2,
+      "stone": 34,
+      "diorite": 16,
+      "coal_ore": 2,
+      "granite": 2,
+      "iron_ore": 9,
+      "furnace": 1,
+      "gold_ore": 4,
+      "redstone_ore": 1,
+      "andesite": 7
+    }
+  },
+  "inventory_slots_used": 16
+}
