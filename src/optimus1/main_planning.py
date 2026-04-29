@@ -1053,7 +1053,11 @@ def main(cfg: DictConfig):
             biome = cfg["env"]["prefer_biome"]
 
             status_detailed = copy.deepcopy(status)
-            infra_early_stop = status_detailed == "env_step_timeout" and int(steps or 0) < 300
+            early_log_start_failure = int(steps or 0) < 300 and failed_waypoints == ["logs"]
+            infra_early_stop = (
+                (status_detailed == "env_step_timeout" and int(steps or 0) < 300)
+                or early_log_start_failure
+            )
             status = "failed" if status != "success" else status
             if status != "success":
                 if infra_early_stop:
