@@ -750,6 +750,8 @@ class CustomEnvWrapper(gym.Wrapper):
         return self._stale_goal_progress_ticks() >= int(os.environ.get("XENON_SURFACE_SEARCH_STALE_TICKS", "220"))
 
     def _should_surface_escape(self) -> bool:
+        if os.environ.get("XENON_ENABLE_LOW_AIR_ESCAPE", "0") != "1":
+            return False
         return self._current_air() < int(os.environ.get("XENON_LOW_AIR_THRESHOLD", "280"))
 
     def _should_movement_escape(self, action: Dict[str, Any], goal: tuple[str, int] | None, prompt: str | None) -> bool:

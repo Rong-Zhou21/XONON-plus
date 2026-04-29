@@ -575,6 +575,16 @@ def new_agent_do(
                         logger.info("Resetting action server after detected respawn/control-state reset.")
                         reset_thread = ServerAPI.reset(cfg["server"])
                         reset_thread.join()
+                        current_sg_prompt = copy.deepcopy(temp_sg_prompt)
+                        step_waypoint_obtained = env.num_steps
+                        if tree_chop_active:
+                            tree_mode = "chop"
+                            tree_log_activity = _log_activity_count(env.get_status())
+                            tree_last_activity_step = env.num_steps
+                        logger.info(
+                            "Waypoint-aware respawn recovery: restored STEVE-1 prompt "
+                            f"to {current_sg_prompt} for waypoint {waypoint} at timestep {env.num_steps}."
+                        )
 
                     action = ServerAPI.get_action(
                         cfg["server"], obs, current_sg_prompt, step=env.num_steps,
