@@ -511,8 +511,8 @@ def _deeper_ores_seen(env_status: Dict[str, Any], target_ore: str) -> list[str]:
     return sorted(seen, key=lambda ore: ORE_LAYER_ORDER[ore])
 
 
-def _horizontal_mining_prompt(target_ore: str) -> str:
-    return f"mine horizontally for {target_ore.replace('_', ' ')}"
+def _forward_mining_prompt(target_ore: str) -> str:
+    return f"dig forward and mine {target_ore.replace('_', ' ')}"
 
 
 PICKAXE_PRIORITY = ("diamond_pickaxe", "iron_pickaxe", "stone_pickaxe", "wooden_pickaxe")
@@ -853,12 +853,14 @@ def new_agent_do(
                 mining_direction_active = _is_layered_mining_subgoal(current_sg_prompt, current_sg_target)
                 mining_target_ore = _normalise_ore_name(current_sg_target[0]) if mining_direction_active else ""
                 mining_required = _ore_required_count(current_sg_target)
-                mining_activity = _ore_activity_count(env.get_status(), mining_target_ore) if mining_direction_active else 0
+                mining_initial_status = env.get_status()
+                mining_activity = _ore_activity_count(mining_initial_status, mining_target_ore) if mining_direction_active else 0
                 mining_last_activity_step = env.num_steps
                 mining_mode = "dig_down"
-                mining_horizontal_prompt = _horizontal_mining_prompt(mining_target_ore) if mining_direction_active else ""
-                mining_target_found_stale_ticks = int(os.environ.get("XENON_MINING_TARGET_FOUND_STALE_TICKS", "360"))
-                mining_horizontal_min_ticks = int(os.environ.get("XENON_MINING_HORIZONTAL_MIN_TICKS", "1800"))
+                mining_forward_prompt = _forward_mining_prompt(mining_target_ore) if mining_direction_active else ""
+                mining_initial_deeper_seen = set(
+                    _deeper_ores_seen(mining_initial_status, mining_target_ore)
+                ) if mining_direction_active else set()
                 mining_switch_cooldown_ticks = int(os.environ.get("XENON_MINING_DIRECTION_SWITCH_COOLDOWN_TICKS", "240"))
                 mining_last_switch_step = -1000000
 
@@ -941,47 +943,40 @@ def new_agent_do(
                         current_activity = _ore_activity_count(env_status_now, mining_target_ore)
                         current_available = _ore_available_count(env_status_now, mining_target_ore)
                         deeper_seen = _deeper_ores_seen(env_status_now, mining_target_ore)
+                        new_deeper_seen = [
+                            ore for ore in deeper_seen
+                            if ore not in mining_initial_deeper_seen
+                        ]
                         if current_activity > mining_activity:
                             mining_activity = current_activity
                             mining_last_activity_step = env.num_steps
                             step_waypoint_obtained = env.num_steps
                         target_incomplete = current_available < mining_required
-                        found_target_but_stale = (
-                            current_available > 0
-                            and target_incomplete
-                            and env.num_steps - mining_last_activity_step >= mining_target_found_stale_ticks
-                        )
-                        overshot_layer = target_incomplete and len(deeper_seen) > 0
+                        overshot_layer = target_incomplete and len(new_deeper_seen) > 0
                         can_switch = (
                             mining_mode == "dig_down"
                             and current_sg_prompt == temp_sg_prompt
                             and env.num_steps - mining_last_switch_step >= mining_switch_cooldown_ticks
                         )
-                        if can_switch and (overshot_layer or found_target_but_stale):
-                            current_sg_prompt = mining_horizontal_prompt
-                            mining_mode = "horizontal"
+                        if can_switch and overshot_layer:
+                            current_sg_prompt = mining_forward_prompt
+                            mining_mode = "dig_forward"
                             mining_last_switch_step = env.num_steps
                             step_waypoint_obtained = env.num_steps
-                            reason = "deeper_ore_seen" if overshot_layer else "target_found_but_stale"
                             logger.info(
                                 "Mining direction adjustment: switching STEVE-1 prompt to "
                                 f"{current_sg_prompt} for waypoint {waypoint}; "
-                                f"reason={reason}, target={mining_target_ore}, "
+                                f"reason=advanced_ore_seen, target={mining_target_ore}, "
                                 f"current={current_available}, required={mining_required}, "
-                                f"deeper_seen={deeper_seen}, timestep={env.num_steps}."
+                                f"advanced_ores={new_deeper_seen}, timestep={env.num_steps}."
                             )
-                        elif (
-                            mining_mode == "horizontal"
-                            and env.num_steps - mining_last_switch_step >= mining_horizontal_min_ticks
-                            and env.num_steps - mining_last_activity_step >= mining_target_found_stale_ticks
-                            and not deeper_seen
-                        ):
+                        elif mining_mode == "dig_forward" and not target_incomplete:
                             current_sg_prompt = copy.deepcopy(temp_sg_prompt)
                             mining_mode = "dig_down"
                             mining_last_switch_step = env.num_steps
                             step_waypoint_obtained = env.num_steps
                             logger.info(
-                                "Mining horizontal search window ended without target progress; "
+                                "Mining target count is satisfied; "
                                 f"restoring STEVE-1 prompt {current_sg_prompt} at timestep {env.num_steps}."
                             )
 
@@ -994,7 +989,7 @@ def new_agent_do(
                             step_waypoint_obtained = env.num_steps
                             current_sg_prompt = copy.deepcopy(temp_sg_prompt)
                     if env.num_steps - step_waypoint_obtained >= MINUTE and not (
-                        mining_direction_active and mining_mode == "horizontal"
+                        mining_direction_active and mining_mode == "dig_forward"
                     ):
                         current_sg_prompt = copy.deepcopy(temp_sg_prompt)
                         logger.info(f"Current timestep: {env.num_steps}. Calling get_context_aware_reasoning ...")
