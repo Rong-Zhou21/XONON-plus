@@ -338,6 +338,30 @@ def check_waypoint_item_obtained(new_item_dict, waypoint, logger):
     return False
 
 
+def _is_tree_chop_subgoal(prompt: str, target: list[Any] | tuple[Any, ...] | None) -> bool:
+    text_parts = [prompt or ""]
+    if target:
+        text_parts.append(str(target[0]))
+    text = " ".join(text_parts).lower()
+    return any(token in text for token in ("chop", "punch", "tree", "log", "logs", "wood"))
+
+
+def _log_activity_count(env_status: Dict[str, Any]) -> int:
+    total = 0
+    ledger = env_status.get("resource_ledger") or {}
+    for bucket_name in ("mined_blocks", "pickup", "collected", "max_inventory"):
+        bucket = ledger.get(bucket_name) or {}
+        for item, quantity in bucket.items():
+            if isinstance(item, str) and item.endswith("_log"):
+                total += int(quantity or 0)
+
+    inventory = env_status.get("inventory") or {}
+    for item, quantity in inventory.items():
+        if isinstance(item, str) and item.endswith("_log"):
+            total += int(quantity or 0)
+    return total
+
+
 def new_agent_do(
     cfg: DictConfig,
     env: CustomEnvWrapper,
@@ -533,6 +557,13 @@ def new_agent_do(
                 # op is not in ["craft", "smelt", "equip"]
                 step_waypoint_obtained = env.num_steps
                 current_sg_prompt = copy.deepcopy(temp_sg_prompt)
+                tree_chop_active = _is_tree_chop_subgoal(current_sg_prompt, current_sg_target)
+                tree_log_activity = _log_activity_count(env.get_status()) if tree_chop_active else 0
+                tree_last_activity_step = env.num_steps
+                tree_mode = "chop"
+                tree_explore_prompt = os.environ.get("XENON_TREE_EXPLORE_PROMPT", "find a tree")
+                tree_chop_stale_ticks = int(os.environ.get("XENON_TREE_CHOP_STALE_TICKS", "360"))
+                tree_explore_ticks = int(os.environ.get("XENON_TREE_EXPLORE_TICKS", "420"))
 
                 while True:
                     env._only_once = True
@@ -553,6 +584,45 @@ def new_agent_do(
                     )
                     pbar.update(num_step, advance=1)
                     monitors.update(f"{temp_sg_prompt}_{progress}", env.current_subgoal_finish)
+
+                    if tree_chop_active:
+                        current_log_activity = _log_activity_count(env.get_status())
+                        if current_log_activity > tree_log_activity:
+                            tree_log_activity = current_log_activity
+                            tree_last_activity_step = env.num_steps
+                            step_waypoint_obtained = env.num_steps
+                            if current_sg_prompt != temp_sg_prompt:
+                                current_sg_prompt = copy.deepcopy(temp_sg_prompt)
+                                tree_mode = "chop"
+                                logger.info(
+                                    "Tree acquisition has started; switching STEVE-1 prompt back to "
+                                    f"{current_sg_prompt} at timestep {env.num_steps}."
+                                )
+                        elif (
+                            tree_mode == "chop"
+                            and current_sg_prompt == temp_sg_prompt
+                            and env.num_steps - tree_last_activity_step >= tree_chop_stale_ticks
+                        ):
+                            current_sg_prompt = tree_explore_prompt
+                            tree_mode = "explore"
+                            tree_last_activity_step = env.num_steps
+                            step_waypoint_obtained = env.num_steps
+                            logger.info(
+                                "No log-related progress from chop prompt; temporarily switching STEVE-1 "
+                                f"prompt to {current_sg_prompt} at timestep {env.num_steps}."
+                            )
+                        elif (
+                            tree_mode == "explore"
+                            and env.num_steps - tree_last_activity_step >= tree_explore_ticks
+                        ):
+                            current_sg_prompt = copy.deepcopy(temp_sg_prompt)
+                            tree_mode = "chop"
+                            tree_last_activity_step = env.num_steps
+                            step_waypoint_obtained = env.num_steps
+                            logger.info(
+                                "Tree exploration window ended; probing original STEVE-1 prompt "
+                                f"{current_sg_prompt} at timestep {env.num_steps}."
+                            )
 
 
                     # if current waypoint item is not obtained over a MINUTE, then do get_context_aware_reasoning.
