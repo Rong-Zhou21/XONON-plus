@@ -707,10 +707,21 @@ class CustomEnvWrapper(gym.Wrapper):
         )
         return max(0, mined - observed)
 
-    def _should_collect_drops(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+    def _should_collect_drops(
+        self,
+        action: Dict[str, Any],
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> bool:
         if goal is None or not self._is_resource_acquisition(goal, prompt):
             return False
         if self._ledger_satisfies_goal(goal):
+            return False
+        if self._button_down(action, "attack") or int(self._control_state.get("attack_hold", 0)) > 0:
+            return False
+        if self.num_steps - int(self.cache.get("last_target_block_step", 0)) < int(
+            os.environ.get("XENON_COLLECT_DROPS_AFTER_MINE_GRACE_TICKS", "100")
+        ):
             return False
         if self.num_steps - int(self.cache.get("last_collect_drop_step", -1000000)) < int(
             os.environ.get("XENON_COLLECT_DROPS_COOLDOWN_TICKS", "180")
@@ -722,9 +733,15 @@ class CustomEnvWrapper(gym.Wrapper):
         return self._stale_goal_progress_ticks() >= int(os.environ.get("XENON_COLLECT_DROPS_STALE_TICKS", "70"))
 
     def _should_surface_search(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        if os.environ.get("XENON_ENABLE_SURFACE_SEARCH_PRIMITIVE", "0") != "1":
+            return False
         if not self._is_surface_resource_acquisition(goal, prompt):
             return False
         if self._ledger_satisfies_goal(goal):
+            return False
+        if self.num_steps - int(self.cache.get("last_target_block_step", 0)) < int(
+            os.environ.get("XENON_SURFACE_SEARCH_AFTER_MINE_GRACE_TICKS", "240")
+        ):
             return False
         if self.num_steps - int(self.cache.get("last_surface_search_step", -1000000)) < int(
             os.environ.get("XENON_SURFACE_SEARCH_COOLDOWN_TICKS", "260")
@@ -776,15 +793,11 @@ class CustomEnvWrapper(gym.Wrapper):
 
     def _collect_drop_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
         self._control_state["collect_drop_ticks"] -= 1
-        if self._control_state["collect_drop_ticks"] % 12 == 0:
-            self._control_state["escape_turn"] *= -1
 
-        for key in ("attack", "use", "back", "left", "right", "sneak", "inventory", "drop"):
+        for key in ("attack", "use", "back", "left", "right", "sneak", "sprint", "inventory", "drop"):
             self._set_button(action, key, 0)
         self._set_button(action, "forward", 1)
-        self._set_button(action, "sprint", 1)
-        self._set_button(action, "jump", 1 if self._control_state["collect_drop_ticks"] % 18 == 0 else 0)
-        action["camera"] = np.array([4, 6 * self._control_state["escape_turn"]])
+        self._set_button(action, "jump", 0)
         return action
 
     def _surface_search_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
@@ -852,9 +865,9 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["escape_ticks"] <= 0
             and self._control_state["collect_drop_ticks"] <= 0
             and self._control_state["surface_search_ticks"] <= 0
-            and self._should_collect_drops(goal, prompt)
+            and self._should_collect_drops(action, goal, prompt)
         ):
-            self._control_state["collect_drop_ticks"] = int(os.environ.get("XENON_COLLECT_DROPS_TICKS", "45"))
+            self._control_state["collect_drop_ticks"] = int(os.environ.get("XENON_COLLECT_DROPS_TICKS", "24"))
             self._control_state["attack_hold"] = 0
             self.cache["last_collect_drop_step"] = self.num_steps
             self.cache["last_goal_progress_step"] = self.num_steps
@@ -991,6 +1004,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self.cache["last_goal_progress_step"] = self.num_steps
         if relevant_mined:
             self.cache["last_target_block_step"] = self.num_steps
+            self.cache["last_goal_progress_step"] = self.num_steps
 
     def raw_step(self, action: Dict[str, Any]):
         action = self._stabilize_action(action)
