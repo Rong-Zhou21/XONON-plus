@@ -223,6 +223,7 @@ class CustomEnvWrapper(gym.Wrapper):
             "tunnel_recovery_ticks": 0,
             "surface_search_ticks": 0,
             "collect_drop_ticks": 0,
+            "horizontal_mine_ticks": 0,
             "resource_stagnant_ticks": 0,
             "movement_stagnant_ticks": 0,
             "last_prompt": None,
@@ -239,6 +240,7 @@ class CustomEnvWrapper(gym.Wrapper):
                 "checker_error": 0,
                 "inventory_cleanup": 0,
                 "inventory_cleanup_blocked": 0,
+                "horizontal_mining": 0,
             },
         }
 
@@ -339,6 +341,10 @@ class CustomEnvWrapper(gym.Wrapper):
             return False
         return any(token in text for token in ("mine", "dig", "ore", "cobblestone", "stone", "diamond", "redstone"))
 
+    def _is_horizontal_mining_prompt(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        text = self._prompt_text(goal, prompt)
+        return "horizontal" in text and self._is_tunnel_resource_acquisition(goal, prompt)
+
     def _attack_hold_ticks(self, goal: tuple[str, int] | None, prompt: str | None) -> int:
         text = self._prompt_text(goal, prompt)
         if any(token in text for token in ("chop", "punch", "tree", "log", "logs")):
@@ -365,6 +371,13 @@ class CustomEnvWrapper(gym.Wrapper):
     def _current_health(self) -> float:
         life_stats = self.cache.get("last_life_stats") or {}
         return self._life_stat_number(life_stats, ("life", "health"), 20.0)
+
+    def _current_pitch(self) -> float:
+        loc = self.status_mod.location_stats or {}
+        try:
+            return float(np.asarray(loc.get("pitch", 0.0)).reshape(-1)[0])
+        except Exception:
+            return 0.0
 
     def _position_delta(self) -> Tuple[float, float]:
         window: Deque[Tuple[float, float, float]] = self.cache.get("position_window")
@@ -829,6 +842,36 @@ class CustomEnvWrapper(gym.Wrapper):
         action["camera"] = np.array([0, 12 * self._control_state["escape_turn"]])
         return action
 
+    def _horizontal_mining_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
+        ticks = int(self._control_state.get("horizontal_mine_ticks", 0))
+        if ticks == 0:
+            self._control_state["recovery_events"]["horizontal_mining"] += 1
+            self.logger.info("Activating horizontal mining execution primitive.")
+        self._control_state["horizontal_mine_ticks"] = ticks + 1
+        if ticks > 0 and ticks % 120 == 0:
+            self._control_state["escape_turn"] *= -1
+
+        for key in ("use", "back", "left", "right", "sneak", "sprint", "jump", "inventory", "drop"):
+            self._set_button(action, key, 0)
+
+        pitch = self._current_pitch()
+        if pitch > float(os.environ.get("XENON_HORIZONTAL_MINE_MAX_PITCH", "18")):
+            self._set_button(action, "attack", 0)
+            self._set_button(action, "forward", 0)
+            action["camera"] = np.array([-8, 0])
+            return action
+        if pitch < float(os.environ.get("XENON_HORIZONTAL_MINE_MIN_PITCH", "-12")):
+            self._set_button(action, "attack", 0)
+            self._set_button(action, "forward", 0)
+            action["camera"] = np.array([6, 0])
+            return action
+
+        self._set_button(action, "attack", 1)
+        self._set_button(action, "forward", 1)
+        yaw = 4 * self._control_state["escape_turn"] if ticks % 140 < 24 else 0
+        action["camera"] = np.array([0, yaw])
+        return action
+
     def _stabilize_action(
         self,
         action: Dict[str, Any] | List[Dict[str, Any]],
@@ -844,6 +887,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["tunnel_recovery_ticks"] = 0
             self._control_state["surface_search_ticks"] = 0
             self._control_state["collect_drop_ticks"] = 0
+            self._control_state["horizontal_mine_ticks"] = 0
             self._control_state["last_prompt"] = prompt
             self.cache["last_progress_step"] = self.num_steps
             self.cache["last_goal_progress_step"] = self.num_steps
@@ -915,6 +959,10 @@ class CustomEnvWrapper(gym.Wrapper):
             action = self._collect_drop_action(action)
             self._maybe_log_action_debug("stabilize_collect_drops", original_action, action, goal, prompt)
             return action
+        if self._is_horizontal_mining_prompt(goal, prompt):
+            action = self._horizontal_mining_action(action)
+            self._maybe_log_action_debug("stabilize_horizontal_mining", original_action, action, goal, prompt)
+            return action
         if self._control_state["surface_search_ticks"] > 0:
             action = self._surface_search_action(action)
             self._maybe_log_action_debug("stabilize_surface_search", original_action, action, goal, prompt)
@@ -985,6 +1033,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["tunnel_recovery_ticks"] = 0
             self._control_state["surface_search_ticks"] = 0
             self._control_state["collect_drop_ticks"] = 0
+            self._control_state["horizontal_mine_ticks"] = 0
             self._control_state["movement_stagnant_ticks"] = 0
             self._control_state["resource_stagnant_ticks"] = 0
             self._control_state["policy_reset_requested"] = True
@@ -1261,13 +1310,13 @@ class CustomEnvWrapper(gym.Wrapper):
         inventory_id_stone = self._find_in_inventory("stone_pickaxe")
         inventory_id_wooden = self._find_in_inventory("wooden_pickaxe")
 
-        if inventory_id_wooden:
+        if inventory_id_wooden is not None:
             inventory_id = inventory_id_wooden
-        if inventory_id_stone:
+        if inventory_id_stone is not None:
             inventory_id = inventory_id_stone
-        if inventory_id_iron:
+        if inventory_id_iron is not None:
             inventory_id = inventory_id_iron
-        if inventory_id_diamond:
+        if inventory_id_diamond is not None:
             inventory_id = inventory_id_diamond
 
         if inventory_id == -1:
@@ -1304,8 +1353,11 @@ class CustomEnvWrapper(gym.Wrapper):
     def _find_in_inventory(self, item: str):
         inventory = self.cache["info"]["plain_inventory"]
         for slot, it in inventory.items():
-            if it["type"] == item:
-                return slot
+            if self._plain_item_type(it.get("type", "")) == item:
+                try:
+                    return int(slot)
+                except Exception:
+                    return slot
         return None
 
     # def give_night_vision(self):

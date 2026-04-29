@@ -232,7 +232,39 @@ def make_plan(
 
     if case_decision is not None:
         logger.info(f"Reuse case decision: {json.dumps(case_decision['decision_trace'])}")
-        return wp, case_decision["subgoal"], case_decision["language_action_str"], None
+        if _subgoal_action_is_feasible(wp, case_decision["subgoal"], case_decision["language_action_str"]):
+            return wp, case_decision["subgoal"], case_decision["language_action_str"], None
+        logger.warning(
+            "Rejected infeasible case decision for waypoint "
+            f"{wp}: {case_decision['language_action_str']}"
+        )
+        subgoal, language_action_str = _fallback_subgoal_for_waypoint(wp, wp_num)
+        action_memory.record_decision(
+            waypoint=wp,
+            waypoint_num=wp_num,
+            state_snapshot=state_snapshot,
+            candidate_actions=[
+                {
+                    "action": case_decision["language_action_str"],
+                    "source": "case_memory_rejected",
+                },
+                {
+                    "action": language_action_str,
+                    "source": "semantic_fallback",
+                },
+            ],
+            selected_action=language_action_str,
+            selected_subgoal=subgoal,
+            selected_subgoal_str=json.dumps(subgoal),
+            decision_trace={
+                "source": "semantic_fallback",
+                "rejected_action": case_decision["language_action_str"],
+                "reason": "infeasible action verb for waypoint",
+            },
+            run_uuid=run_uuid,
+            original_final_goal=original_final_goal,
+        )
+        return wp, subgoal, language_action_str, None
 
     else:
         logger.info(f"No high-confidence case for waypoint: {wp}, so, call planner to generate a plan.")
@@ -244,24 +276,43 @@ def make_plan(
             cfg, obs, wp, wp_num, similar_wp_sg_dict, failed_sg_list, hydra_path, run_uuid, logger
         )
         if error_message is None:
+            candidate_actions = [
+                {
+                    "action": language_action_str,
+                    "source": "planner_selected",
+                }
+            ]
+            decision_source = "planner"
+            decision_reason = None
+            if not _subgoal_action_is_feasible(wp, subgoal, language_action_str):
+                rejected_action = language_action_str
+                subgoal, language_action_str = _fallback_subgoal_for_waypoint(wp, wp_num)
+                candidate_actions.append(
+                    {
+                        "action": language_action_str,
+                        "source": "semantic_fallback",
+                    }
+                )
+                decision_source = "semantic_fallback"
+                decision_reason = f"rejected infeasible planner action: {rejected_action}"
+                logger.warning(
+                    "Rejected infeasible planner action for waypoint "
+                    f"{wp}: {rejected_action}; using {language_action_str}."
+                )
             action_memory.record_decision(
                 waypoint=wp,
                 waypoint_num=wp_num,
                 state_snapshot=state_snapshot,
-                candidate_actions=[
-                    {
-                        "action": language_action_str,
-                        "source": "planner_selected",
-                    }
-                ],
+                candidate_actions=candidate_actions,
                 selected_action=language_action_str,
                 selected_subgoal=subgoal,
                 selected_subgoal_str=json.dumps(subgoal),
                 decision_trace={
-                    "source": "planner",
+                    "source": decision_source,
                     "confidence": None,
                     "retrieved_examples": similar_wp_sg_dict,
                     "failed_subgoals": failed_sg_list,
+                    "reason": decision_reason,
                 },
                 run_uuid=run_uuid,
                 original_final_goal=original_final_goal,
@@ -464,6 +515,130 @@ def _horizontal_mining_prompt(target_ore: str) -> str:
     return f"mine horizontally for {target_ore.replace('_', ' ')}"
 
 
+PICKAXE_PRIORITY = ("diamond_pickaxe", "iron_pickaxe", "stone_pickaxe", "wooden_pickaxe")
+MINE_ONLY_WAYPOINTS = {
+    "cobblestone",
+    "coal",
+    "coal_ore",
+    "iron_ore",
+    "gold_ore",
+    "redstone",
+    "redstone_ore",
+    "diamond",
+    "diamond_ore",
+}
+
+
+def _is_mining_action(text: str) -> bool:
+    action = (text or "").lower()
+    return any(token in action for token in ("mine", "dig", "break"))
+
+
+def _is_pickaxe_mining_subgoal(prompt: str, target: list[Any] | tuple[Any, ...] | None) -> bool:
+    if not target:
+        return False
+    target_item = _normalise_ore_name(target[0])
+    if target_item in {"log", "logs"} or str(target[0]).endswith("_log"):
+        return False
+    return _is_mining_action(prompt) and (
+        target_item in ORE_LAYER_ORDER or target_item in MINE_ONLY_WAYPOINTS or target_item == "cobblestone"
+    )
+
+
+def _subgoal_action_is_feasible(waypoint: str, subgoal: Dict[str, Any] | None, language_action: str) -> bool:
+    action_text = ((subgoal or {}).get("task") or language_action or "").lower()
+    waypoint_name = _normalise_ore_name(waypoint)
+    if waypoint_name in MINE_ONLY_WAYPOINTS:
+        return _is_mining_action(action_text) and "craft" not in action_text and "smelt" not in action_text
+    if waypoint_name in {"log", "logs"} or waypoint_name.endswith("_log"):
+        return any(token in action_text for token in ("chop", "punch", "tree", "log"))
+    if waypoint_name.endswith("_ingot") or waypoint_name == "charcoal":
+        return "smelt" in action_text
+    return True
+
+
+def _fallback_subgoal_for_waypoint(waypoint: str, waypoint_num: int) -> tuple[Dict[str, Any], str]:
+    waypoint_name = _normalise_ore_name(waypoint)
+    if waypoint_name in {"log", "logs"} or waypoint_name.endswith("_log"):
+        subgoal = {"task": "chop a tree", "goal": ["logs", waypoint_num]}
+    elif waypoint_name == "diamond":
+        subgoal = {"task": "dig down and mine diamond", "goal": ["diamond", waypoint_num]}
+    elif waypoint_name in MINE_ONLY_WAYPOINTS:
+        goal_name = waypoint_name
+        subgoal = {"task": f"dig down and mine {goal_name}", "goal": [goal_name, waypoint_num]}
+    elif waypoint_name.endswith("_ingot") or waypoint_name == "charcoal":
+        item_name = waypoint_name.replace("_ingot", " ore") if waypoint_name.endswith("_ingot") else waypoint_name
+        subgoal = {"task": f"smelt {item_name}", "goal": [waypoint_name, waypoint_num]}
+    else:
+        subgoal = {"task": f"craft {waypoint_name}", "goal": [waypoint_name, waypoint_num]}
+    return subgoal, subgoal["task"]
+
+
+def _normalised_inventory_counts(env_status: Dict[str, Any]) -> Dict[str, int]:
+    counts: Dict[str, int] = {}
+    for item, quantity in (env_status.get("inventory") or {}).items():
+        try:
+            counts[str(item)] = counts.get(str(item), 0) + int(quantity or 0)
+        except Exception:
+            continue
+    for item in (env_status.get("plain_inventory") or {}).values():
+        if not isinstance(item, dict):
+            continue
+        item_type = str(item.get("type", ""))
+        if item_type in ("", "none", "air"):
+            continue
+        try:
+            quantity = int(item.get("quantity", 0) or 0)
+        except Exception:
+            quantity = 0
+        if quantity > 0:
+            counts[item_type] = counts.get(item_type, 0) + quantity
+    return counts
+
+
+def _best_pickaxe_from_status(env_status: Dict[str, Any]) -> str:
+    counts = _normalised_inventory_counts(env_status)
+    for pickaxe in PICKAXE_PRIORITY:
+        if counts.get(pickaxe, 0) > 0:
+            return pickaxe
+    return ""
+
+
+def _ensure_best_pickaxe_equipped(
+    env: CustomEnvWrapper,
+    helper: NewHelper,
+    prompt: str,
+    target: list[Any] | tuple[Any, ...] | None,
+    pbar: Progress,
+    num_step: TaskID,
+    logger: logging.Logger,
+) -> None:
+    if not _is_pickaxe_mining_subgoal(prompt, target):
+        return
+    env_status = env.get_status()
+    best_pickaxe = _best_pickaxe_from_status(env_status)
+    if not best_pickaxe:
+        return
+    if env_status.get("equipment") == best_pickaxe:
+        return
+
+    previous_can_change_hotbar = env.can_change_hotbar
+    previous_can_open_inventory = env.can_open_inventory
+    env.can_change_hotbar = True
+    env.can_open_inventory = True
+    try:
+        equip_prompt = f"equip {best_pickaxe}"
+        helper.reset(equip_prompt, pbar, num_step, logger)
+        equipped, info = helper.step(equip_prompt, [best_pickaxe, 1])
+        if equipped:
+            logger.info(f"Pre-mining equipment check: equipped {best_pickaxe} for {prompt}.")
+        else:
+            logger.warning(f"Pre-mining equipment check failed for {best_pickaxe}: {info}")
+    finally:
+        env.can_change_hotbar = previous_can_change_hotbar
+        env.can_open_inventory = previous_can_open_inventory
+
+
 def new_agent_do(
     cfg: DictConfig,
     env: CustomEnvWrapper,
@@ -659,6 +834,15 @@ def new_agent_do(
                 # op is not in ["craft", "smelt", "equip"]
                 step_waypoint_obtained = env.num_steps
                 current_sg_prompt = copy.deepcopy(temp_sg_prompt)
+                _ensure_best_pickaxe_equipped(
+                    env,
+                    helper,
+                    current_sg_prompt,
+                    current_sg_target,
+                    pbar,
+                    num_step,
+                    logger,
+                )
                 tree_chop_active = _is_tree_chop_subgoal(current_sg_prompt, current_sg_target)
                 tree_log_activity = _log_activity_count(env.get_status()) if tree_chop_active else 0
                 tree_last_activity_step = env.num_steps
@@ -674,7 +858,7 @@ def new_agent_do(
                 mining_mode = "dig_down"
                 mining_horizontal_prompt = _horizontal_mining_prompt(mining_target_ore) if mining_direction_active else ""
                 mining_target_found_stale_ticks = int(os.environ.get("XENON_MINING_TARGET_FOUND_STALE_TICKS", "360"))
-                mining_horizontal_min_ticks = int(os.environ.get("XENON_MINING_HORIZONTAL_MIN_TICKS", "900"))
+                mining_horizontal_min_ticks = int(os.environ.get("XENON_MINING_HORIZONTAL_MIN_TICKS", "1800"))
                 mining_switch_cooldown_ticks = int(os.environ.get("XENON_MINING_DIRECTION_SWITCH_COOLDOWN_TICKS", "240"))
                 mining_last_switch_step = -1000000
 
@@ -790,6 +974,7 @@ def new_agent_do(
                             mining_mode == "horizontal"
                             and env.num_steps - mining_last_switch_step >= mining_horizontal_min_ticks
                             and env.num_steps - mining_last_activity_step >= mining_target_found_stale_ticks
+                            and not deeper_seen
                         ):
                             current_sg_prompt = copy.deepcopy(temp_sg_prompt)
                             mining_mode = "dig_down"
@@ -808,7 +993,9 @@ def new_agent_do(
                         if is_waypoint_obtained:
                             step_waypoint_obtained = env.num_steps
                             current_sg_prompt = copy.deepcopy(temp_sg_prompt)
-                    if env.num_steps - step_waypoint_obtained >= MINUTE:
+                    if env.num_steps - step_waypoint_obtained >= MINUTE and not (
+                        mining_direction_active and mining_mode == "horizontal"
+                    ):
                         current_sg_prompt = copy.deepcopy(temp_sg_prompt)
                         logger.info(f"Current timestep: {env.num_steps}. Calling get_context_aware_reasoning ...")
                         reasoning_dict, visual_description, render_error = call_reasoning_with_retry(
