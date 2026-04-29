@@ -189,6 +189,131 @@ def retrieve_waypoints(
     return pretty_result
 
 
+LEDGER_SATISFIED_WAYPOINTS = {
+    "logs",
+    "log",
+    "cobblestone",
+    "stone",
+    "coal",
+    "coals",
+    "charcoal",
+    "iron_ore",
+    "gold_ore",
+    "redstone",
+    "redstone_ore",
+    "diamond",
+    "diamond_ore",
+    "dirt",
+}
+
+
+def _normalise_waypoint_name(item: Any) -> str:
+    item_name = str(item or "").lower().replace(" ", "_").strip()
+    if item_name == "log" or item_name.endswith("_log"):
+        return "logs"
+    if item_name == "coal_ore":
+        return "coal"
+    if item_name == "redstone_ore":
+        return "redstone"
+    if item_name == "diamond_ore":
+        return "diamond"
+    return item_name
+
+
+def _waypoint_item_matches(candidate: Any, target: str) -> bool:
+    candidate_name = _normalise_waypoint_name(candidate)
+    target_name = _normalise_waypoint_name(target)
+    if candidate_name == target_name:
+        return True
+    if target_name == "planks" and candidate_name.endswith("_planks"):
+        return True
+    if target_name == "logs" and candidate_name.endswith("_log"):
+        return True
+    return False
+
+
+def _count_waypoint_in_mapping(values: Dict[str, Any], waypoint: str) -> int:
+    total = 0
+    for item, quantity in (values or {}).items():
+        if not _waypoint_item_matches(item, waypoint):
+            continue
+        try:
+            total += int(quantity or 0)
+        except Exception:
+            continue
+    return total
+
+
+def _current_inventory_waypoint_count(env_status: Dict[str, Any], waypoint: str) -> int:
+    total = _count_waypoint_in_mapping(env_status.get("inventory") or {}, waypoint)
+    plain_inventory = env_status.get("plain_inventory") or {}
+    for slot in plain_inventory.values():
+        if not isinstance(slot, dict):
+            continue
+        if not _waypoint_item_matches(slot.get("type"), waypoint):
+            continue
+        try:
+            total += int(slot.get("quantity", 0) or 0)
+        except Exception:
+            continue
+    return total
+
+
+def _ledger_waypoint_count(env_status: Dict[str, Any], waypoint: str) -> int:
+    waypoint_name = _normalise_waypoint_name(waypoint)
+    if waypoint_name not in LEDGER_SATISFIED_WAYPOINTS:
+        return 0
+    ledger = env_status.get("resource_ledger") or {}
+    return max(
+        _count_waypoint_in_mapping(ledger.get("max_inventory") or {}, waypoint_name),
+        _count_waypoint_in_mapping(ledger.get("pickup") or {}, waypoint_name),
+        _count_waypoint_in_mapping(ledger.get("collected") or {}, waypoint_name),
+        _count_waypoint_in_mapping(ledger.get("mined_blocks") or {}, waypoint_name),
+    )
+
+
+def _planning_waypoint_satisfied(env_status: Dict[str, Any], waypoint: str, required: int) -> bool:
+    if required <= 0:
+        return True
+    if _current_inventory_waypoint_count(env_status, waypoint) >= required:
+        return True
+    return _ledger_waypoint_count(env_status, waypoint) >= required
+
+
+def _parse_waypoint_summary(wp_list_str: str) -> list[tuple[str, int, str]]:
+    parsed: list[tuple[str, int, str]] = []
+    for line in wp_list_str.splitlines()[1:]:
+        match = re.match(r"^\s*\d+\.\s*([^:]+):\s*need\s*(\d+)", line)
+        if not match:
+            continue
+        waypoint = _normalise_waypoint_name(match.group(1))
+        required = int(match.group(2))
+        parsed.append((waypoint, required, line.strip()))
+    return parsed
+
+
+def _select_next_planning_waypoint(
+    wp_list_str: str,
+    env_status: Dict[str, Any],
+    logger: logging.Logger,
+) -> tuple[str, int]:
+    parsed = _parse_waypoint_summary(wp_list_str)
+    if not parsed:
+        raise ValueError(f"Cannot parse waypoint summary: {wp_list_str}")
+
+    skipped: list[str] = []
+    for waypoint, required, original_line in parsed:
+        if _planning_waypoint_satisfied(env_status, waypoint, required):
+            skipped.append(original_line)
+            continue
+        if skipped:
+            logger.info(f"Skipped satisfied planner waypoints: {skipped}")
+        return waypoint, required
+
+    logger.info(f"All parsed planner waypoints appear satisfied; fallback to last waypoint: {parsed[-1][2]}")
+    return parsed[-1][0], parsed[-1][1]
+
+
 def make_plan(
     original_final_goal: str,
     env_status: dict,
@@ -208,13 +333,7 @@ def make_plan(
     wp_list_str = retrieve_waypoints(waypoint_generator, original_final_goal, 1, inventory)
     logger.info(f"In make_plan")
     logger.info(f"wp_list_str: {wp_list_str}")
-    first_wp_str = wp_list_str.splitlines()[1] # 0th line is 'craft 1 <goal> summary:'
-    
-    wp = first_wp_str.split('.')[1].split(':')[0].strip()
-    if 'log' in wp:
-        wp = 'logs'
-
-    wp_num = int(first_wp_str.split('.')[1].split('need')[1].strip())
+    wp, wp_num = _select_next_planning_waypoint(wp_list_str, env_status, logger)
 
     state_snapshot = action_memory.create_state_snapshot(env_status, obs, cfg)
     case_decision = action_memory.select_case_decision(
