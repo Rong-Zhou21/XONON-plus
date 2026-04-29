@@ -1,0 +1,187 @@
+{
+  "started_at": "2026-04-29T20:08:04",
+  "code_commit": "5831fdb",
+  "change_under_test": "prompt-only underground dig-forward adjustment when newly observed advanced ore appears before current ore target is complete",
+  "max_minutes": 20,
+  "tasks": [
+    {
+      "category": "Armor",
+      "benchmark": "armor",
+      "task_id": 6,
+      "instruction": "Craft diamond chestplate",
+      "attempts": [
+        {
+          "attempt": 1,
+          "exp_num": 20006,
+          "return_code": 0,
+          "log": "/tmp/xenon_plus_prompt_forward_armor_t6_exp20006_a1.log",
+          "result_file": "exp_results/v1/ours_planning_craft_diamond_chestplate_20006_failed_forest_PGGY.json",
+          "started_at": "2026-04-29T20:08:04",
+          "ended_at": "2026-04-29T20:26:03",
+          "retryable_infra_failure": false,
+          "task": "craft_diamond_chestplate",
+          "success": false,
+          "status_detailed": "timeout_non_programmatic",
+          "infra_early_stop": false,
+          "steps": 23829,
+          "minutes": 19.86,
+          "failed_waypoints": [
+            "diamond"
+          ],
+          "completed_subgoals_count": 11,
+          "failed_subgoals_count": 1,
+          "video_file": "videos/v1/Armor_Craft_diamond_chestplate/forest/failed/2026_04_29_12_25_40_dig_down_and_mine_diamond_PGGYtgVrSawXAg9aeBseyY.mp4"
+        }
+      ],
+      "final": {
+        "attempt": 1,
+        "exp_num": 20006,
+        "return_code": 0,
+        "log": "/tmp/xenon_plus_prompt_forward_armor_t6_exp20006_a1.log",
+        "result_file": "exp_results/v1/ours_planning_craft_diamond_chestplate_20006_failed_forest_PGGY.json",
+        "started_at": "2026-04-29T20:08:04",
+        "ended_at": "2026-04-29T20:26:03",
+        "retryable_infra_failure": false,
+        "task": "craft_diamond_chestplate",
+        "success": false,
+        "status_detailed": "timeout_non_programmatic",
+        "infra_early_stop": false,
+        "steps": 23829,
+        "minutes": 19.86,
+        "failed_waypoints": [
+          "diamond"
+        ],
+        "completed_subgoals_count": 11,
+        "failed_subgoals_count": 1,
+        "video_file": "videos/v1/Armor_Craft_diamond_chestplate/forest/failed/2026_04_29_12_25_40_dig_down_and_mine_diamond_PGGYtgVrSawXAg9aeBseyY.mp4"
+      }
+    },
+    {
+      "category": "Armor",
+      "benchmark": "armor",
+      "task_id": 10,
+      "instruction": "Craft golden leggings",
+      "attempts": [
+        {
+          "attempt": 1,
+          "exp_num": 20010,
+          "return_code": 0,
+          "log": "/tmp/xenon_plus_prompt_forward_armor_t10_exp20010_a1.log",
+          "result_file": "exp_results/v1/ours_planning_craft_golden_leggings_20010_failed_forest_Q9Rn.json",
+          "started_at": "2026-04-29T20:26:03",
+          "ended_at": "2026-04-29T20:31:42",
+          "retryable_infra_failure": true,
+          "task": "craft_golden_leggings",
+          "success": false,
+          "status_detailed": "env_step_timeout",
+          "infra_early_stop": true,
+          "steps": 188,
+          "minutes": 0.16,
+          "failed_waypoints": [
+            "logs"
+          ],
+          "completed_subgoals_count": 0,
+          "failed_subgoals_count": 1,
+          "video_file": "videos/v1/Armor_Craft_golden_leggings/forest/failed/2026_04_29_12_31_23_chop_a_tree_Q9RnCKqS95x3nkGpF6dSoZ.mp4"
+        },
+        {
+          "attempt": 2,
+          "exp_num": 30010,
+          "return_code": 0,
+          "log": "/tmp/xenon_plus_prompt_forward_armor_t10_exp30010_a2.log",
+          "result_file": "exp_results/v1/ours_planning_craft_golden_leggings_30010_failed_forest_kHUa.json",
+          "started_at": "2026-04-29T20:31:45",
+          "ended_at": "2026-04-29T20:49:15",
+          "retryable_infra_failure": false,
+          "task": "craft_golden_leggings",
+          "success": false,
+          "status_detailed": "timeout_non_programmatic",
+          "infra_early_stop": false,
+          "steps": 23868,
+          "minutes": 19.89,
+          "failed_waypoints": [
+            "gold_ore"
+          ],
+          "completed_subgoals_count": 11,
+          "failed_subgoals_count": 1,
+          "video_file": "videos/v1/Armor_Craft_golden_leggings/forest/failed/2026_04_29_12_48_51_dig_down_and_mine_gold_ore_kHUaGUxqcH2u86aSnKmNda.mp4"
+        }
+      ],
+      "final": {
+        "attempt": 2,
+        "exp_num": 30010,
+        "return_code": 0,
+        "log": "/tmp/xenon_plus_prompt_forward_armor_t10_exp30010_a2.log",
+        "result_file": "exp_results/v1/ours_planning_craft_golden_leggings_30010_failed_forest_kHUa.json",
+        "started_at": "2026-04-29T20:31:45",
+        "ended_at": "2026-04-29T20:49:15",
+        "retryable_infra_failure": false,
+        "task": "craft_golden_leggings",
+        "success": false,
+        "status_detailed": "timeout_non_programmatic",
+        "infra_early_stop": false,
+        "steps": 23868,
+        "minutes": 19.89,
+        "failed_waypoints": [
+          "gold_ore"
+        ],
+        "completed_subgoals_count": 11,
+        "failed_subgoals_count": 1,
+        "video_file": "videos/v1/Armor_Craft_golden_leggings/forest/failed/2026_04_29_12_48_51_dig_down_and_mine_gold_ore_kHUaGUxqcH2u86aSnKmNda.mp4"
+      }
+    },
+    {
+      "category": "Armor",
+      "benchmark": "armor",
+      "task_id": 12,
+      "instruction": "Craft golden chestplate",
+      "attempts": [
+        {
+          "attempt": 1,
+          "exp_num": 20012,
+          "return_code": 0,
+          "log": "/tmp/xenon_plus_prompt_forward_armor_t12_exp20012_a1.log",
+          "result_file": "exp_results/v1/ours_planning_craft_golden_chestplate_20012_failed_forest_oLoG.json",
+          "started_at": "2026-04-29T20:49:15",
+          "ended_at": "2026-04-29T21:07:06",
+          "retryable_infra_failure": false,
+          "task": "craft_golden_chestplate",
+          "success": false,
+          "status_detailed": "timeout_non_programmatic",
+          "infra_early_stop": false,
+          "steps": 23864,
+          "minutes": 19.89,
+          "failed_waypoints": [
+            "gold_ore"
+          ],
+          "completed_subgoals_count": 12,
+          "failed_subgoals_count": 1,
+          "video_file": "videos/v1/Armor_Craft_golden_chestplate/forest/failed/2026_04_29_13_06_43_dig_down_and_mine_gold_ore_oLoGUSRCSHZnCcepzT96Jk.mp4"
+        }
+      ],
+      "final": {
+        "attempt": 1,
+        "exp_num": 20012,
+        "return_code": 0,
+        "log": "/tmp/xenon_plus_prompt_forward_armor_t12_exp20012_a1.log",
+        "result_file": "exp_results/v1/ours_planning_craft_golden_chestplate_20012_failed_forest_oLoG.json",
+        "started_at": "2026-04-29T20:49:15",
+        "ended_at": "2026-04-29T21:07:06",
+        "retryable_infra_failure": false,
+        "task": "craft_golden_chestplate",
+        "success": false,
+        "status_detailed": "timeout_non_programmatic",
+        "infra_early_stop": false,
+        "steps": 23864,
+        "minutes": 19.89,
+        "failed_waypoints": [
+          "gold_ore"
+        ],
+        "completed_subgoals_count": 12,
+        "failed_subgoals_count": 1,
+        "video_file": "videos/v1/Armor_Craft_golden_chestplate/forest/failed/2026_04_29_13_06_43_dig_down_and_mine_gold_ore_oLoGUSRCSHZnCcepzT96Jk.mp4"
+      }
+    }
+  ],
+  "ended_at": "2026-04-29T21:07:06"
+}
