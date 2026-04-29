@@ -1,0 +1,195 @@
+{
+  "name": "remaining_never_success_after_respawn_aware_recovery",
+  "date": "2026-04-29",
+  "code_commit": "944dfb0",
+  "notes": [
+    "Low-air/water escape primitive is disabled by default.",
+    "Respawn recovery restores the current waypoint prompt and resets STEVE-1 hidden state; no planner re-entry is used.",
+    "User observed failures where mined target resources were not followed by waypoint transition; this should be investigated next.",
+    "Videos remain local under videos/v1 and are not tracked by git."
+  ],
+  "total_tasks": 8,
+  "success_count": 3,
+  "failure_count": 5,
+  "records": [
+    {
+      "task": "craft_a_blast_furnace",
+      "success": true,
+      "status": "success",
+      "steps": 10235,
+      "minutes": 8.53,
+      "failed_waypoints": [],
+      "recovery_events": {
+        "surface_escape": 0,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 0,
+        "respawn_reset": 1,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_a_blast_furnace_16014_success_plains_UmZN.json",
+      "video_file": "videos/v1/Iron_Craft_a_blast_furnace/plains/success/2026_04_29_03_25_05_craft_blast_furnace_UmZNeQHvYf6noXTetABw3n.mp4"
+    },
+    {
+      "task": "craft_a_piston",
+      "success": true,
+      "status": "success",
+      "steps": 5903,
+      "minutes": 4.92,
+      "failed_waypoints": [],
+      "recovery_events": {
+        "surface_escape": 0,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 0,
+        "respawn_reset": 0,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_a_piston_16000_success_forest_c4Mv.json",
+      "video_file": "videos/v1/Redstone_Craft_a_piston/forest/success/2026_04_29_03_29_00_craft_piston_c4MvJQuwx9J8mTsSRAFcW9.mp4"
+    },
+    {
+      "task": "craft_diamond_helmet",
+      "success": true,
+      "status": "success",
+      "steps": 20926,
+      "minutes": 17.44,
+      "failed_waypoints": [],
+      "recovery_events": {
+        "surface_escape": 0,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 33,
+        "respawn_reset": 1,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_diamond_helmet_16005_success_forest_feeW.json",
+      "video_file": "videos/v1/Armor_Craft_diamond_helmet/forest/success/2026_04_29_03_42_00_craft_diamond_helmet_feeWcF3ZGD8gF8mUNFj4aF.mp4"
+    },
+    {
+      "task": "craft_diamond_chestplate",
+      "success": false,
+      "status": "timeout_non_programmatic",
+      "steps": 23868,
+      "minutes": 19.89,
+      "failed_waypoints": [
+        "diamond"
+      ],
+      "recovery_events": {
+        "surface_escape": 0,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 54,
+        "respawn_reset": 0,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_diamond_chestplate_17006_failed_forest_gXQK.json",
+      "video_file": "videos/v1/Armor_Craft_diamond_chestplate/forest/failed/2026_04_29_03_57_44_dig_down_and_mine_diamond_gXQKdnKSvbksQzscNkV5Ak.mp4"
+    },
+    {
+      "task": "craft_diamond_leggings",
+      "success": false,
+      "status": "timeout_non_programmatic",
+      "steps": 23908,
+      "minutes": 19.92,
+      "failed_waypoints": [
+        "iron_ore",
+        "stick"
+      ],
+      "recovery_events": {
+        "surface_escape": 0,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 52,
+        "respawn_reset": 0,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_diamond_leggings_17007_failed_forest_4bnz.json",
+      "video_file": "videos/v1/Armor_Craft_diamond_leggings/forest/failed/2026_04_29_04_11_57_dig_down_and_mine_iron_ore_4bnzhtutdsGQU2pM2KKa92.mp4"
+    },
+    {
+      "task": "craft_golden_leggings",
+      "success": false,
+      "status": "timeout_non_programmatic",
+      "steps": 23868,
+      "minutes": 19.89,
+      "failed_waypoints": [
+        "gold_ore"
+      ],
+      "recovery_events": {
+        "surface_escape": 0,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 46,
+        "respawn_reset": 0,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_golden_leggings_17010_failed_forest_D49Q.json",
+      "video_file": "videos/v1/Armor_Craft_golden_leggings/forest/failed/2026_04_29_04_26_25_dig_down_and_mine_gold_ore_D49QLCmPt8pgjiZGCrsuXU.mp4"
+    },
+    {
+      "task": "craft_golden_boots",
+      "success": false,
+      "status": "timeout_non_programmatic",
+      "steps": 23867,
+      "minutes": 19.89,
+      "failed_waypoints": [
+        "gold_ore"
+      ],
+      "recovery_events": {
+        "surface_escape": 0,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 47,
+        "respawn_reset": 0,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_golden_boots_17011_failed_forest_eF8g.json",
+      "video_file": "videos/v1/Armor_Craft_golden_boots/forest/failed/2026_04_29_04_40_08_dig_down_and_mine_gold_ore_eF8guYXwQX7wpY9cSY4E2f.mp4"
+    },
+    {
+      "task": "craft_golden_chestplate",
+      "success": false,
+      "status": "failed",
+      "steps": 3751,
+      "minutes": 3.13,
+      "failed_waypoints": [
+        "cobblestone"
+      ],
+      "recovery_events": {
+        "surface_escape": 0,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 0,
+        "respawn_reset": 0,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_golden_chestplate_17012_failed_forest_CL5G.json",
+      "video_file": "videos/v1/Armor_Craft_golden_chestplate/forest/failed/2026_04_29_04_43_45_smelt_cobblestone_CL5GCQt5Ykm4uGukRbskLG.mp4"
+    }
+  ]
+}

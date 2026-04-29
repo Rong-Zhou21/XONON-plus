@@ -1,0 +1,106 @@
+{
+  "plan": [
+    {
+      "id": "UmZNeQHvYf6noXTetABw3n",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "blast_furnace",
+      "video": "videos/v1/Iron_Craft_a_blast_furnace/plains/success/2026_04_29_03_25_05_craft_blast_furnace_UmZNeQHvYf6noXTetABw3n.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            14
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "smelt stone",
+          "goal": [
+            "stone",
+            3
+          ]
+        },
+        {
+          "task": "smelt smooth_stone",
+          "goal": [
+            "smooth_stone",
+            3
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft blast_furnace",
+          "goal": [
+            "blast_furnace",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 10235
+    }
+  ]
+}

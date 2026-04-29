@@ -1,0 +1,106 @@
+{
+  "plan": [
+    {
+      "id": "feeWcF3ZGD8gF8mUNFj4aF",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_helmet",
+      "video": "videos/v1/Armor_Craft_diamond_helmet/forest/success/2026_04_29_03_42_00_craft_diamond_helmet_feeWcF3ZGD8gF8mUNFj4aF.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            5
+          ]
+        },
+        {
+          "task": "craft diamond_helmet",
+          "goal": [
+            "diamond_helmet",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 20926
+    }
+  ]
+}
