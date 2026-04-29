@@ -42,6 +42,15 @@ def _normalise_waypoint(waypoint: str) -> str:
     return waypoint
 
 
+def _canonical_json(value: Any) -> str:
+    return json.dumps(
+        _jsonable(value),
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    )
+
+
 class CaseBasedMemory:
     """Case-based replacement for waypoint action memory.
 
@@ -130,6 +139,39 @@ class CaseBasedMemory:
                 continue
             key = (_normalise_waypoint(case.get("waypoint", "")), case.get("selected_action", ""))
             self._pending_decisions.setdefault(key, []).append(case["id"])
+
+    def _case_duplicate_key(self, case: Dict[str, Any]) -> str:
+        payload = copy.deepcopy(case)
+        for key in ("id", "created_at", "run_uuid"):
+            payload.pop(key, None)
+        outcome = payload.get("outcome")
+        if isinstance(outcome, dict):
+            outcome.pop("recorded_at", None)
+        return _canonical_json(payload)
+
+    def _remove_exact_duplicate_case(self, case: Dict[str, Any]) -> str | None:
+        outcome = case.get("outcome", {})
+        if outcome.get("status") == "pending":
+            return None
+
+        duplicate_key = self._case_duplicate_key(case)
+        for existing in self.cases:
+            if existing is case:
+                continue
+            existing_outcome = existing.get("outcome", {})
+            if existing_outcome.get("status") == "pending":
+                continue
+            if self._case_duplicate_key(existing) != duplicate_key:
+                continue
+
+            self.cases = [item for item in self.cases if item is not case]
+            if self.logger:
+                self.logger.info(
+                    "Skipped exact duplicate case: "
+                    f"case_id={case.get('id')}, duplicate_of={existing.get('id')}"
+                )
+            return existing.get("id")
+        return None
 
     def create_state_snapshot(
         self,
@@ -548,8 +590,11 @@ class CaseBasedMemory:
         if decision_trace_update:
             case.setdefault("decision_trace", {}).update(_jsonable(decision_trace_update))
 
+        duplicate_of = self._remove_exact_duplicate_case(case)
         self._rewrite_cases()
         self._refresh_embeddings()
+        if duplicate_of is not None:
+            self._rebuild_pending_index()
 
     def mark_pending_cases_failed(
         self,
@@ -558,6 +603,7 @@ class CaseBasedMemory:
         env_status: Dict[str, Any] | None = None,
     ) -> int:
         updated = 0
+        updated_cases = []
         for case in self.cases:
             if case.get("outcome", {}).get("status") != "pending":
                 continue
@@ -571,11 +617,20 @@ class CaseBasedMemory:
             }
             case.setdefault("decision_trace", {})["finalized_from_pending"] = True
             updated += 1
+            updated_cases.append(case)
 
         if updated:
+            removed_duplicates = 0
+            for case in updated_cases:
+                if not any(existing is case for existing in self.cases):
+                    continue
+                if self._remove_exact_duplicate_case(case) is not None:
+                    removed_duplicates += 1
             self._rewrite_cases()
             self._refresh_embeddings()
             self._rebuild_pending_index()
+            if removed_duplicates and self.logger:
+                self.logger.info(f"Skipped {removed_duplicates} exact duplicate failed cases.")
         return updated
 
     def discard_pending_cases(self, run_uuid: str | None = None) -> int:
