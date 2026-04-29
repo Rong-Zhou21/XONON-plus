@@ -339,11 +339,14 @@ def check_waypoint_item_obtained(new_item_dict, waypoint, logger):
 
 
 def _is_tree_chop_subgoal(prompt: str, target: list[Any] | tuple[Any, ...] | None) -> bool:
-    text_parts = [prompt or ""]
-    if target:
-        text_parts.append(str(target[0]))
-    text = " ".join(text_parts).lower()
-    return any(token in text for token in ("chop", "punch", "tree", "log", "logs", "wood"))
+    if not target:
+        return False
+    target_item = str(target[0]).lower()
+    is_log_goal = target_item in {"log", "logs"} or target_item.endswith("_log")
+    if not is_log_goal:
+        return False
+    prompt_text = (prompt or "").lower()
+    return any(token in prompt_text for token in ("chop", "punch", "tree", "log", "logs"))
 
 
 def _log_activity_count(env_status: Dict[str, Any]) -> int:

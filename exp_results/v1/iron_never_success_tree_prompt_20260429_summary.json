@@ -1,0 +1,59 @@
+{
+  "name": "iron_never_success_after_prompt_level_tree_exploration",
+  "date": "2026-04-29",
+  "code_commit_base": "4fe830c",
+  "notes": [
+    "Tree exploration is prompt-level only and gated to log/logs chopping subgoals.",
+    "Mining subgoals do not enter the tree exploration mechanism.",
+    "Videos are stored locally under videos/v1 and are not tracked by git."
+  ],
+  "total_tasks": 2,
+  "success_count": 1,
+  "failure_count": 1,
+  "records": [
+    {
+      "task": "craft_a_iron_sword",
+      "success": true,
+      "status": "success",
+      "steps": 5314,
+      "minutes": 4.43,
+      "failed_waypoints": [],
+      "recovery_events": {
+        "surface_escape": 0,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 0,
+        "respawn_reset": 0,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_a_iron_sword_15007_success_plains_jawD.json",
+      "video_file": "videos/v1/Iron_Craft_a_iron_sword/plains/success/2026_04_29_02_19_42_craft_iron_sword_jawDeiBSX9MiUDMmNkRxoU.mp4"
+    },
+    {
+      "task": "craft_a_blast_furnace",
+      "success": false,
+      "status": "timeout_non_programmatic",
+      "steps": 11906,
+      "minutes": 9.92,
+      "failed_waypoints": [
+        "iron_ore"
+      ],
+      "recovery_events": {
+        "surface_escape": 10,
+        "surface_search": 0,
+        "collect_drops": 0,
+        "movement_escape": 0,
+        "tunnel_recovery": 8,
+        "respawn_reset": 0,
+        "checker_error": 0,
+        "inventory_cleanup": 0,
+        "inventory_cleanup_blocked": 0
+      },
+      "result_file": "exp_results/v1/ours_planning_craft_a_blast_furnace_15014_failed_plains_C7QE.json",
+      "video_file": "videos/v1/Iron_Craft_a_blast_furnace/plains/failed/2026_04_29_02_28_24_dig_down_and_mine_iron_ore_C7QEVnE8tuWzCDaCodAR5i.mp4"
+    }
+  ]
+}
