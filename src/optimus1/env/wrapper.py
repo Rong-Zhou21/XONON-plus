@@ -203,6 +203,8 @@ class CustomEnvWrapper(gym.Wrapper):
         self.cache["last_progress_step"] = 0
         self.cache["last_goal_progress_step"] = 0
         self.cache["last_target_block_step"] = 0
+        self.cache["last_surface_attack_step"] = -1000000
+        self.cache["surface_attack_streak"] = 0
         self.cache["last_surface_search_step"] = -1000000
         self.cache["last_collect_drop_step"] = -1000000
         self.cache["position_window"] = deque(maxlen=120)
@@ -845,6 +847,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["surface_search_ticks"] = 0
             self._control_state["collect_drop_ticks"] = 0
             self._control_state["last_prompt"] = prompt
+            self.cache["surface_attack_streak"] = 0
             self.cache["last_progress_step"] = self.num_steps
             self.cache["last_goal_progress_step"] = self.num_steps
 
@@ -944,6 +947,15 @@ class CustomEnvWrapper(gym.Wrapper):
         elif original_attack:
             for key in ("jump", "left", "right", "sprint", "sneak"):
                 self._set_button(action, key, 0)
+
+        if self._is_surface_resource_acquisition(goal, prompt):
+            if self._button_down(action, "attack"):
+                self.cache["surface_attack_streak"] = int(self.cache.get("surface_attack_streak", 0)) + 1
+                self.cache["last_surface_attack_step"] = self.num_steps
+            else:
+                self.cache["surface_attack_streak"] = 0
+        else:
+            self.cache["surface_attack_streak"] = 0
 
         self._maybe_log_action_debug("stabilize", original_action, action, goal, prompt)
         return action
@@ -1326,4 +1338,10 @@ class CustomEnvWrapper(gym.Wrapper):
         status["recovery_events"] = copy.deepcopy(
             self._control_state.get("recovery_events", {})
         )
+        status["control_state"] = {
+            "surface_attack_streak": int(self.cache.get("surface_attack_streak", 0)),
+            "last_surface_attack_step": int(self.cache.get("last_surface_attack_step", -1000000)),
+            "last_target_block_step": int(self.cache.get("last_target_block_step", 0)),
+            "last_goal_progress_step": int(self.cache.get("last_goal_progress_step", 0)),
+        }
         return status

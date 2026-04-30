@@ -189,24 +189,6 @@ def retrieve_waypoints(
     return pretty_result
 
 
-LEDGER_SATISFIED_WAYPOINTS = {
-    "logs",
-    "log",
-    "cobblestone",
-    "stone",
-    "coal",
-    "coals",
-    "charcoal",
-    "iron_ore",
-    "gold_ore",
-    "redstone",
-    "redstone_ore",
-    "diamond",
-    "diamond_ore",
-    "dirt",
-}
-
-
 def _normalise_waypoint_name(item: Any) -> str:
     item_name = str(item or "").lower().replace(" ", "_").strip()
     if item_name == "log" or item_name.endswith("_log"):
@@ -218,66 +200,6 @@ def _normalise_waypoint_name(item: Any) -> str:
     if item_name == "diamond_ore":
         return "diamond"
     return item_name
-
-
-def _waypoint_item_matches(candidate: Any, target: str) -> bool:
-    candidate_name = _normalise_waypoint_name(candidate)
-    target_name = _normalise_waypoint_name(target)
-    if candidate_name == target_name:
-        return True
-    if target_name == "planks" and candidate_name.endswith("_planks"):
-        return True
-    if target_name == "logs" and candidate_name.endswith("_log"):
-        return True
-    return False
-
-
-def _count_waypoint_in_mapping(values: Dict[str, Any], waypoint: str) -> int:
-    total = 0
-    for item, quantity in (values or {}).items():
-        if not _waypoint_item_matches(item, waypoint):
-            continue
-        try:
-            total += int(quantity or 0)
-        except Exception:
-            continue
-    return total
-
-
-def _current_inventory_waypoint_count(env_status: Dict[str, Any], waypoint: str) -> int:
-    total = _count_waypoint_in_mapping(env_status.get("inventory") or {}, waypoint)
-    plain_inventory = env_status.get("plain_inventory") or {}
-    for slot in plain_inventory.values():
-        if not isinstance(slot, dict):
-            continue
-        if not _waypoint_item_matches(slot.get("type"), waypoint):
-            continue
-        try:
-            total += int(slot.get("quantity", 0) or 0)
-        except Exception:
-            continue
-    return total
-
-
-def _ledger_waypoint_count(env_status: Dict[str, Any], waypoint: str) -> int:
-    waypoint_name = _normalise_waypoint_name(waypoint)
-    if waypoint_name not in LEDGER_SATISFIED_WAYPOINTS:
-        return 0
-    ledger = env_status.get("resource_ledger") or {}
-    return max(
-        _count_waypoint_in_mapping(ledger.get("max_inventory") or {}, waypoint_name),
-        _count_waypoint_in_mapping(ledger.get("pickup") or {}, waypoint_name),
-        _count_waypoint_in_mapping(ledger.get("collected") or {}, waypoint_name),
-        _count_waypoint_in_mapping(ledger.get("mined_blocks") or {}, waypoint_name),
-    )
-
-
-def _planning_waypoint_satisfied(env_status: Dict[str, Any], waypoint: str, required: int) -> bool:
-    if required <= 0:
-        return True
-    if _current_inventory_waypoint_count(env_status, waypoint) >= required:
-        return True
-    return _ledger_waypoint_count(env_status, waypoint) >= required
 
 
 def _parse_waypoint_summary(wp_list_str: str) -> list[tuple[str, int, str]]:
@@ -294,24 +216,17 @@ def _parse_waypoint_summary(wp_list_str: str) -> list[tuple[str, int, str]]:
 
 def _select_next_planning_waypoint(
     wp_list_str: str,
-    env_status: Dict[str, Any],
     logger: logging.Logger,
 ) -> tuple[str, int]:
     parsed = _parse_waypoint_summary(wp_list_str)
     if not parsed:
         raise ValueError(f"Cannot parse waypoint summary: {wp_list_str}")
-
-    skipped: list[str] = []
-    for waypoint, required, original_line in parsed:
-        if _planning_waypoint_satisfied(env_status, waypoint, required):
-            skipped.append(original_line)
-            continue
-        if skipped:
-            logger.info(f"Skipped satisfied planner waypoints: {skipped}")
-        return waypoint, required
-
-    logger.info(f"All parsed planner waypoints appear satisfied; fallback to last waypoint: {parsed[-1][2]}")
-    return parsed[-1][0], parsed[-1][1]
+    # OracleGraph already subtracts the current inventory before emitting
+    # "need N"; N is the remaining requirement, not the total target count.
+    # Do not skip entries here using ledger/current inventory, because consumed
+    # materials from past waypoints would otherwise be treated as still usable.
+    logger.info(f"Selected first remaining planner waypoint: {parsed[0][2]}")
+    return parsed[0][0], parsed[0][1]
 
 
 def make_plan(
@@ -333,7 +248,7 @@ def make_plan(
     wp_list_str = retrieve_waypoints(waypoint_generator, original_final_goal, 1, inventory)
     logger.info(f"In make_plan")
     logger.info(f"wp_list_str: {wp_list_str}")
-    wp, wp_num = _select_next_planning_waypoint(wp_list_str, env_status, logger)
+    wp, wp_num = _select_next_planning_waypoint(wp_list_str, logger)
 
     state_snapshot = action_memory.create_state_snapshot(env_status, obs, cfg)
     case_decision = action_memory.select_case_decision(
@@ -969,6 +884,7 @@ def new_agent_do(
                 tree_explore_prompt = os.environ.get("XENON_TREE_EXPLORE_PROMPT", "find a tree")
                 tree_chop_stale_ticks = int(os.environ.get("XENON_TREE_CHOP_STALE_TICKS", "360"))
                 tree_explore_ticks = int(os.environ.get("XENON_TREE_EXPLORE_TICKS", "420"))
+                tree_contact_attack_ticks = int(os.environ.get("XENON_TREE_CONTACT_ATTACK_TICKS", "16"))
                 mining_direction_active = _is_layered_mining_subgoal(current_sg_prompt, current_sg_target)
                 mining_target_ore = _normalise_ore_name(current_sg_target[0]) if mining_direction_active else ""
                 mining_required = _ore_required_count(current_sg_target)
@@ -996,6 +912,7 @@ def new_agent_do(
                             tree_mode = "chop"
                             tree_log_activity = _log_activity_count(env.get_status())
                             tree_last_activity_step = env.num_steps
+                            step_waypoint_obtained = env.num_steps
                         if mining_direction_active:
                             mining_mode = "dig_down"
                             mining_activity = _ore_activity_count(env.get_status(), mining_target_ore)
@@ -1019,7 +936,13 @@ def new_agent_do(
                     monitors.update(f"{temp_sg_prompt}_{progress}", env.current_subgoal_finish)
 
                     if tree_chop_active:
-                        current_log_activity = _log_activity_count(env.get_status())
+                        tree_status = env.get_status()
+                        current_log_activity = _log_activity_count(tree_status)
+                        control_state = tree_status.get("control_state") or {}
+                        tree_contact_active = (
+                            int(control_state.get("surface_attack_streak", 0)) >= tree_contact_attack_ticks
+                            and env.num_steps - int(control_state.get("last_surface_attack_step", -1000000)) <= 2
+                        )
                         if current_log_activity > tree_log_activity:
                             tree_log_activity = current_log_activity
                             tree_last_activity_step = env.num_steps
@@ -1029,6 +952,16 @@ def new_agent_do(
                                 tree_mode = "chop"
                                 logger.info(
                                     "Tree acquisition has started; switching STEVE-1 prompt back to "
+                                    f"{current_sg_prompt} at timestep {env.num_steps}."
+                                )
+                        elif tree_contact_active:
+                            tree_last_activity_step = env.num_steps
+                            step_waypoint_obtained = env.num_steps
+                            if current_sg_prompt != temp_sg_prompt:
+                                current_sg_prompt = copy.deepcopy(temp_sg_prompt)
+                                tree_mode = "chop"
+                                logger.info(
+                                    "Sustained tree-chopping contact detected; switching STEVE-1 prompt back to "
                                     f"{current_sg_prompt} at timestep {env.num_steps}."
                                 )
                         elif (
