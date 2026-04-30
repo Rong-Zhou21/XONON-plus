@@ -87,6 +87,94 @@
       ],
       "status": "success",
       "steps": 3921
+    },
+    {
+      "id": "JdcCfWSiSHzuMV3eSdH7KC",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "shield",
+      "video": "videos/v2/Armor_Craft_shield/forest/success/2026_04_30_19_53_48_craft_shield_JdcCfWSiSHzuMV3eSdH7KC.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft shield",
+          "goal": [
+            "shield",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3790
     }
   ]
 }

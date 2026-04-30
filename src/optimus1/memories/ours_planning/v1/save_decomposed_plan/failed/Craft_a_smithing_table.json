@@ -1,0 +1,61 @@
+{
+  "plan": [
+    {
+      "id": "4staXBAmUEkUtvo3YVTkyY",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/v2/Iron_Craft_a_smithing_table/plains/failed/2026_04_29_20_11_25_craft_wooden_pickaxe_4staXBAmUEkUtvo3YVTkyY.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 2109
+    },
+    {
+      "id": "EfWPMX5HasRbJfTtHc4HBG",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/v2/Iron_Craft_a_smithing_table/plains/failed/2026_04_30_16_08_32_chop_a_tree_EfWPMX5HasRbJfTtHc4HBG.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    }
+  ]
+}

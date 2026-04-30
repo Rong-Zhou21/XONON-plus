@@ -1,0 +1,40 @@
+{
+  "plan": [
+    {
+      "id": "SfFJMER9DCTPBkMEGj3UeH",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_axe",
+      "video": "videos/v2/Stone_Craft_a_stone_axe/plains/failed/2026_04_29_18_26_20_chop_a_tree_SfFJMER9DCTPBkMEGj3UeH.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "UQJXLVEzruFpa66oVcP7yR",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_axe",
+      "video": "videos/v2/Stone_Craft_a_stone_axe/plains/failed/2026_04_30_14_53_50_chop_a_tree_UQJXLVEzruFpa66oVcP7yR.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    }
+  ]
+}

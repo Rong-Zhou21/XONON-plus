@@ -147,6 +147,110 @@
       ],
       "status": "failed",
       "steps": 11891
+    },
+    {
+      "id": "cUrg8NJECJmgJh4QbrzdDz",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stonecutter",
+      "video": "videos/v2/Iron_Craft_a_stonecutter/plains/failed/2026_04_29_21_02_09_craft_stonecutter_cUrg8NJECJmgJh4QbrzdDz.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            14
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft stonecutter",
+          "goal": [
+            "stonecutter",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 6467
+    },
+    {
+      "id": "JY34HzciVgcG2M467qosNt",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stonecutter",
+      "video": "videos/v2/Iron_Craft_a_stonecutter/plains/failed/2026_04_30_17_01_23_Craft_a_stonecutter_JY34HzciVgcG2M467qosNt.mp4",
+      "planning": [
+        {
+          "task": "Craft a stonecutter",
+          "goal": "stonecutter",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12001
     }
   ]
 }

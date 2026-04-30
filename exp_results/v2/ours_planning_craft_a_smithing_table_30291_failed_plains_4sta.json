@@ -1,0 +1,220 @@
+{
+  "run_uuid": "4staXBAmUEkUtvo3YVTkyY",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "iron",
+  "task": "craft_a_smithing_table",
+  "goal": "smithing_table",
+  "exp_num": 30291,
+  "biome": "plains",
+  "is_fixed_memory": false,
+  "max_minutes": 10,
+  "success": false,
+  "status_detailed": "failed",
+  "infra_early_stop": false,
+  "video_file": "videos/v2/Iron_Craft_a_smithing_table/plains/failed/2026_04_29_20_11_25_craft_wooden_pickaxe_4staXBAmUEkUtvo3YVTkyY.mp4",
+  "steps": 2109,
+  "minutes": 1.76,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1767
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 203
+    },
+    "craft crafting_table_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 124
+    },
+    "craft wooden_pickaxe_3": {
+      "SuccessMonitor": 0,
+      "StepMonitor": 15
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        7
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        23
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        7
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        23
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    }
+  ],
+  "remain_plans": [
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    }
+  ],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        7
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        23
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        7
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        23
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    }
+  ],
+  "failed_waypoints": [
+    "wooden_pickaxe"
+  ],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 0,
+    "collect_drops": 0,
+    "movement_escape": 0,
+    "tunnel_recovery": 0,
+    "respawn_reset": 0,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "oak_planks": 16,
+      "stick": 1,
+      "birch_log": 1,
+      "birch_planks": 4,
+      "crafting_table": 1
+    },
+    "last_pickup_stats": {
+      "birch_log": 2,
+      "oak_log": 5,
+      "stick": 1
+    },
+    "last_mine_block_stats": {
+      "birch_log": 2,
+      "oak_leaves": 4,
+      "oak_log": 5
+    },
+    "max_inventory": {
+      "oak_log": 5,
+      "stick": 1,
+      "birch_log": 2,
+      "oak_planks": 20,
+      "birch_planks": 4,
+      "crafting_table": 1
+    },
+    "collected": {
+      "oak_log": 5,
+      "stick": 1,
+      "birch_log": 3,
+      "oak_planks": 36,
+      "birch_planks": 4,
+      "crafting_table": 1
+    },
+    "pickup": {
+      "oak_log": 5,
+      "stick": 1,
+      "birch_log": 2
+    },
+    "mined_blocks": {
+      "oak_log": 5,
+      "oak_leaves": 4,
+      "birch_log": 2
+    }
+  },
+  "inventory_slots_used": 5
+}

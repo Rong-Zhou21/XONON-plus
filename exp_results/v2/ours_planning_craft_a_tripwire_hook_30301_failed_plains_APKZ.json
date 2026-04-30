@@ -1,0 +1,123 @@
+{
+  "run_uuid": "APKZB3YAsYwnhuC5AK4JDY",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "iron",
+  "task": "craft_a_tripwire_hook",
+  "goal": "tripwire_hook",
+  "exp_num": 30301,
+  "biome": "plains",
+  "is_fixed_memory": false,
+  "max_minutes": 10,
+  "success": false,
+  "status_detailed": "timeout_non_programmatic",
+  "infra_early_stop": false,
+  "video_file": "videos/v2/Iron_Craft_a_tripwire_hook/plains/failed/2026_04_29_20_20_24_chop_a_tree_APKZB3YAsYwnhuC5AK4JDY.mp4",
+  "steps": 11997,
+  "minutes": 10.0,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 0,
+      "StepMonitor": 11997
+    }
+  },
+  "completed_subgoals": [],
+  "completed_plans": [],
+  "failed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    }
+  ],
+  "remain_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    }
+  ],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    }
+  ],
+  "failed_waypoints": [
+    "logs"
+  ],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 0,
+    "collect_drops": 0,
+    "movement_escape": 0,
+    "tunnel_recovery": 0,
+    "respawn_reset": 0,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "oak_log": 6,
+      "oak_sapling": 1,
+      "stick": 3,
+      "red_sand": 1
+    },
+    "last_pickup_stats": {
+      "oak_log": 6,
+      "oak_sapling": 1,
+      "red_sand": 1,
+      "stick": 3
+    },
+    "last_mine_block_stats": {
+      "birch_leaves": 3,
+      "grass": 1,
+      "oak_leaves": 25,
+      "oak_log": 6,
+      "red_sand": 1
+    },
+    "max_inventory": {
+      "oak_log": 6,
+      "oak_sapling": 1,
+      "stick": 3,
+      "red_sand": 1
+    },
+    "collected": {
+      "oak_log": 6,
+      "oak_sapling": 1,
+      "stick": 3,
+      "red_sand": 1
+    },
+    "pickup": {
+      "oak_log": 6,
+      "oak_sapling": 1,
+      "stick": 3,
+      "red_sand": 1
+    },
+    "mined_blocks": {
+      "oak_leaves": 25,
+      "oak_log": 6,
+      "birch_leaves": 3,
+      "grass": 1,
+      "red_sand": 1
+    }
+  },
+  "inventory_slots_used": 4
+}

@@ -1,0 +1,43 @@
+{
+  "plan": [
+    {
+      "id": "Ynqtd2hkX4u2zoRmjhMQ6k",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_chestplate",
+      "video": "videos/v2/Armor_Craft_iron_chestplate/forest/failed/2026_04_30_00_29_58_craft_wooden_pickaxe_Ynqtd2hkX4u2zoRmjhMQ6k.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 1040
+    }
+  ]
+}

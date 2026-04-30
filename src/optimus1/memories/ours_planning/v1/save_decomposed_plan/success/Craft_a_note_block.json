@@ -304,6 +304,108 @@
       ],
       "status": "success",
       "steps": 11307
+    },
+    {
+      "id": "37kCNgmQVc84WvJ2MSdpp4",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "note_block",
+      "video": "videos/v2/Redstone_Craft_a_note_block/forest/success/2026_04_30_00_16_11_craft_note_block_37kCNgmQVc84WvJ2MSdpp4.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            33
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine redstone",
+          "goal": [
+            "redstone",
+            1
+          ]
+        },
+        {
+          "task": "craft note_block",
+          "goal": [
+            "note_block",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6919
     }
   ]
 }

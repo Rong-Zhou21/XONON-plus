@@ -73,6 +73,40 @@
       ],
       "status": "failed",
       "steps": 7325
+    },
+    {
+      "id": "KJU326K2kJiyENLdw2PuSG",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "rail",
+      "video": "videos/v2/Iron_Craft_a_rail/plains/failed/2026_04_29_19_52_44_Craft_a_rail_KJU326K2kJiyENLdw2PuSG.mp4",
+      "planning": [
+        {
+          "task": "Craft a rail",
+          "goal": "rail",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12001
+    },
+    {
+      "id": "Uidc6E5yxQDisKD5Q7gab6",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "rail",
+      "video": "videos/v2/Iron_Craft_a_rail/plains/failed/2026_04_30_15_49_38_chop_a_tree_Uidc6E5yxQDisKD5Q7gab6.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }

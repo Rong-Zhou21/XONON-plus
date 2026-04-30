@@ -204,6 +204,108 @@
       ],
       "status": "success",
       "steps": 6864
+    },
+    {
+      "id": "862R8ReDcu6vE69fABz9yi",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "compass",
+      "video": "videos/v2/Redstone_Craft_a_compass/forest/success/2026_04_30_19_38_04_craft_compass_862R8ReDcu6vE69fABz9yi.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            7
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            7
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine redstone",
+          "goal": [
+            "redstone",
+            1
+          ]
+        },
+        {
+          "task": "craft compass",
+          "goal": [
+            "compass",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6415
     }
   ]
 }

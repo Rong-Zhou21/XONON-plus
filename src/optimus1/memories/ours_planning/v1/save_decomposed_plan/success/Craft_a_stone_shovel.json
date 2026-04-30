@@ -119,6 +119,66 @@
       ],
       "status": "success",
       "steps": 2356
+    },
+    {
+      "id": "oBYxu7ZpguwaRuveNRhBkv",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_shovel",
+      "video": "videos/v2/Stone_Craft_a_stone_shovel/plains/success/2026_04_29_18_16_26_craft_stone_shovel_oBYxu7ZpguwaRuveNRhBkv.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            11
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_shovel",
+          "goal": [
+            "stone_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3243
     }
   ]
 }

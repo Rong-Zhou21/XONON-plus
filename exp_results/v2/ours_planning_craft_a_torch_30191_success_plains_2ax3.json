@@ -1,0 +1,342 @@
+{
+  "run_uuid": "2ax3cjrG9WBdRRoHJWtuTP",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "stone",
+  "task": "craft_a_torch",
+  "goal": "torch",
+  "exp_num": 30191,
+  "biome": "plains",
+  "is_fixed_memory": false,
+  "max_minutes": 6,
+  "success": true,
+  "status_detailed": "success",
+  "infra_early_stop": false,
+  "video_file": "videos/v2/Stone_Craft_a_torch/plains/success/2026_04_29_18_54_31_craft_torch_2ax3cjrG9WBdRRoHJWtuTP.mp4",
+  "steps": 2931,
+  "minutes": 2.44,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1318
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 163
+    },
+    "craft stick_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 95
+    },
+    "craft crafting_table_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 108
+    },
+    "craft wooden_pickaxe_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 322
+    },
+    "dig down and mine coals_5": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 821
+    },
+    "craft torch_6": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 104
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        11
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine coals",
+      "goal": [
+        "coals",
+        1
+      ]
+    },
+    {
+      "task": "craft torch",
+      "goal": [
+        "torch",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        11
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine coals",
+      "goal": [
+        "coals",
+        1
+      ]
+    },
+    {
+      "task": "craft torch",
+      "goal": [
+        "torch",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [],
+  "remain_plans": [],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        11
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine coals",
+      "goal": [
+        "coals",
+        1
+      ]
+    },
+    {
+      "task": "craft torch",
+      "goal": [
+        "torch",
+        1
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        4
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        11
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        3
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine coals",
+      "goal": [
+        "coals",
+        1
+      ]
+    },
+    {
+      "task": "craft torch",
+      "goal": [
+        "torch",
+        1
+      ]
+    }
+  ],
+  "failed_waypoints": [],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 0,
+    "collect_drops": 0,
+    "movement_escape": 0,
+    "tunnel_recovery": 0,
+    "respawn_reset": 0,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "birch_log": 1,
+      "oak_planks": 1,
+      "birch_planks": 2,
+      "stick": 1,
+      "dirt": 3,
+      "crafting_table": 1,
+      "wooden_pickaxe": 1,
+      "cobblestone": 24,
+      "torch": 4
+    },
+    "last_pickup_stats": {
+      "birch_log": 3,
+      "coal": 1,
+      "cobblestone": 24,
+      "crafting_table": 1,
+      "dirt": 3,
+      "oak_log": 1
+    },
+    "last_mine_block_stats": {
+      "birch_leaves": 2,
+      "birch_log": 4,
+      "coal_ore": 1,
+      "crafting_table": 1,
+      "dirt": 1,
+      "grass_block": 2,
+      "oak_log": 1,
+      "stone": 24
+    },
+    "max_inventory": {
+      "birch_log": 3,
+      "oak_log": 1,
+      "oak_planks": 4,
+      "birch_planks": 8,
+      "stick": 4,
+      "crafting_table": 1,
+      "wooden_pickaxe": 1,
+      "dirt": 3,
+      "cobblestone": 24,
+      "coal": 1,
+      "torch": 4
+    },
+    "collected": {
+      "birch_log": 4,
+      "oak_log": 1,
+      "oak_planks": 5,
+      "birch_planks": 16,
+      "stick": 7,
+      "crafting_table": 2,
+      "wooden_pickaxe": 2,
+      "dirt": 3,
+      "cobblestone": 24,
+      "coal": 1,
+      "torch": 4
+    },
+    "pickup": {
+      "birch_log": 3,
+      "oak_log": 1,
+      "crafting_table": 1,
+      "dirt": 3,
+      "cobblestone": 24,
+      "coal": 1
+    },
+    "mined_blocks": {
+      "birch_log": 4,
+      "birch_leaves": 2,
+      "oak_log": 1,
+      "crafting_table": 1,
+      "grass_block": 2,
+      "dirt": 1,
+      "stone": 24,
+      "coal_ore": 1
+    }
+  },
+  "inventory_slots_used": 9
+}

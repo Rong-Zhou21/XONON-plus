@@ -80,6 +80,80 @@
       ],
       "status": "failed",
       "steps": 9653
+    },
+    {
+      "id": "3CQ8eNFystAuSKjdGy8B8k",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "dropper",
+      "video": "videos/v2/Redstone_Craft_a_dropper/forest/failed/2026_04_30_00_07_27_dig_down_and_mine_iron_ore_3CQ8eNFystAuSKjdGy8B8k.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            18
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35865
     }
   ]
 }

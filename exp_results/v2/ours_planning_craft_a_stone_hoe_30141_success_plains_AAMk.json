@@ -1,0 +1,327 @@
+{
+  "run_uuid": "AAMkaSk3jfR36P6KkogDef",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "stone",
+  "task": "craft_a_stone_hoe",
+  "goal": "stone_hoe",
+  "exp_num": 30141,
+  "biome": "plains",
+  "is_fixed_memory": false,
+  "max_minutes": 6,
+  "success": true,
+  "status_detailed": "success",
+  "infra_early_stop": false,
+  "video_file": "videos/v2/Stone_Craft_a_stone_hoe/plains/success/2026_04_29_18_30_27_craft_stone_hoe_AAMkaSk3jfR36P6KkogDef.mp4",
+  "steps": 2247,
+  "minutes": 1.87,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1177
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 130
+    },
+    "craft stick_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 90
+    },
+    "craft crafting_table_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 112
+    },
+    "craft wooden_pickaxe_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 322
+    },
+    "dig down and mine cobblestone_5": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 132
+    },
+    "craft stone_hoe_6": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 284
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        5
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        15
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        2
+      ]
+    },
+    {
+      "task": "craft stone_hoe",
+      "goal": [
+        "stone_hoe",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        5
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        15
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        2
+      ]
+    },
+    {
+      "task": "craft stone_hoe",
+      "goal": [
+        "stone_hoe",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [],
+  "remain_plans": [],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        5
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        15
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        2
+      ]
+    },
+    {
+      "task": "craft stone_hoe",
+      "goal": [
+        "stone_hoe",
+        1
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        5
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        15
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        2
+      ]
+    },
+    {
+      "task": "craft stone_hoe",
+      "goal": [
+        "stone_hoe",
+        1
+      ]
+    }
+  ],
+  "failed_waypoints": [],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 0,
+    "collect_drops": 0,
+    "movement_escape": 0,
+    "tunnel_recovery": 0,
+    "respawn_reset": 0,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "birch_log": 1,
+      "birch_planks": 7,
+      "stone_hoe": 1,
+      "dirt": 3,
+      "crafting_table": 1,
+      "wooden_pickaxe": 1
+    },
+    "last_pickup_stats": {
+      "birch_log": 5,
+      "cobblestone": 2,
+      "crafting_table": 2,
+      "dirt": 3
+    },
+    "last_mine_block_stats": {
+      "birch_leaves": 1,
+      "birch_log": 5,
+      "crafting_table": 2,
+      "dirt": 2,
+      "grass": 1,
+      "grass_block": 1,
+      "stone": 2
+    },
+    "max_inventory": {
+      "birch_log": 5,
+      "birch_planks": 16,
+      "stick": 4,
+      "crafting_table": 1,
+      "wooden_pickaxe": 1,
+      "dirt": 3,
+      "cobblestone": 2,
+      "stone_hoe": 1
+    },
+    "collected": {
+      "birch_log": 6,
+      "birch_planks": 47,
+      "stick": 6,
+      "crafting_table": 3,
+      "wooden_pickaxe": 2,
+      "dirt": 3,
+      "cobblestone": 2,
+      "stone_hoe": 1
+    },
+    "pickup": {
+      "birch_log": 5,
+      "crafting_table": 2,
+      "dirt": 3,
+      "cobblestone": 2
+    },
+    "mined_blocks": {
+      "birch_log": 5,
+      "birch_leaves": 1,
+      "grass": 1,
+      "crafting_table": 2,
+      "grass_block": 1,
+      "dirt": 2,
+      "stone": 2
+    }
+  },
+  "inventory_slots_used": 6
+}

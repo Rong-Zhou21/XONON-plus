@@ -1,0 +1,160 @@
+{
+  "run_uuid": "KJU326K2kJiyENLdw2PuSG",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "iron",
+  "task": "craft_a_rail",
+  "goal": "rail",
+  "exp_num": 30261,
+  "biome": "plains",
+  "is_fixed_memory": false,
+  "max_minutes": 10,
+  "success": false,
+  "status_detailed": "crash_RuntimeError",
+  "infra_early_stop": false,
+  "video_file": "videos/v2/Iron_Craft_a_rail/plains/failed/2026_04_29_19_52_44_Craft_a_rail_KJU326K2kJiyENLdw2PuSG.mp4",
+  "steps": 12001,
+  "minutes": 10.0,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1765
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 156
+    },
+    "craft stick_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 107
+    },
+    "craft crafting_table_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 112
+    },
+    "craft wooden_pickaxe_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 321
+    },
+    "dig down and mine cobblestone_5": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 481
+    },
+    "craft furnace_6": {
+      "SuccessMonitor": 0,
+      "StepMonitor": 2679
+    },
+    "craft crafting_table_6": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 110
+    },
+    "craft furnace_7": {
+      "SuccessMonitor": 0,
+      "StepMonitor": 6058
+    },
+    "craft crafting_table_7": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 117
+    }
+  },
+  "completed_subgoals": [],
+  "completed_plans": [],
+  "failed_subgoals": [
+    {
+      "task": "Craft a rail",
+      "goal": "rail",
+      "error": "Timeout!"
+    }
+  ],
+  "remain_plans": [
+    {
+      "task": "Craft a rail",
+      "goal": "rail",
+      "error": "Timeout!"
+    }
+  ],
+  "all_subgoals": [
+    {
+      "task": "Craft a rail",
+      "goal": "rail",
+      "error": "Timeout!"
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "Craft a rail",
+      "goal": "rail",
+      "error": "Timeout!"
+    }
+  ],
+  "failed_waypoints": [],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 0,
+    "collect_drops": 0,
+    "movement_escape": 0,
+    "tunnel_recovery": 0,
+    "respawn_reset": 0,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "oak_log": 1,
+      "oak_planks": 5,
+      "stick": 6,
+      "dirt": 3,
+      "crafting_table": 1,
+      "cobblestone": 11,
+      "wooden_pickaxe": 1
+    },
+    "last_pickup_stats": {
+      "cobblestone": 11,
+      "crafting_table": 1,
+      "dirt": 3,
+      "oak_log": 7
+    },
+    "last_mine_block_stats": {
+      "crafting_table": 1,
+      "dirt": 2,
+      "grass_block": 1,
+      "oak_leaves": 6,
+      "oak_log": 11,
+      "stone": 13
+    },
+    "max_inventory": {
+      "oak_log": 7,
+      "oak_planks": 24,
+      "stick": 8,
+      "crafting_table": 1,
+      "wooden_pickaxe": 1,
+      "dirt": 3,
+      "cobblestone": 11
+    },
+    "collected": {
+      "oak_log": 8,
+      "oak_planks": 87,
+      "stick": 14,
+      "crafting_table": 4,
+      "wooden_pickaxe": 2,
+      "dirt": 3,
+      "cobblestone": 11
+    },
+    "pickup": {
+      "oak_log": 7,
+      "crafting_table": 1,
+      "dirt": 3,
+      "cobblestone": 11
+    },
+    "mined_blocks": {
+      "oak_log": 11,
+      "oak_leaves": 6,
+      "crafting_table": 1,
+      "grass_block": 1,
+      "dirt": 2,
+      "stone": 13
+    }
+  },
+  "inventory_slots_used": 7
+}

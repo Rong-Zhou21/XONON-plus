@@ -1,0 +1,229 @@
+{
+  "run_uuid": "3srskKbVWcH7VPdzspsHyq",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "iron",
+  "task": "craft_a_hopper",
+  "goal": "hopper",
+  "exp_num": 30251,
+  "biome": "plains",
+  "is_fixed_memory": false,
+  "max_minutes": 10,
+  "success": false,
+  "status_detailed": "crash_RuntimeError",
+  "infra_early_stop": false,
+  "video_file": "videos/v2/Iron_Craft_a_hopper/plains/failed/2026_04_29_19_44_27_Craft_a_hopper_3srskKbVWcH7VPdzspsHyq.mp4",
+  "steps": 12000,
+  "minutes": 10.0,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 6732
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 224
+    },
+    "craft crafting_table_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 118
+    },
+    "craft chest_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1452
+    },
+    "craft stick_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 91
+    },
+    "craft wooden_pickaxe_5": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 312
+    },
+    "craft chest_6": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 374
+    },
+    "dig down and mine cobblestone_7": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 455
+    },
+    "craft furnace_8": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 321
+    },
+    "craft stone_pickaxe_9": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 326
+    },
+    "dig down and mine iron_ore_10": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 244
+    }
+  },
+  "completed_subgoals": [],
+  "completed_plans": [],
+  "failed_subgoals": [
+    {
+      "task": "Craft a hopper",
+      "goal": "hopper",
+      "error": "Timeout!"
+    }
+  ],
+  "remain_plans": [
+    {
+      "task": "Craft a hopper",
+      "goal": "hopper",
+      "error": "Timeout!"
+    }
+  ],
+  "all_subgoals": [
+    {
+      "task": "Craft a hopper",
+      "goal": "hopper",
+      "error": "Timeout!"
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "Craft a hopper",
+      "goal": "hopper",
+      "error": "Timeout!"
+    }
+  ],
+  "failed_waypoints": [],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 0,
+    "collect_drops": 0,
+    "movement_escape": 0,
+    "tunnel_recovery": 0,
+    "respawn_reset": 0,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "wooden_pickaxe": 1,
+      "wheat_seeds": 1,
+      "stone_pickaxe": 1,
+      "birch_planks": 3,
+      "dirt": 33,
+      "poppy": 1,
+      "birch_log": 1,
+      "crafting_table": 1,
+      "dandelion": 1,
+      "coal": 1,
+      "diorite": 1,
+      "chest": 2,
+      "andesite": 2,
+      "cobblestone": 2
+    },
+    "last_pickup_stats": {
+      "andesite": 2,
+      "birch_log": 5,
+      "chest": 2,
+      "coal": 2,
+      "cobblestone": 13,
+      "crafting_table": 5,
+      "dandelion": 2,
+      "diorite": 1,
+      "dirt": 66,
+      "iron_ore": 5,
+      "oak_log": 3,
+      "poppy": 1,
+      "wheat_seeds": 1
+    },
+    "last_mine_block_stats": {
+      "andesite": 2,
+      "birch_leaves": 3,
+      "birch_log": 6,
+      "coal_ore": 2,
+      "crafting_table": 5,
+      "dandelion": 1,
+      "diorite": 1,
+      "dirt": 19,
+      "grass": 8,
+      "grass_block": 20,
+      "iron_ore": 5,
+      "oak_leaves": 3,
+      "oak_log": 3,
+      "stone": 13
+    },
+    "max_inventory": {
+      "birch_log": 5,
+      "dirt": 33,
+      "wheat_seeds": 1,
+      "dandelion": 1,
+      "oak_log": 3,
+      "oak_planks": 12,
+      "birch_planks": 16,
+      "crafting_table": 1,
+      "poppy": 1,
+      "chest": 2,
+      "stick": 4,
+      "wooden_pickaxe": 1,
+      "cobblestone": 11,
+      "coal": 2,
+      "furnace": 1,
+      "stone_pickaxe": 1,
+      "diorite": 1,
+      "iron_ore": 5,
+      "andesite": 2
+    },
+    "collected": {
+      "birch_log": 7,
+      "dirt": 66,
+      "wheat_seeds": 1,
+      "dandelion": 2,
+      "oak_log": 3,
+      "oak_planks": 29,
+      "birch_planks": 35,
+      "crafting_table": 8,
+      "poppy": 1,
+      "chest": 6,
+      "stick": 6,
+      "wooden_pickaxe": 3,
+      "cobblestone": 18,
+      "coal": 3,
+      "furnace": 2,
+      "stone_pickaxe": 2,
+      "diorite": 1,
+      "iron_ore": 5,
+      "andesite": 2
+    },
+    "pickup": {
+      "birch_log": 5,
+      "dirt": 66,
+      "wheat_seeds": 1,
+      "dandelion": 2,
+      "oak_log": 3,
+      "poppy": 1,
+      "crafting_table": 5,
+      "chest": 2,
+      "cobblestone": 13,
+      "coal": 2,
+      "diorite": 1,
+      "iron_ore": 5,
+      "andesite": 2
+    },
+    "mined_blocks": {
+      "grass": 8,
+      "birch_log": 6,
+      "birch_leaves": 3,
+      "oak_leaves": 3,
+      "grass_block": 20,
+      "dirt": 19,
+      "dandelion": 1,
+      "oak_log": 3,
+      "crafting_table": 5,
+      "stone": 13,
+      "coal_ore": 2,
+      "diorite": 1,
+      "iron_ore": 5,
+      "andesite": 2
+    }
+  },
+  "inventory_slots_used": 14
+}

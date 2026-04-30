@@ -17,6 +17,38 @@
       ],
       "status": "success",
       "steps": 242
+    },
+    {
+      "id": "NwFFJYYPbNG84whRMp7TZ7",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "stick",
+      "video": "videos/v2/Wood_Craft_a_stick/forest/success/2026_04_29_17_57_34_craft_stick_NwFFJYYPbNG84whRMp7TZ7.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            2
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 251
     }
   ]
 }

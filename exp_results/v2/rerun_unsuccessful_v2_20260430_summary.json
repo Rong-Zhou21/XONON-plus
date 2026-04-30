@@ -1,0 +1,867 @@
+{
+  "suite": "rerun_unsuccessful_v2",
+  "started_at": "2026-04-30 22:39:02",
+  "code_commit": "4d90de4",
+  "video_dir": "/home/yzb/zhourong/XENON-plus/videos/v2",
+  "result_dir": "/home/yzb/zhourong/XENON-plus/exp_results/v2",
+  "tasks": [
+    {
+      "index": 1,
+      "benchmark": "wooden",
+      "task_id": 2,
+      "task": "Craft a wooden axe",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_wooden_axe_41011_success_forest_CppS.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/01_wooden_2_attempt1.log",
+          "success": true,
+          "steps": 932
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_wooden_axe_41011_success_forest_CppS.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 932,
+      "minutes": 0.78,
+      "video_file": "videos/v2/Wood_Craft_a_wooden_axe/forest/success/2026_04_30_14_41_54_craft_wooden_axe_CppSmLrGSvxoWLRtcfWExw.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 2,
+      "benchmark": "wooden",
+      "task_id": 6,
+      "task": "Craft a wooden sword",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_wooden_sword_41021_success_forest_f5Uj.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/02_wooden_6_attempt1.log",
+          "success": true,
+          "steps": 1619
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_wooden_sword_41021_success_forest_f5Uj.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 1619,
+      "minutes": 1.35,
+      "video_file": "videos/v2/Wood_Craft_a_wooden_sword/forest/success/2026_04_30_14_45_40_craft_wooden_sword_f5UjTb82hc8tc32mUpdUHJ.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 3,
+      "benchmark": "stone",
+      "task_id": 2,
+      "task": "Craft a stone axe",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_stone_axe_41031_failed_plains_UQJX.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/03_stone_2_attempt1.log",
+          "success": false,
+          "steps": 7197
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_stone_axe_41031_failed_plains_UQJX.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 7197,
+      "minutes": 6.0,
+      "video_file": "videos/v2/Stone_Craft_a_stone_axe/plains/failed/2026_04_30_14_53_50_chop_a_tree_UQJXLVEzruFpa66oVcP7yR.mp4",
+      "failed_waypoints": [
+        "logs"
+      ]
+    },
+    {
+      "index": 4,
+      "benchmark": "stone",
+      "task_id": 5,
+      "task": "Craft a smoker",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_smoker_41041_failed_plains_SMSs.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/04_stone_5_attempt1.log",
+          "success": false,
+          "steps": 7197
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_smoker_41041_failed_plains_SMSs.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 7197,
+      "minutes": 6.0,
+      "video_file": "videos/v2/Stone_Craft_a_smoker/plains/failed/2026_04_30_15_01_09_chop_a_tree_SMSsEmGXReww86t2WfN3ig.mp4",
+      "failed_waypoints": [
+        "logs"
+      ]
+    },
+    {
+      "index": 5,
+      "benchmark": "iron",
+      "task_id": 2,
+      "task": "Craft a iron axe",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_iron_axe_41051_failed_plains_G6c2.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/05_iron_2_attempt1.log",
+          "success": false,
+          "steps": 11997
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_iron_axe_41051_failed_plains_G6c2.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 11997,
+      "minutes": 10.0,
+      "video_file": "videos/v2/Iron_Craft_a_iron_axe/plains/failed/2026_04_30_15_13_23_chop_a_tree_G6c2fyyuQ6p8bM4rxVVeys.mp4",
+      "failed_waypoints": [
+        "logs"
+      ]
+    },
+    {
+      "index": 6,
+      "benchmark": "iron",
+      "task_id": 3,
+      "task": "Craft a iron hoe",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_iron_hoe_41061_failed_plains_Q5gZ.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/06_iron_3_attempt1.log",
+          "success": false,
+          "steps": 11997
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_iron_hoe_41061_failed_plains_Q5gZ.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 11997,
+      "minutes": 10.0,
+      "video_file": "videos/v2/Iron_Craft_a_iron_hoe/plains/failed/2026_04_30_15_24_37_chop_a_tree_Q5gZq4HZjVh8m6jDj3F5Fp.mp4",
+      "failed_waypoints": [
+        "logs"
+      ]
+    },
+    {
+      "index": 7,
+      "benchmark": "iron",
+      "task_id": 5,
+      "task": "Craft a hopper",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_hopper_41071_failed_plains_LuTc.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/07_iron_5_attempt1.log",
+          "success": false,
+          "steps": 11997
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_hopper_41071_failed_plains_LuTc.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 11997,
+      "minutes": 10.0,
+      "video_file": "videos/v2/Iron_Craft_a_hopper/plains/failed/2026_04_30_15_36_54_chop_a_tree_LuTcbhTQDmEQXCCiBfUHP4.mp4",
+      "failed_waypoints": [
+        "logs"
+      ]
+    },
+    {
+      "index": 8,
+      "benchmark": "iron",
+      "task_id": 6,
+      "task": "Craft a rail",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_rail_41081_failed_plains_Uidc.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/08_iron_6_attempt1.log",
+          "success": false,
+          "steps": 11997
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_rail_41081_failed_plains_Uidc.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 11997,
+      "minutes": 10.0,
+      "video_file": "videos/v2/Iron_Craft_a_rail/plains/failed/2026_04_30_15_49_38_chop_a_tree_Uidc6E5yxQDisKD5Q7gab6.mp4",
+      "failed_waypoints": [
+        "logs"
+      ]
+    },
+    {
+      "index": 9,
+      "benchmark": "iron",
+      "task_id": 9,
+      "task": "Craft a smithing table",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": false,
+          "reason": "infra_early_stop",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_smithing_table_41091_failed_plains_UHrr.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/09_iron_9_attempt1.log",
+          "success": false,
+          "steps": 171
+        },
+        {
+          "attempt": 2,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_smithing_table_41092_failed_plains_EfWP.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/09_iron_9_attempt2.log",
+          "success": false,
+          "steps": 11997
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_smithing_table_41092_failed_plains_EfWP.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 11997,
+      "minutes": 10.0,
+      "video_file": "videos/v2/Iron_Craft_a_smithing_table/plains/failed/2026_04_30_16_08_32_chop_a_tree_EfWPMX5HasRbJfTtHc4HBG.mp4",
+      "failed_waypoints": [
+        "logs"
+      ]
+    },
+    {
+      "index": 10,
+      "benchmark": "iron",
+      "task_id": 10,
+      "task": "Craft a tripwire hook",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "crash_RuntimeError",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_tripwire_hook_41101_failed_plains_SXC5.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/10_iron_10_attempt1.log",
+          "success": false,
+          "steps": 12001
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_tripwire_hook_41101_failed_plains_SXC5.json",
+      "success": false,
+      "status_detailed": "crash_RuntimeError",
+      "steps": 12001,
+      "minutes": 10.0,
+      "video_file": "videos/v2/Iron_Craft_a_tripwire_hook/plains/failed/2026_04_30_16_22_00_Craft_a_tripwire_hook_SXC5diVxDJz82HBtGuCZGm.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 11,
+      "benchmark": "iron",
+      "task_id": 12,
+      "task": "Craft an iron bars",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_an_iron_bars_41111_failed_plains_9JBD.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/11_iron_12_attempt1.log",
+          "success": false,
+          "steps": 11913
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_an_iron_bars_41111_failed_plains_9JBD.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 11913,
+      "minutes": 9.93,
+      "video_file": "videos/v2/Iron_Craft_an_iron_bars/plains/failed/2026_04_30_16_35_12_dig_down_and_mine_iron_ore_9JBDiC6VbttR8Uxr7QS9to.mp4",
+      "failed_waypoints": [
+        "iron_ore"
+      ]
+    },
+    {
+      "index": 12,
+      "benchmark": "iron",
+      "task_id": 14,
+      "task": "Craft a blast furnace",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_blast_furnace_41121_failed_plains_AdfM.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/12_iron_14_attempt1.log",
+          "success": false,
+          "steps": 11997
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_blast_furnace_41121_failed_plains_AdfM.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 11997,
+      "minutes": 10.0,
+      "video_file": "videos/v2/Iron_Craft_a_blast_furnace/plains/failed/2026_04_30_16_47_39_chop_a_tree_AdfMxu4njpQiMVRboYLUds.mp4",
+      "failed_waypoints": [
+        "logs"
+      ]
+    },
+    {
+      "index": 13,
+      "benchmark": "iron",
+      "task_id": 15,
+      "task": "Craft a stonecutter",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "crash_RuntimeError",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_stonecutter_41131_failed_plains_JY34.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/13_iron_15_attempt1.log",
+          "success": false,
+          "steps": 12001
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_stonecutter_41131_failed_plains_JY34.json",
+      "success": false,
+      "status_detailed": "crash_RuntimeError",
+      "steps": 12001,
+      "minutes": 10.0,
+      "video_file": "videos/v2/Iron_Craft_a_stonecutter/plains/failed/2026_04_30_17_01_23_Craft_a_stonecutter_JY34HzciVgcG2M467qosNt.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 14,
+      "benchmark": "golden",
+      "task_id": 1,
+      "task": "Craft a golden pickaxe",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_golden_pickaxe_41141_failed_forest_dQeG.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/14_golden_1_attempt1.log",
+          "success": false,
+          "steps": 35868
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_golden_pickaxe_41141_failed_forest_dQeG.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 35868,
+      "minutes": 29.89,
+      "video_file": "videos/v2/Gold_Craft_a_golden_pickaxe/forest/failed/2026_04_30_17_26_06_dig_down_and_mine_gold_ore_dQeGShep6DDyPPcp5WFhZe.mp4",
+      "failed_waypoints": [
+        "gold_ore"
+      ]
+    },
+    {
+      "index": 15,
+      "benchmark": "golden",
+      "task_id": 2,
+      "task": "Craft a golden axe",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_golden_axe_41151_success_forest_iJFE.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/15_golden_2_attempt1.log",
+          "success": true,
+          "steps": 10183
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_golden_axe_41151_success_forest_iJFE.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 10183,
+      "minutes": 8.49,
+      "video_file": "videos/v2/Gold_Craft_a_golden_axe/forest/success/2026_04_30_17_38_13_craft_golden_axe_iJFEPAeGUaQVJzKrfwnZZj.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 16,
+      "benchmark": "golden",
+      "task_id": 5,
+      "task": "Smelt and craft a gold ingot",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": false,
+          "reason": "infra_early_stop",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_smelt_and_craft_a_gold_ingot_41161_failed_forest_fmPx.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/16_golden_5_attempt1.log",
+          "success": false,
+          "steps": 181
+        },
+        {
+          "attempt": 2,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_smelt_and_craft_a_gold_ingot_41162_success_forest_oF2d.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/16_golden_5_attempt2.log",
+          "success": true,
+          "steps": 8202
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_smelt_and_craft_a_gold_ingot_41162_success_forest_oF2d.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 8202,
+      "minutes": 6.83,
+      "video_file": "videos/v2/Gold_Smelt_and_craft_a_gold_ingot/forest/success/2026_04_30_17_53_29_smelt_gold_ingot_oF2dKioSUxKMTrzFGMbm49.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 17,
+      "benchmark": "diamond",
+      "task_id": 0,
+      "task": "Craft a diamond shovel",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_diamond_shovel_41171_success_forest_LQWc.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/17_diamond_0_attempt1.log",
+          "success": true,
+          "steps": 6192
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_diamond_shovel_41171_success_forest_LQWc.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 6192,
+      "minutes": 5.16,
+      "video_file": "videos/v2/Diamond_Craft_a_diamond_shovel/forest/success/2026_04_30_18_02_31_craft_diamond_shovel_LQWc2aVA8X8jvmcBTmZfFg.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 18,
+      "benchmark": "diamond",
+      "task_id": 5,
+      "task": "Dig down and mine a diamond",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_dig_down_and_mine_a_diamond_41181_success_forest_5wf3.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/18_diamond_5_attempt1.log",
+          "success": true,
+          "steps": 7282
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_dig_down_and_mine_a_diamond_41181_success_forest_5wf3.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 7282,
+      "minutes": 6.07,
+      "video_file": "videos/v2/Diamond_Dig_down_and_mine_a_diamond/forest/success/2026_04_30_18_11_28_dig_down_and_mine_diamond_5wf3acfDXg6gp9hbrrRXNj.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 19,
+      "benchmark": "redstone",
+      "task_id": 1,
+      "task": "Craft a redstone torch",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 124,
+          "valid": false,
+          "reason": "no_result",
+          "result_file": "",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/19_redstone_1_attempt1.log",
+          "success": null,
+          "steps": null
+        },
+        {
+          "attempt": 2,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_redstone_torch_41192_success_forest_6LMi.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/19_redstone_1_attempt2.log",
+          "success": true,
+          "steps": 6491
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_redstone_torch_41192_success_forest_6LMi.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 6491,
+      "minutes": 5.41,
+      "video_file": "videos/v2/Redstone_Craft_a_redstone_torch/forest/success/2026_04_30_19_05_33_craft_redstone_torch_6LMiEYX3LU38LjV6evy6uP.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 20,
+      "benchmark": "redstone",
+      "task_id": 2,
+      "task": "Craft an activator rail",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_an_activator_rail_41201_failed_forest_e7fx.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/20_redstone_2_attempt1.log",
+          "success": false,
+          "steps": 35911
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_an_activator_rail_41201_failed_forest_e7fx.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 35911,
+      "minutes": 29.93,
+      "video_file": "videos/v2/Redstone_Craft_an_activator_rail/forest/failed/2026_04_30_19_29_36_dig_down_and_mine_iron_ore_e7fx4tBwoNewxoxo3VHARY.mp4",
+      "failed_waypoints": [
+        "iron_ore"
+      ]
+    },
+    {
+      "index": 21,
+      "benchmark": "redstone",
+      "task_id": 3,
+      "task": "Craft a compass",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_compass_41211_success_forest_862R.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/21_redstone_3_attempt1.log",
+          "success": true,
+          "steps": 6415
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_compass_41211_success_forest_862R.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 6415,
+      "minutes": 5.35,
+      "video_file": "videos/v2/Redstone_Craft_a_compass/forest/success/2026_04_30_19_38_04_craft_compass_862R8ReDcu6vE69fABz9yi.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 22,
+      "benchmark": "redstone",
+      "task_id": 4,
+      "task": "Craft a dropper",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_dropper_41221_success_forest_WpTn.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/22_redstone_4_attempt1.log",
+          "success": true,
+          "steps": 6432
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_a_dropper_41221_success_forest_WpTn.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 6432,
+      "minutes": 5.36,
+      "video_file": "videos/v2/Redstone_Craft_a_dropper/forest/success/2026_04_30_19_47_11_craft_dropper_WpTnnNRWmuSFvkVMNfmMp2.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 23,
+      "benchmark": "armor",
+      "task_id": 0,
+      "task": "Craft shield",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_shield_41231_success_forest_JdcC.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/23_armor_0_attempt1.log",
+          "success": true,
+          "steps": 3790
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_shield_41231_success_forest_JdcC.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 3790,
+      "minutes": 3.16,
+      "video_file": "videos/v2/Armor_Craft_shield/forest/success/2026_04_30_19_53_48_craft_shield_JdcCfWSiSHzuMV3eSdH7KC.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 24,
+      "benchmark": "armor",
+      "task_id": 1,
+      "task": "Craft iron chestplate",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_iron_chestplate_41241_success_forest_82qn.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/24_armor_1_attempt1.log",
+          "success": true,
+          "steps": 9021
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_iron_chestplate_41241_success_forest_82qn.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 9021,
+      "minutes": 7.52,
+      "video_file": "videos/v2/Armor_Craft_iron_chestplate/forest/success/2026_04_30_20_03_32_craft_iron_chestplate_82qnfu3LSKYevqhVaeYYng.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 25,
+      "benchmark": "armor",
+      "task_id": 6,
+      "task": "Craft diamond chestplate",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_diamond_chestplate_41251_failed_forest_JxuD.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/25_armor_6_attempt1.log",
+          "success": false,
+          "steps": 23824
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_diamond_chestplate_41251_failed_forest_JxuD.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 23824,
+      "minutes": 19.85,
+      "video_file": "videos/v2/Armor_Craft_diamond_chestplate/forest/failed/2026_04_30_20_21_41_dig_down_and_mine_diamond_JxuD2G9sg67EdCdemLALuT.mp4",
+      "failed_waypoints": [
+        "diamond"
+      ]
+    },
+    {
+      "index": 26,
+      "benchmark": "armor",
+      "task_id": 7,
+      "task": "Craft diamond leggings",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_diamond_leggings_41261_failed_forest_SPjJ.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/26_armor_7_attempt1.log",
+          "success": false,
+          "steps": 23825
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_diamond_leggings_41261_failed_forest_SPjJ.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 23825,
+      "minutes": 19.85,
+      "video_file": "videos/v2/Armor_Craft_diamond_leggings/forest/failed/2026_04_30_20_41_37_dig_down_and_mine_diamond_SPjJT3RY3i7SZPdMdT3muZ.mp4",
+      "failed_waypoints": [
+        "diamond",
+        "planks"
+      ]
+    },
+    {
+      "index": 27,
+      "benchmark": "armor",
+      "task_id": 9,
+      "task": "Craft golden helmet",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_golden_helmet_41271_success_forest_9zUE.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/27_armor_9_attempt1.log",
+          "success": true,
+          "steps": 7481
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_golden_helmet_41271_success_forest_9zUE.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 7481,
+      "minutes": 6.23,
+      "video_file": "videos/v2/Armor_Craft_golden_helmet/forest/success/2026_04_30_21_01_45_craft_golden_helmet_9zUEBY29Kk4Y6bUSub6PJK.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 28,
+      "benchmark": "armor",
+      "task_id": 10,
+      "task": "Craft golden leggings",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_golden_leggings_41281_failed_forest_VxcB.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/28_armor_10_attempt1.log",
+          "success": false,
+          "steps": 23865
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_golden_leggings_41281_failed_forest_VxcB.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 23865,
+      "minutes": 19.89,
+      "video_file": "videos/v2/Armor_Craft_golden_leggings/forest/failed/2026_04_30_21_20_47_dig_down_and_mine_gold_ore_VxcBq2urfGJkXB9bveQCY3.mp4",
+      "failed_waypoints": [
+        "gold_ore"
+      ]
+    },
+    {
+      "index": 29,
+      "benchmark": "armor",
+      "task_id": 11,
+      "task": "Craft golden boots",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": true,
+          "reason": "success",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_golden_boots_41291_success_forest_gWgq.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/29_armor_11_attempt1.log",
+          "success": true,
+          "steps": 10649
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_golden_boots_41291_success_forest_gWgq.json",
+      "success": true,
+      "status_detailed": "success",
+      "steps": 10649,
+      "minutes": 8.87,
+      "video_file": "videos/v2/Armor_Craft_golden_boots/forest/success/2026_04_30_21_32_16_craft_golden_boots_gWgqj6PEg2CTXgghTVSd9c.mp4",
+      "failed_waypoints": []
+    },
+    {
+      "index": 30,
+      "benchmark": "armor",
+      "task_id": 12,
+      "task": "Craft golden chestplate",
+      "valid": true,
+      "attempts": [
+        {
+          "attempt": 1,
+          "returncode": 0,
+          "valid": false,
+          "reason": "infra_early_stop",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_golden_chestplate_41301_failed_forest_EdVd.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/30_armor_12_attempt1.log",
+          "success": false,
+          "steps": 164
+        },
+        {
+          "attempt": 2,
+          "returncode": 0,
+          "valid": true,
+          "reason": "timeout_non_programmatic",
+          "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_golden_chestplate_41302_failed_forest_a4vb.json",
+          "log_file": "/home/yzb/zhourong/XENON-plus/logs/v2_rerun_unsuccessful/30_armor_12_attempt2.log",
+          "success": false,
+          "steps": 23865
+        }
+      ],
+      "result_file": "/home/yzb/zhourong/XENON-plus/exp_results/v2/ours_planning_craft_golden_chestplate_41302_failed_forest_a4vb.json",
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "steps": 23865,
+      "minutes": 19.89,
+      "video_file": "videos/v2/Armor_Craft_golden_chestplate/forest/failed/2026_04_30_21_56_00_dig_down_and_mine_gold_ore_a4vbQMK4JWWgYt4o5nu5xs.mp4",
+      "failed_waypoints": [
+        "gold_ore"
+      ]
+    }
+  ],
+  "total": 30,
+  "completed": 30,
+  "successes": 13,
+  "valid_failures": 17,
+  "no_valid_results": 0,
+  "updated_at": "2026-05-01 05:56:33",
+  "finished_at": "2026-05-01 05:56:33"
+}

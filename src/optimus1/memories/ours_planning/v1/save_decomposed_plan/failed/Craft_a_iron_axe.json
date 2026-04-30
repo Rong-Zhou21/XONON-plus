@@ -1,3 +1,117 @@
 {
-  "plan": []
+  "plan": [
+    {
+      "id": "HvRzkJ8LrFxHCciV29Vsqj",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_axe",
+      "video": "videos/v2/Iron_Craft_a_iron_axe/plains/failed/2026_04_29_19_18_30_craft_iron_axe_HvRzkJ8LrFxHCciV29Vsqj.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            21
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            3
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            2
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_axe",
+          "goal": [
+            "iron_axe",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 6269
+    },
+    {
+      "id": "G6c2fyyuQ6p8bM4rxVVeys",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_axe",
+      "video": "videos/v2/Iron_Craft_a_iron_axe/plains/failed/2026_04_30_15_13_23_chop_a_tree_G6c2fyyuQ6p8bM4rxVVeys.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    }
+  ]
 }

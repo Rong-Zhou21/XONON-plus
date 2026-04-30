@@ -232,6 +232,115 @@
       ],
       "status": "success",
       "steps": 10853
+    },
+    {
+      "id": "9v5RXgBgk77HgoDKfy3W3P",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/v2/Gold_Craft_a_golden_hoe/forest/success/2026_04_29_21_33_39_craft_golden_hoe_9v5RXgBgk77HgoDKfy3W3P.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold_ingot",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7572
     }
   ]
 }

@@ -66,6 +66,73 @@
       ],
       "status": "success",
       "steps": 2397
+    },
+    {
+      "id": "EjQFZJdR5EtZWcgdGCr8Dr",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "charcoal",
+      "video": "videos/v2/Stone_Smelt_a_charcoal/plains/success/2026_04_29_18_35_34_smelt_charcoal_EjQFZJdR5EtZWcgdGCr8Dr.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            13
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "smelt charcoal",
+          "goal": [
+            "charcoal",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3689
     }
   ]
 }

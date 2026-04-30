@@ -17,6 +17,45 @@
       ],
       "status": "failed",
       "steps": 176
+    },
+    {
+      "id": "Xdqff2hPikq7sD5vnFRDzq",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_axe",
+      "video": "videos/v2/Wood_Craft_a_wooden_axe/forest/failed/2026_04_29_17_52_53_craft_wooden_axe_Xdqff2hPikq7sD5vnFRDzq.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            9
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_axe",
+          "goal": [
+            "wooden_axe",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 647
     }
   ]
 }

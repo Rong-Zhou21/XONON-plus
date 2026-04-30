@@ -165,6 +165,40 @@
       ],
       "status": "failed",
       "steps": 11996
+    },
+    {
+      "id": "APKZB3YAsYwnhuC5AK4JDY",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/v2/Iron_Craft_a_tripwire_hook/plains/failed/2026_04_29_20_20_24_chop_a_tree_APKZB3YAsYwnhuC5AK4JDY.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    },
+    {
+      "id": "SXC5diVxDJz82HBtGuCZGm",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/v2/Iron_Craft_a_tripwire_hook/plains/failed/2026_04_30_16_22_00_Craft_a_tripwire_hook_SXC5diVxDJz82HBtGuCZGm.mp4",
+      "planning": [
+        {
+          "task": "Craft a tripwire hook",
+          "goal": "tripwire_hook",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12001
     }
   ]
 }

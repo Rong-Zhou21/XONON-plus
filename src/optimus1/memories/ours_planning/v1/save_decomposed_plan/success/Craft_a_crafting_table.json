@@ -95,6 +95,38 @@
       ],
       "status": "success",
       "steps": 257
+    },
+    {
+      "id": "muf3qJ72NYHmD4AT3uhP7e",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/v2/Wood_Craft_a_crafting_table/forest/success/2026_04_29_17_59_31_craft_crafting_table_muf3qJ72NYHmD4AT3uhP7e.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 243
     }
   ]
 }

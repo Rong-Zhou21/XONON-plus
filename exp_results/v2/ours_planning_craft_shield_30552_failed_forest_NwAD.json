@@ -1,0 +1,211 @@
+{
+  "run_uuid": "NwADxBPjmJ9mJv9oRwpkVS",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "armor",
+  "task": "craft_shield",
+  "goal": "shield",
+  "exp_num": 30552,
+  "biome": "forest",
+  "is_fixed_memory": false,
+  "max_minutes": 20,
+  "success": false,
+  "status_detailed": "failed",
+  "infra_early_stop": false,
+  "video_file": "videos/v2/Armor_Craft_shield/forest/failed/2026_04_30_00_26_17_craft_wooden_pickaxe_NwADxBPjmJ9mJv9oRwpkVS.mp4",
+  "steps": 1919,
+  "minutes": 1.6,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1625
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 168
+    },
+    "craft crafting_table_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 111
+    },
+    "craft wooden_pickaxe_3": {
+      "SuccessMonitor": 0,
+      "StepMonitor": 15
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    }
+  ],
+  "remain_plans": [
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    }
+  ],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        8
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        25
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    }
+  ],
+  "failed_waypoints": [
+    "wooden_pickaxe"
+  ],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 0,
+    "collect_drops": 0,
+    "movement_escape": 0,
+    "tunnel_recovery": 0,
+    "respawn_reset": 0,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "oak_log": 1,
+      "stick": 1,
+      "oak_planks": 24,
+      "crafting_table": 1
+    },
+    "last_pickup_stats": {
+      "oak_log": 8,
+      "stick": 1
+    },
+    "last_mine_block_stats": {
+      "oak_leaves": 12,
+      "oak_log": 8
+    },
+    "max_inventory": {
+      "oak_log": 8,
+      "stick": 1,
+      "oak_planks": 28,
+      "crafting_table": 1
+    },
+    "collected": {
+      "oak_log": 9,
+      "stick": 1,
+      "oak_planks": 52,
+      "crafting_table": 1
+    },
+    "pickup": {
+      "oak_log": 8,
+      "stick": 1
+    },
+    "mined_blocks": {
+      "oak_log": 8,
+      "oak_leaves": 12
+    }
+  },
+  "inventory_slots_used": 4
+}

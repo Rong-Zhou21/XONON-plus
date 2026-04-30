@@ -115,6 +115,115 @@
       ],
       "status": "success",
       "steps": 6518
+    },
+    {
+      "id": "iXquAqM6hg6vJMtZJXemnW",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_sword",
+      "video": "videos/v2/Gold_Craft_a_golden_sword/forest/success/2026_04_29_21_41_06_craft_golden_sword_iXquAqM6hg6vJMtZJXemnW.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            7
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold_ingot",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_sword",
+          "goal": [
+            "golden_sword",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5876
     }
   ]
 }

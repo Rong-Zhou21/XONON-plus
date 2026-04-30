@@ -384,6 +384,40 @@
       ],
       "status": "failed",
       "steps": 11997
+    },
+    {
+      "id": "3srskKbVWcH7VPdzspsHyq",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/v2/Iron_Craft_a_hopper/plains/failed/2026_04_29_19_44_27_Craft_a_hopper_3srskKbVWcH7VPdzspsHyq.mp4",
+      "planning": [
+        {
+          "task": "Craft a hopper",
+          "goal": "hopper",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12000
+    },
+    {
+      "id": "LuTcbhTQDmEQXCCiBfUHP4",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/v2/Iron_Craft_a_hopper/plains/failed/2026_04_30_15_36_54_chop_a_tree_LuTcbhTQDmEQXCCiBfUHP4.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }
