@@ -67,13 +67,25 @@ class RADSRuntime:
         self.library_vecs = library_vecs.to(device)
         self.library_meta = library_meta
         self.device = device
+        # Pre-compute library_waypoint_ids for the same-waypoint mask in attention.
+        wp_idx = {wp: i for i, wp in enumerate(spec.waypoints)}
+        self.library_wp_ids = torch.tensor(
+            [wp_idx.get(m.get("waypoint", ""), 0) for m in library_meta],
+            dtype=torch.long,
+            device=device,
+        )
 
     @classmethod
     def load(cls, artifact_path: str, device: str = "cpu") -> "RADSRuntime":
         """Load a single .pt file containing model state, spec, library vectors, library meta."""
         bundle = torch.load(artifact_path, map_location=device, weights_only=False)
         spec = FeatureSpec.from_dict(bundle["spec"])
-        config = RADSConfig(**bundle.get("config", {})) if bundle.get("config") else RADSConfig()
+        # Tolerate older bundles missing fields added in newer configs.
+        cfg_raw = bundle.get("config") or {}
+        cfg_kwargs = {
+            k: v for k, v in cfg_raw.items() if k in RADSConfig.__dataclass_fields__
+        }
+        config = RADSConfig(**cfg_kwargs)
         model = RADS(spec, config)
         model.load_state_dict(bundle["model_state"])
         model.to(device)
@@ -98,6 +110,7 @@ class RADSRuntime:
             "waypoint_id": torch.tensor([feats["waypoint_id"]], dtype=torch.long, device=self.device),
             "final_goal_id": torch.tensor([feats["final_goal_id"]], dtype=torch.long, device=self.device),
             "action_id": torch.tensor([feats["action_id"]], dtype=torch.long, device=self.device),
+            "wp_action_prior": torch.tensor([feats["wp_action_prior"]], dtype=torch.float32, device=self.device),
         }
 
         retrieval_mask = None
@@ -106,7 +119,12 @@ class RADSRuntime:
             if any(mask):
                 retrieval_mask = torch.tensor([mask], dtype=torch.bool, device=self.device)
 
-        logits, attn = self.model(batch, self.library_vecs, retrieval_mask=retrieval_mask)
+        logits, attn = self.model(
+            batch,
+            self.library_vecs,
+            retrieval_mask=retrieval_mask,
+            library_waypoint_ids=self.library_wp_ids,
+        )
         p_success = torch.sigmoid(logits).item()
         concentration = float(self.model.attention_concentration(attn).item())
         confidence = p_success * concentration

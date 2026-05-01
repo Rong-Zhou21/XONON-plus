@@ -45,6 +45,8 @@ wandb/
 
 # torch embeddings
 *.pt
+# but keep small decisioner artifacts in source control
+!artifacts/**/*.pt
 
 # local Minecraft build/resource copies
 minerl/minerl/MCP-Reborn/

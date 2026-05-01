@@ -1,0 +1,560 @@
+{
+  "artifact": "artifacts/decisioner/rads_v2.pt",
+  "data": "data/decisioner/rads_v1.jsonl",
+  "spec_summary": {
+    "n_waypoints": 73,
+    "n_goals": 68,
+    "n_actions": 79,
+    "feature_dim": 52
+  },
+  "config": {
+    "same_wp_min": 8,
+    "lambda_triplet": 0.1,
+    "lambda_wp": 0.05,
+    "dropout": 0.2
+  },
+  "library_size": 1847,
+  "val": {
+    "overall": {
+      "n": 351,
+      "pos_rate": 0.9401709401709402,
+      "auc": 0.8763347763347763,
+      "ap": 0.991725971443391,
+      "best_f1": 0.9454545454545454,
+      "best_threshold": 0.15,
+      "ece": 0.11903978962361002
+    },
+    "mean_concentration": 0.8429224069981154,
+    "per_waypoint": [
+      {
+        "waypoint": "cobblestone",
+        "n": 46,
+        "pos": 46,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "stick",
+        "n": 41,
+        "pos": 40,
+        "neg": 1,
+        "auc": null
+      },
+      {
+        "waypoint": "logs",
+        "n": 36,
+        "pos": 31,
+        "neg": 5,
+        "auc": 0.8709677419354839
+      },
+      {
+        "waypoint": "planks",
+        "n": 32,
+        "pos": 32,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "crafting_table",
+        "n": 32,
+        "pos": 32,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "wooden_pickaxe",
+        "n": 29,
+        "pos": 29,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "furnace",
+        "n": 26,
+        "pos": 26,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "stone_pickaxe",
+        "n": 22,
+        "pos": 22,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "iron_ore",
+        "n": 22,
+        "pos": 17,
+        "neg": 5,
+        "auc": 0.8352941176470589
+      },
+      {
+        "waypoint": "iron_ingot",
+        "n": 16,
+        "pos": 16,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "iron_pickaxe",
+        "n": 13,
+        "pos": 12,
+        "neg": 1,
+        "auc": null
+      },
+      {
+        "waypoint": "diamond",
+        "n": 6,
+        "pos": 3,
+        "neg": 3,
+        "auc": null
+      },
+      {
+        "waypoint": "gold_ore",
+        "n": 5,
+        "pos": 4,
+        "neg": 1,
+        "auc": null
+      },
+      {
+        "waypoint": "gold_ingot",
+        "n": 4,
+        "pos": 4,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "charcoal",
+        "n": 2,
+        "pos": 2,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "diamond_sword",
+        "n": 2,
+        "pos": 2,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "smooth_stone",
+        "n": 2,
+        "pos": 0,
+        "neg": 2,
+        "auc": null
+      },
+      {
+        "waypoint": "stone_axe",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "iron_shovel",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "golden_sword",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "golden_axe",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "stone",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "wooden_shovel",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "wooden_axe",
+        "n": 1,
+        "pos": 0,
+        "neg": 1,
+        "auc": null
+      },
+      {
+        "waypoint": "smoker",
+        "n": 1,
+        "pos": 0,
+        "neg": 1,
+        "auc": null
+      },
+      {
+        "waypoint": "stone_sword",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "iron_axe",
+        "n": 1,
+        "pos": 0,
+        "neg": 1,
+        "auc": null
+      },
+      {
+        "waypoint": "golden_hoe",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "redstone",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "note_block",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "diamond_boots",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "golden_helmet",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      }
+    ],
+    "attention_diagnostic": {
+      "n": 351,
+      "top1_same_waypoint_rate": 0.9430199430199431,
+      "top1_same_outcome_rate": 0.6267806267806267,
+      "top1_same_both_rate": 0.6068376068376068
+    }
+  },
+  "test": {
+    "overall": {
+      "n": 376,
+      "pos_rate": 0.8164893617021277,
+      "auc": 0.9109663409337677,
+      "ap": 0.9738876778711467,
+      "best_f1": 0.9534510433386837,
+      "best_threshold": 0.1,
+      "ece": 0.08657134375522567
+    },
+    "mean_concentration": 0.8417392997665608,
+    "per_waypoint": [
+      {
+        "waypoint": "cobblestone",
+        "n": 85,
+        "pos": 36,
+        "neg": 49,
+        "auc": 0.7222222222222222
+      },
+      {
+        "waypoint": "logs",
+        "n": 38,
+        "pos": 35,
+        "neg": 3,
+        "auc": null
+      },
+      {
+        "waypoint": "crafting_table",
+        "n": 36,
+        "pos": 34,
+        "neg": 2,
+        "auc": null
+      },
+      {
+        "waypoint": "planks",
+        "n": 32,
+        "pos": 32,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "wooden_pickaxe",
+        "n": 29,
+        "pos": 27,
+        "neg": 2,
+        "auc": null
+      },
+      {
+        "waypoint": "stick",
+        "n": 28,
+        "pos": 28,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "furnace",
+        "n": 25,
+        "pos": 25,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "stone_pickaxe",
+        "n": 24,
+        "pos": 23,
+        "neg": 1,
+        "auc": null
+      },
+      {
+        "waypoint": "iron_ore",
+        "n": 20,
+        "pos": 16,
+        "neg": 4,
+        "auc": null
+      },
+      {
+        "waypoint": "iron_ingot",
+        "n": 16,
+        "pos": 16,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "iron_pickaxe",
+        "n": 8,
+        "pos": 8,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "gold_ore",
+        "n": 5,
+        "pos": 2,
+        "neg": 3,
+        "auc": null
+      },
+      {
+        "waypoint": "chest",
+        "n": 4,
+        "pos": 3,
+        "neg": 1,
+        "auc": null
+      },
+      {
+        "waypoint": "stone",
+        "n": 4,
+        "pos": 1,
+        "neg": 3,
+        "auc": null
+      },
+      {
+        "waypoint": "diamond",
+        "n": 3,
+        "pos": 3,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "gold_ingot",
+        "n": 2,
+        "pos": 2,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "bowl",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "rail",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "smithing_table",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "golden_pickaxe",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "shield",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "iron_boots",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "iron_helmet",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "diamond_helmet",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "wooden_sword",
+        "n": 1,
+        "pos": 0,
+        "neg": 1,
+        "auc": null
+      },
+      {
+        "waypoint": "coals",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "torch",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "shears",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "golden_shovel",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "diamond_axe",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "jukebox",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "hopper",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      },
+      {
+        "waypoint": "tripwire_hook",
+        "n": 1,
+        "pos": 1,
+        "neg": 0,
+        "auc": null
+      }
+    ],
+    "attention_diagnostic": {
+      "n": 376,
+      "top1_same_waypoint_rate": 0.9441489361702128,
+      "top1_same_outcome_rate": 0.523936170212766,
+      "top1_same_both_rate": 0.48936170212765956
+    }
+  },
+  "baselines": {
+    "test": [
+      {
+        "name": "history_count_baseline",
+        "metrics": {
+          "n": 376,
+          "pos_rate": 0.8164893617021277,
+          "auc": 0.8554501251003163,
+          "ap": 0.943082691587311,
+          "best_f1": 0.9118644067796609,
+          "best_threshold": 0.5499999999999999,
+          "ece": 0.041949883843547996
+        }
+      },
+      {
+        "name": "majority_class_baseline",
+        "metrics": {
+          "n": 376,
+          "pos_rate": 0.8164893617021277,
+          "auc": 0.5,
+          "ap": 0.8164893617021277,
+          "best_f1": 0.8989751098096633,
+          "best_threshold": 0.05,
+          "ece": 2.220446049250313e-16
+        }
+      }
+    ]
+  },
+  "multi_action_test": [
+    {
+      "waypoint": "cobblestone",
+      "n_eval": 85,
+      "n_actions": 3,
+      "history_majority_action": "dig down and mine cobblestone",
+      "rads_picks_majority_rate": 0.4235294117647059,
+      "successful_eval": 36,
+      "rads_top1_match_on_success_rate": 1.0
+    },
+    {
+      "waypoint": "stone",
+      "n_eval": 4,
+      "n_actions": 2,
+      "history_majority_action": "smelt stone",
+      "rads_picks_majority_rate": 1.0,
+      "successful_eval": 1,
+      "rads_top1_match_on_success_rate": 1.0
+    }
+  ]
+}

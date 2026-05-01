@@ -79,10 +79,20 @@ class FeatureSpec:
     inv_key_items: List[str] = field(default_factory=lambda: list(INVENTORY_KEY_ITEMS))
 
     embedding_dim: int = 6
+    # Optional empirical prior: P(success | waypoint, selected_action),
+    # computed from the TRAIN split only. When enabled, contributes one
+    # additional numeric input dim. Counters the action-embedding bias where
+    # rare actions like "craft cobblestone" get pulled toward globally
+    # successful "craft" actions despite their own train cases all failing.
+    use_wp_action_prior: bool = False
+    wp_action_prior_table: Dict[str, float] = field(default_factory=dict)
+    wp_action_prior_default: float = 0.5
 
     @property
     def numeric_dim(self) -> int:
         # equipment_onehot + biome_onehot + scalar fields + ypos_bucket + inv + tool_flags + unique_count
+        # Note: wp_action_prior is delivered as a separate batch field and added
+        # as a residual to the logit, NOT part of numeric_dim.
         return (
             len(self.equipment)
             + len(self.biomes)
@@ -110,6 +120,9 @@ class FeatureSpec:
             "embedding_dim": self.embedding_dim,
             "numeric_dim": self.numeric_dim,
             "total_input_dim": self.total_input_dim,
+            "use_wp_action_prior": self.use_wp_action_prior,
+            "wp_action_prior_table": self.wp_action_prior_table,
+            "wp_action_prior_default": self.wp_action_prior_default,
         }
 
     @classmethod
@@ -122,7 +135,30 @@ class FeatureSpec:
             biomes=data.get("biomes", list(BIOME_VOCAB)),
             inv_key_items=data.get("inv_key_items", list(INVENTORY_KEY_ITEMS)),
             embedding_dim=data.get("embedding_dim", 6),
+            use_wp_action_prior=bool(data.get("use_wp_action_prior", False)),
+            wp_action_prior_table=dict(data.get("wp_action_prior_table", {}) or {}),
+            wp_action_prior_default=float(data.get("wp_action_prior_default", 0.5)),
         )
+
+
+def compute_wp_action_prior(
+    train_samples: List[Dict[str, Any]], alpha: float = 2.0, prior_mean: float = 0.5
+) -> Dict[str, float]:
+    """Per-(waypoint, action) Laplace-smoothed success rate from train data.
+
+    Key format: '<waypoint>|||<selected_action>'.
+    """
+    from collections import defaultdict
+    counts: Dict[str, List[float]] = defaultdict(lambda: [0.0, 0.0])  # [n_succ, n_total]
+    for s in train_samples:
+        key = f"{_normalize_str(s.get('waypoint', ''))}|||{_normalize_str(s.get('selected_action', ''))}"
+        counts[key][1] += 1.0
+        if (s.get("outcome", {}) or {}).get("success") is True:
+            counts[key][0] += 1.0
+    return {
+        k: (succ + alpha * prior_mean) / (total + alpha)
+        for k, (succ, total) in counts.items()
+    }
 
 
 def build_spec_from_cases(cases: List[Dict[str, Any]], embedding_dim: int = 6) -> FeatureSpec:
@@ -265,6 +301,18 @@ def extract_features(case: Dict[str, Any], spec: FeatureSpec) -> Dict[str, Any]:
         f"numeric dim mismatch: got {numeric.shape[0]}, expected {spec.numeric_dim}"
     )
 
+    # (waypoint, action) Laplace-smoothed prior rate, delivered as a separate
+    # field. Used as a residual logit at the output of the decision head, so
+    # the prior is always in play even if the model would otherwise ignore it.
+    if spec.use_wp_action_prior:
+        key = (
+            f"{_normalize_str(case.get('waypoint', ''))}|||"
+            f"{_normalize_str(case.get('selected_action', ''))}"
+        )
+        prior_rate = float(spec.wp_action_prior_table.get(key, spec.wp_action_prior_default))
+    else:
+        prior_rate = float(spec.wp_action_prior_default)
+
     label = -1
     outcome_known = False
     outcome = case.get("outcome", {}) or {}
@@ -280,6 +328,7 @@ def extract_features(case: Dict[str, Any], spec: FeatureSpec) -> Dict[str, Any]:
         "waypoint_id": _vocab_index(spec.waypoints, case.get("waypoint", "")),
         "final_goal_id": _vocab_index(spec.final_goals, case.get("original_final_goal", "")),
         "action_id": _vocab_index(spec.actions, case.get("selected_action", "")),
+        "wp_action_prior": prior_rate,
         "label": label,
         "outcome_known": outcome_known,
     }

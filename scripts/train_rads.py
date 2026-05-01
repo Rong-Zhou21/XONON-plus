@@ -41,7 +41,12 @@ import sys
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))
 
-from optimus1.decisioner.feature import FeatureSpec, build_spec_from_cases, extract_features
+from optimus1.decisioner.feature import (
+    FeatureSpec,
+    build_spec_from_cases,
+    compute_wp_action_prior,
+    extract_features,
+)
 from optimus1.decisioner.rads import RADS, RADSConfig, sample_triplets
 
 
@@ -67,6 +72,7 @@ class CaseDataset(Dataset):
             "waypoint_id": torch.tensor(feats["waypoint_id"], dtype=torch.long),
             "final_goal_id": torch.tensor(feats["final_goal_id"], dtype=torch.long),
             "action_id": torch.tensor(feats["action_id"], dtype=torch.long),
+            "wp_action_prior": torch.tensor(feats["wp_action_prior"], dtype=torch.float32),
             "label": torch.tensor(feats["label"], dtype=torch.long),
             "index": torch.tensor(idx, dtype=torch.long),
         }
@@ -148,6 +154,7 @@ def evaluate(
     library_batch = build_library_batch(library_samples, spec, device)
     library_vecs = model.encode_cases(library_batch)
     library_runs = [s["run_uuid"] for s in library_samples]
+    library_waypoint_ids = library_batch["waypoint_id"]
 
     all_logits, all_labels, all_concentration = [], [], []
     feats_list = [extract_features(s, spec) for s in samples]
@@ -168,12 +175,20 @@ def evaluate(
             "action_id": torch.tensor(
                 [f["action_id"] for f in chunk], dtype=torch.long, device=device
             ),
+            "wp_action_prior": torch.tensor(
+                [f["wp_action_prior"] for f in chunk], dtype=torch.float32, device=device
+            ),
         }
         labels = [int(f["label"]) for f in chunk]
         run_uuids = [s["run_uuid"] for s in chunk_samples]
         mask = build_run_uuid_mask(run_uuids, library_runs, device)
 
-        logits, attn = model(batch, library_vecs, retrieval_mask=mask)
+        logits, attn = model(
+            batch,
+            library_vecs,
+            retrieval_mask=mask,
+            library_waypoint_ids=library_waypoint_ids,
+        )
         conc = model.attention_concentration(attn)
 
         all_logits.extend(logits.cpu().tolist())
@@ -238,14 +253,23 @@ def compute_ece(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) -> floa
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data", default="data/decisioner/rads_v1.jsonl")
-    parser.add_argument("--out", default="artifacts/decisioner/rads_v1.pt")
-    parser.add_argument("--report", default="reports/decisioner/training_log_v1.json")
-    parser.add_argument("--epochs", type=int, default=40)
+    parser.add_argument("--out", default="artifacts/decisioner/rads_v2.pt")
+    parser.add_argument("--report", default="reports/decisioner/training_log_v2.json")
+    parser.add_argument("--epochs", type=int, default=20)
+    parser.add_argument("--patience", type=int, default=5,
+                        help="Early-stop after this many epochs of no val_auc improvement.")
     parser.add_argument("--batch_size", type=int, default=64)
     parser.add_argument("--lr", type=float, default=1e-3)
     parser.add_argument("--weight_decay", type=float, default=1e-4)
-    parser.add_argument("--triplet_weight", type=float, default=0.3)
-    parser.add_argument("--wp_weight", type=float, default=0.2)
+    parser.add_argument("--triplet_weight", type=float, default=0.1)
+    parser.add_argument("--wp_weight", type=float, default=0.05)
+    parser.add_argument("--dropout", type=float, default=0.2)
+    parser.add_argument("--same_wp_min", type=int, default=8,
+                        help="Hard same-waypoint mask threshold; 0 disables.")
+    parser.add_argument("--use_wp_action_prior", type=int, default=1,
+                        help="Use (waypoint, action) Laplace-smoothed success rate as a residual logit prior.")
+    parser.add_argument("--prior_logit_init_weight", type=float, default=1.5,
+                        help="Initial scale on the prior log-odds residual (trainable).")
     parser.add_argument("--triplets_per_step", type=int, default=128)
     parser.add_argument("--seed", type=int, default=20260501)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
@@ -263,6 +287,14 @@ def main():
     print(f"train={len(train_samples)} val={len(val_samples)} test={len(test_samples)}")
 
     spec = build_spec_from_cases(train_samples)
+    if args.use_wp_action_prior:
+        spec.use_wp_action_prior = True
+        spec.wp_action_prior_table = compute_wp_action_prior(train_samples)
+        spec.wp_action_prior_default = 0.5
+        print(
+            f"using wp_action prior (table size={len(spec.wp_action_prior_table)}, "
+            f"default={spec.wp_action_prior_default})"
+        )
     print(
         f"vocab: waypoints={len(spec.waypoints)} goals={len(spec.final_goals)} "
         f"actions={len(spec.actions)} feature_dim={spec.total_input_dim}"
@@ -273,7 +305,13 @@ def main():
     pos_weight = torch.tensor(n_neg / max(n_pos, 1), dtype=torch.float32, device=args.device)
     print(f"train pos={n_pos} neg={n_neg} pos_weight={pos_weight.item():.4f}")
 
-    config = RADSConfig()
+    config = RADSConfig(
+        lambda_triplet=args.triplet_weight,
+        lambda_wp=args.wp_weight,
+        dropout=args.dropout,
+        same_wp_min=args.same_wp_min,
+        prior_logit_init_weight=args.prior_logit_init_weight,
+    )
     model = RADS(spec, config).to(args.device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
 
@@ -314,8 +352,10 @@ def main():
     best_state = None
     best_epoch = -1
     best_metrics: Dict[str, Any] = {}
+    epochs_since_improvement = 0
 
     library_batch_static = build_library_batch(train_samples, spec, args.device)
+    library_waypoint_ids = library_batch_static["waypoint_id"]
 
     for epoch in range(args.epochs):
         model.train()
@@ -337,7 +377,12 @@ def main():
             for row, qi in enumerate(query_indices):
                 mask[row, qi] = True
 
-            logits, _ = model(batch, library_vecs, retrieval_mask=mask)
+            logits, _ = model(
+                batch,
+                library_vecs,
+                retrieval_mask=mask,
+                library_waypoint_ids=library_waypoint_ids,
+            )
             l1 = model.bce_loss(logits, batch["label"], pos_weight)
 
             # Triplet loss on case-vectors.
@@ -394,11 +439,25 @@ def main():
 
         # Track best by val AUC (handle NaN gracefully).
         val_auc = val_metrics.get("auc", float("nan"))
-        if isinstance(val_auc, float) and not (val_auc != val_auc) and val_auc > best_val_auc:
+        improved = (
+            isinstance(val_auc, float)
+            and not (val_auc != val_auc)
+            and val_auc > best_val_auc
+        )
+        if improved:
             best_val_auc = val_auc
             best_epoch = epoch
             best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
             best_metrics = {"val": val_metrics, "epoch": epoch}
+            epochs_since_improvement = 0
+        else:
+            epochs_since_improvement += 1
+            if args.patience > 0 and epochs_since_improvement >= args.patience:
+                print(
+                    f"early stop at epoch {epoch} "
+                    f"(no val_auc improvement in {args.patience} epochs)"
+                )
+                break
 
     # Final evaluation on test using best checkpoint.
     if best_state is not None:

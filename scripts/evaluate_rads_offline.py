@@ -59,15 +59,30 @@ def split_samples(samples: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any
     return out
 
 
-def load_bundle(path: str, device: str) -> Tuple[RADS, FeatureSpec, torch.Tensor, List[Dict[str, Any]]]:
+def load_bundle(
+    path: str, device: str
+) -> Tuple[RADS, FeatureSpec, torch.Tensor, List[Dict[str, Any]], torch.Tensor]:
     bundle = torch.load(path, map_location=device, weights_only=False)
     spec = FeatureSpec.from_dict(bundle["spec"])
-    config = RADSConfig(**bundle.get("config", {}))
+    # Tolerate older bundles missing fields added in newer configs.
+    config_kwargs = {
+        k: v for k, v in (bundle.get("config") or {}).items()
+        if k in RADSConfig.__dataclass_fields__
+    }
+    config = RADSConfig(**config_kwargs)
     model = RADS(spec, config)
     model.load_state_dict(bundle["model_state"])
     model.to(device).eval()
     library_vecs = torch.tensor(bundle["library_vecs"], dtype=torch.float32, device=device)
-    return model, spec, library_vecs, bundle["library_meta"]
+    # Build library_waypoint_ids from meta + spec.
+    waypoint_idx = {wp: i for i, wp in enumerate(spec.waypoints)}
+    library_meta = bundle["library_meta"]
+    lib_wp_ids = torch.tensor(
+        [waypoint_idx.get(m.get("waypoint", ""), 0) for m in library_meta],
+        dtype=torch.long,
+        device=device,
+    )
+    return model, spec, library_vecs, library_meta, lib_wp_ids
 
 
 def compute_ece(probs: np.ndarray, labels: np.ndarray, n_bins: int = 15) -> float:
@@ -91,6 +106,7 @@ def score_samples(
     samples: List[Dict[str, Any]],
     library_vecs: torch.Tensor,
     library_meta: List[Dict[str, Any]],
+    library_wp_ids: torch.Tensor,
     spec: FeatureSpec,
     device: str,
     batch_size: int = 64,
@@ -115,6 +131,9 @@ def score_samples(
             "action_id": torch.tensor(
                 [f["action_id"] for f in chunk], dtype=torch.long, device=device
             ),
+            "wp_action_prior": torch.tensor(
+                [f["wp_action_prior"] for f in chunk], dtype=torch.float32, device=device
+            ),
         }
         # Mask same-run library entries for fair evaluation.
         mask = []
@@ -122,7 +141,12 @@ def score_samples(
             mask.append(library_runs == s["run_uuid"])
         mask_t = torch.tensor(np.stack(mask), dtype=torch.bool, device=device)
 
-        logits, attn = model(batch, library_vecs, retrieval_mask=mask_t)
+        logits, attn = model(
+            batch,
+            library_vecs,
+            retrieval_mask=mask_t,
+            library_waypoint_ids=library_wp_ids,
+        )
         p = torch.sigmoid(logits).cpu().numpy()
         c = model.attention_concentration(attn).cpu().numpy()
         top1 = attn.argmax(dim=-1).cpu().numpy()
@@ -277,6 +301,7 @@ def multi_action_waypoint_topk(
     model: RADS,
     library_vecs: torch.Tensor,
     library_meta: List[Dict[str, Any]],
+    library_wp_ids: torch.Tensor,
     spec: FeatureSpec,
     device: str,
 ) -> List[Dict[str, Any]]:
@@ -326,12 +351,18 @@ def multi_action_waypoint_topk(
                     "waypoint_id": torch.tensor([feats["waypoint_id"]], dtype=torch.long, device=device),
                     "final_goal_id": torch.tensor([feats["final_goal_id"]], dtype=torch.long, device=device),
                     "action_id": torch.tensor([feats["action_id"]], dtype=torch.long, device=device),
+                    "wp_action_prior": torch.tensor([feats["wp_action_prior"]], dtype=torch.float32, device=device),
                 }
                 mask = torch.tensor(
                     [(library_runs == s["run_uuid"]).tolist()], dtype=torch.bool, device=device
                 )
                 with torch.no_grad():
-                    logits, _ = model(batch, library_vecs, retrieval_mask=mask)
+                    logits, _ = model(
+                        batch,
+                        library_vecs,
+                        retrieval_mask=mask,
+                        library_waypoint_ids=library_wp_ids,
+                    )
                 scores.append((a, float(logits.item())))
             scores.sort(key=lambda x: -x[1])
             rads_pick = scores[0][0]
@@ -359,16 +390,18 @@ def multi_action_waypoint_topk(
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--artifact", default="artifacts/decisioner/rads_v1.pt")
+    parser.add_argument("--artifact", default="artifacts/decisioner/rads_v2.pt")
     parser.add_argument("--data", default="data/decisioner/rads_v1.jsonl")
-    parser.add_argument("--report_md", default="reports/decisioner/offline_eval_v1.md")
-    parser.add_argument("--report_json", default="reports/decisioner/offline_eval_v1.json")
+    parser.add_argument("--report_md", default="reports/decisioner/offline_eval_v2.md")
+    parser.add_argument("--report_json", default="reports/decisioner/offline_eval_v2.json")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     args = parser.parse_args()
 
     samples = load_jsonl(args.data)
     splits = split_samples(samples)
-    model, spec, library_vecs, library_meta = load_bundle(args.artifact, args.device)
+    model, spec, library_vecs, library_meta, library_wp_ids = load_bundle(
+        args.artifact, args.device
+    )
 
     results: Dict[str, Any] = {
         "artifact": args.artifact,
@@ -379,13 +412,25 @@ def main():
             "n_actions": len(spec.actions),
             "feature_dim": spec.total_input_dim,
         },
+        "config": {
+            "same_wp_min": int(model.config.same_wp_min),
+            "lambda_triplet": float(model.config.lambda_triplet),
+            "lambda_wp": float(model.config.lambda_wp),
+            "dropout": float(model.config.dropout),
+        },
         "library_size": int(library_vecs.size(0)),
     }
 
     for split_name in ("val", "test"):
         eval_samples = splits[split_name]
         scored = score_samples(
-            model, eval_samples, library_vecs, library_meta, spec, args.device
+            model,
+            eval_samples,
+            library_vecs,
+            library_meta,
+            library_wp_ids,
+            spec,
+            args.device,
         )
         labels = np.array([int(s["outcome"]["success"]) for s in eval_samples])
         results[split_name] = {
@@ -406,7 +451,14 @@ def main():
         ]
     }
     results["multi_action_test"] = multi_action_waypoint_topk(
-        train_samples, test_samples, model, library_vecs, library_meta, spec, args.device
+        train_samples,
+        test_samples,
+        model,
+        library_vecs,
+        library_meta,
+        library_wp_ids,
+        spec,
+        args.device,
     )
 
     Path(args.report_json).parent.mkdir(parents=True, exist_ok=True)
@@ -434,7 +486,8 @@ def main():
 
 def render_markdown(r: Dict[str, Any]) -> str:
     lines: List[str] = []
-    lines.append("# RADS Offline Evaluation v1\n")
+    artifact_name = r["artifact"].split("/")[-1].replace(".pt", "")
+    lines.append(f"# RADS Offline Evaluation ({artifact_name})\n")
     lines.append(f"- artifact: `{r['artifact']}`")
     lines.append(f"- data: `{r['data']}`")
     spec = r["spec_summary"]
@@ -442,6 +495,13 @@ def render_markdown(r: Dict[str, Any]) -> str:
         f"- spec: waypoints={spec['n_waypoints']}, goals={spec['n_goals']}, "
         f"actions={spec['n_actions']}, feature_dim={spec['feature_dim']}"
     )
+    cfg = r.get("config", {})
+    if cfg:
+        lines.append(
+            f"- config: same_wp_min={cfg.get('same_wp_min')}, "
+            f"lambda_triplet={cfg.get('lambda_triplet')}, "
+            f"lambda_wp={cfg.get('lambda_wp')}, dropout={cfg.get('dropout')}"
+        )
     lines.append(f"- library size (train cases): {r['library_size']}")
     lines.append("")
 

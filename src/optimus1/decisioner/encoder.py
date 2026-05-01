@@ -44,14 +44,20 @@ class FeatureEmbedder(nn.Module):
 class QueryEncoder(nn.Module):
     """Encodes a query into a 64d vector."""
 
-    def __init__(self, spec: FeatureSpec, hidden_dim: int = 128, output_dim: int = 64):
+    def __init__(
+        self,
+        spec: FeatureSpec,
+        hidden_dim: int = 128,
+        output_dim: int = 64,
+        dropout: float = 0.2,
+    ):
         super().__init__()
         self.embedder = FeatureEmbedder(spec)
         in_dim = spec.total_input_dim
         self.net = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
             nn.GELU(),
-            nn.Dropout(0.1),
+            nn.Dropout(dropout),
             nn.Linear(hidden_dim, output_dim),
         )
         self.output_dim = output_dim
@@ -80,6 +86,7 @@ class CaseEncoder(nn.Module):
         embedder: FeatureEmbedder,
         hidden_dim: int = 128,
         output_dim: int = 64,
+        dropout: float = 0.2,
     ):
         super().__init__()
         self.spec = spec
@@ -89,7 +96,7 @@ class CaseEncoder(nn.Module):
         self.net = nn.Sequential(
             nn.Linear(in_dim, hidden_dim),
             nn.GELU(),
-            nn.Dropout(0.1),
+            nn.Dropout(dropout),
             nn.Linear(hidden_dim, output_dim),
         )
         # Auxiliary head: predict waypoint id from the case representation.

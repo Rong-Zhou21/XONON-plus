@@ -36,8 +36,18 @@ class RADSConfig:
     head_hidden_dim: int = 64
     initial_tau: float = 0.5
     triplet_margin: float = 0.3
-    lambda_triplet: float = 0.3
-    lambda_wp: float = 0.2
+    lambda_triplet: float = 0.1
+    lambda_wp: float = 0.05
+    dropout: float = 0.2
+    # Hard same-waypoint mask: at attention time, restrict the retrieval pool
+    # to library cases sharing the query's waypoint. Falls back to the full
+    # pool when fewer than `same_wp_min` same-waypoint cases are available.
+    # Set 0 to disable (v1 behaviour).
+    same_wp_min: int = 8
+    # When the query batch carries `wp_action_prior`, add log-odds of that
+    # prior as a residual to the decision logit, scaled by a trainable weight
+    # initialised to `prior_logit_init_weight`. Set 0 to disable.
+    prior_logit_init_weight: float = 1.5
 
 
 class RADS(nn.Module):
@@ -48,7 +58,10 @@ class RADS(nn.Module):
         c = self.config
 
         self.query_encoder = QueryEncoder(
-            spec, hidden_dim=c.hidden_dim, output_dim=c.output_dim
+            spec,
+            hidden_dim=c.hidden_dim,
+            output_dim=c.output_dim,
+            dropout=c.dropout,
         )
         # Share the embedding table between query and case encoders.
         self.case_encoder = CaseEncoder(
@@ -56,6 +69,7 @@ class RADS(nn.Module):
             self.query_encoder.embedder,
             hidden_dim=c.hidden_dim,
             output_dim=c.output_dim,
+            dropout=c.dropout,
         )
 
         action_emb_dim = spec.embedding_dim
@@ -67,6 +81,10 @@ class RADS(nn.Module):
         )
         self.log_tau = nn.Parameter(
             torch.tensor(float(c.initial_tau), dtype=torch.float32).log()
+        )
+        # Trainable scalar weight on the (waypoint, action) prior log-odds.
+        self.prior_logit_weight = nn.Parameter(
+            torch.tensor(float(c.prior_logit_init_weight), dtype=torch.float32)
         )
 
     @property
@@ -84,14 +102,21 @@ class RADS(nn.Module):
         query_batch: Dict[str, torch.Tensor],
         library_vecs: torch.Tensor,
         retrieval_mask: Optional[torch.Tensor] = None,
+        library_waypoint_ids: Optional[torch.Tensor] = None,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
         """Compute success logit and attention.
 
         Args:
-            query_batch: dict of query tensors (incl. action_id)
+            query_batch: dict of query tensors (incl. action_id, waypoint_id)
             library_vecs: [N, D] precomputed case vectors
             retrieval_mask: optional [B, N] bool, True where a library entry
                             should be excluded (e.g. same run_uuid).
+            library_waypoint_ids: optional [N] long tensor of library cases'
+                            waypoint ids. When provided AND
+                            `config.same_wp_min > 0`, the attention pool is
+                            hard-restricted to same-waypoint cases for queries
+                            that have at least `same_wp_min` such candidates;
+                            other queries fall back to the unrestricted pool.
 
         Returns:
             logits: [B]
@@ -105,11 +130,34 @@ class RADS(nn.Module):
         scores = scores / self.tau
         if retrieval_mask is not None:
             scores = scores.masked_fill(retrieval_mask, float("-inf"))
+
+        # Same-waypoint hard mask with thresholded fallback.
+        same_wp_min = int(self.config.same_wp_min)
+        if same_wp_min > 0 and library_waypoint_ids is not None and "waypoint_id" in query_batch:
+            # [B, N] True where library wp == query wp
+            wp_match = library_waypoint_ids.unsqueeze(0) == query_batch["waypoint_id"].unsqueeze(1)
+            if retrieval_mask is not None:
+                valid_same_wp = wp_match & (~retrieval_mask)
+            else:
+                valid_same_wp = wp_match
+            same_wp_count = valid_same_wp.sum(dim=-1)  # [B]
+            sufficient = same_wp_count >= same_wp_min  # [B]
+            # Where sufficient: hard-mask non-same-wp library entries.
+            wp_filter = (~wp_match) & sufficient.unsqueeze(1)
+            scores = scores.masked_fill(wp_filter, float("-inf"))
+
         attn = F.softmax(scores, dim=-1)
         context = attn @ library_vecs  # [B, D]
 
         h = torch.cat([q, context, action_vec], dim=-1)
         logits = self.head(h).squeeze(-1)
+
+        # Residual (waypoint, action) prior in log-odds space.
+        if "wp_action_prior" in query_batch:
+            prior = query_batch["wp_action_prior"].clamp(min=1e-3, max=1.0 - 1e-3)
+            prior_logit = torch.log(prior) - torch.log1p(-prior)
+            logits = logits + self.prior_logit_weight * prior_logit
+
         return logits, attn
 
     def attention_concentration(self, attn: torch.Tensor) -> torch.Tensor:
