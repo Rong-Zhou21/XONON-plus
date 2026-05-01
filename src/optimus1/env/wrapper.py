@@ -205,6 +205,7 @@ class CustomEnvWrapper(gym.Wrapper):
         self.cache["last_target_block_step"] = 0
         self.cache["last_surface_attack_step"] = -1000000
         self.cache["surface_attack_streak"] = 0
+        self.cache["last_surface_log_step"] = -1000000
         self.cache["last_surface_search_step"] = -1000000
         self.cache["last_collect_drop_step"] = -1000000
         self.cache["position_window"] = deque(maxlen=120)
@@ -225,6 +226,7 @@ class CustomEnvWrapper(gym.Wrapper):
             "tunnel_recovery_ticks": 0,
             "surface_search_ticks": 0,
             "collect_drop_ticks": 0,
+            "surface_log_jump_lock_ticks": 0,
             "resource_stagnant_ticks": 0,
             "movement_stagnant_ticks": 0,
             "last_prompt": None,
@@ -241,6 +243,7 @@ class CustomEnvWrapper(gym.Wrapper):
                 "checker_error": 0,
                 "inventory_cleanup": 0,
                 "inventory_cleanup_blocked": 0,
+                "surface_log_jump_lock": 0,
             },
         }
 
@@ -344,22 +347,52 @@ class CustomEnvWrapper(gym.Wrapper):
     def _lock_jump_during_attack(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
         if self._is_tunnel_resource_acquisition(goal, prompt):
             return True
-        if not self._is_surface_resource_acquisition(goal, prompt):
-            return False
-
-        contact_ticks = int(
-            os.environ.get(
-                "XENON_SURFACE_ATTACK_LOCK_TICKS",
-                os.environ.get("XENON_TREE_CONTACT_ATTACK_TICKS", "16"),
-            )
-        )
-        return (
-            int(self.cache.get("surface_attack_streak", 0)) >= contact_ticks
-            and self.num_steps - int(self.cache.get("last_surface_attack_step", -1000000)) <= 2
-        )
+        return self._surface_log_jump_lock_active(goal, prompt)
 
     def _lock_full_movement_during_attack(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
         return self._is_tunnel_resource_acquisition(goal, prompt)
+
+    def _is_log_item(self, item_type: str) -> bool:
+        item_type = self._plain_item_type(item_type)
+        return item_type == "log" or item_type.endswith("_log")
+
+    def _log_delta_total(self, deltas: Dict[str, int]) -> int:
+        return sum(int(quantity) for item, quantity in deltas.items() if self._is_log_item(item))
+
+    def _surface_log_jump_lock_active(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        return (
+            self._is_surface_resource_acquisition(goal, prompt)
+            and int(self._control_state.get("surface_log_jump_lock_ticks", 0)) > 0
+        )
+
+    def _apply_surface_log_jump_lock(
+        self,
+        action: Dict[str, Any],
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> Dict[str, Any]:
+        if self._surface_log_jump_lock_active(goal, prompt):
+            self._set_button(action, "jump", 0)
+            self._set_button(action, "sprint", 0)
+        return action
+
+    def _tick_surface_log_jump_lock(self) -> None:
+        ticks = int(self._control_state.get("surface_log_jump_lock_ticks", 0))
+        if ticks > 0:
+            self._control_state["surface_log_jump_lock_ticks"] = ticks - 1
+
+    def _finish_stabilized_action(
+        self,
+        stage: str,
+        before: Dict[str, Any],
+        action: Dict[str, Any],
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> Dict[str, Any]:
+        action = self._apply_surface_log_jump_lock(action, goal, prompt)
+        self._maybe_log_action_debug(stage, before, action, goal, prompt)
+        self._tick_surface_log_jump_lock()
+        return action
 
     def _attack_hold_ticks(self, goal: tuple[str, int] | None, prompt: str | None) -> int:
         text = self._prompt_text(goal, prompt)
@@ -946,20 +979,16 @@ class CustomEnvWrapper(gym.Wrapper):
 
         if self._control_state["escape_ticks"] > 0:
             action = self._escape_action(action)
-            self._maybe_log_action_debug("stabilize_escape", original_action, action, goal, prompt)
-            return action
+            return self._finish_stabilized_action("stabilize_escape", original_action, action, goal, prompt)
         if self._control_state["collect_drop_ticks"] > 0:
             action = self._collect_drop_action(action, goal, prompt)
-            self._maybe_log_action_debug("stabilize_collect_drops", original_action, action, goal, prompt)
-            return action
+            return self._finish_stabilized_action("stabilize_collect_drops", original_action, action, goal, prompt)
         if self._control_state["surface_search_ticks"] > 0:
             action = self._surface_search_action(action)
-            self._maybe_log_action_debug("stabilize_surface_search", original_action, action, goal, prompt)
-            return action
+            return self._finish_stabilized_action("stabilize_surface_search", original_action, action, goal, prompt)
         if self._control_state["tunnel_recovery_ticks"] > 0:
             action = self._tunnel_recovery_action(action)
-            self._maybe_log_action_debug("stabilize_tunnel", original_action, action, goal, prompt)
-            return action
+            return self._finish_stabilized_action("stabilize_tunnel", original_action, action, goal, prompt)
 
         original_attack = self._button_down(action, "attack")
         if original_attack and self._is_resource_acquisition(goal, prompt):
@@ -1001,8 +1030,7 @@ class CustomEnvWrapper(gym.Wrapper):
         else:
             self.cache["surface_attack_streak"] = 0
 
-        self._maybe_log_action_debug("stabilize", original_action, action, goal, prompt)
-        return action
+        return self._finish_stabilized_action("stabilize", original_action, action, goal, prompt)
 
     def _record_step_state(
         self,
@@ -1041,6 +1069,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["tunnel_recovery_ticks"] = 0
             self._control_state["surface_search_ticks"] = 0
             self._control_state["collect_drop_ticks"] = 0
+            self._control_state["surface_log_jump_lock_ticks"] = 0
             self._control_state["movement_stagnant_ticks"] = 0
             self._control_state["resource_stagnant_ticks"] = 0
             self._control_state["policy_reset_requested"] = True
@@ -1051,6 +1080,23 @@ class CustomEnvWrapper(gym.Wrapper):
                 "and requesting STEVE-1 policy reset."
             )
         deltas = self._record_resource_ledger(observation)
+        if self._is_surface_resource_acquisition(goal, prompt):
+            log_delta = max(
+                self._log_delta_total(deltas.get("inventory", {})),
+                self._log_delta_total(deltas.get("pickup", {})),
+            )
+            if log_delta > 0:
+                lock_ticks = int(os.environ.get("XENON_SURFACE_LOG_JUMP_LOCK_TICKS", "30"))
+                self._control_state["surface_log_jump_lock_ticks"] = max(
+                    int(self._control_state.get("surface_log_jump_lock_ticks", 0)),
+                    lock_ticks,
+                )
+                self.cache["last_surface_log_step"] = self.num_steps
+                self._control_state["recovery_events"]["surface_log_jump_lock"] += 1
+                self.logger.info(
+                    "Temporarily locking jump after log pickup: "
+                    f"log_delta={log_delta}, lock_ticks={lock_ticks}, prompt={prompt}, goal={goal}"
+                )
         relevant_inventory = self._relevant_inventory_delta(goal, prompt)
         relevant_pickup = self._relevant_delta_total(deltas.get("pickup", {}), goal)
         relevant_mined = self._relevant_delta_total(deltas.get("mine_block", {}), goal)
@@ -1385,6 +1431,8 @@ class CustomEnvWrapper(gym.Wrapper):
         status["control_state"] = {
             "surface_attack_streak": int(self.cache.get("surface_attack_streak", 0)),
             "last_surface_attack_step": int(self.cache.get("last_surface_attack_step", -1000000)),
+            "last_surface_log_step": int(self.cache.get("last_surface_log_step", -1000000)),
+            "surface_log_jump_lock_ticks": int(self._control_state.get("surface_log_jump_lock_ticks", 0)),
             "last_target_block_step": int(self.cache.get("last_target_block_step", 0)),
             "last_goal_progress_step": int(self.cache.get("last_goal_progress_step", 0)),
         }
