@@ -1,0 +1,161 @@
+{
+  "generated_at": "2026-05-01T12:37:14.931146+00:00",
+  "source_cases_path": "src/optimus1/memories/ours_planning/v1/case_memory/cases.json",
+  "raw_case_total": 2660,
+  "valid_sample_total": 2574,
+  "drop_counts": {
+    "legacy": 35,
+    "excluded_infra": 44,
+    "crash_RuntimeError": 6,
+    "pending": 1
+  },
+  "splits": {
+    "train": 1847,
+    "val": 351,
+    "test": 376
+  },
+  "split_runs": {
+    "train": 170,
+    "val": 36,
+    "test": 38
+  },
+  "split_label_counts": {
+    "train_label_1": 1542,
+    "test_label_1": 307,
+    "train_label_0": 305,
+    "val_label_1": 330,
+    "test_label_0": 69,
+    "val_label_0": 21
+  },
+  "waypoint_count": 74,
+  "action_count": 82,
+  "top_waypoints": [
+    [
+      "cobblestone",
+      450
+    ],
+    [
+      "logs",
+      275
+    ],
+    [
+      "stick",
+      255
+    ],
+    [
+      "crafting_table",
+      229
+    ],
+    [
+      "planks",
+      219
+    ],
+    [
+      "wooden_pickaxe",
+      195
+    ],
+    [
+      "furnace",
+      177
+    ],
+    [
+      "stone_pickaxe",
+      164
+    ],
+    [
+      "iron_ore",
+      157
+    ],
+    [
+      "iron_ingot",
+      129
+    ],
+    [
+      "iron_pickaxe",
+      84
+    ],
+    [
+      "gold_ore",
+      34
+    ],
+    [
+      "diamond",
+      28
+    ],
+    [
+      "gold_ingot",
+      18
+    ],
+    [
+      "chest",
+      12
+    ]
+  ],
+  "top_actions": [
+    [
+      "dig down and mine cobblestone",
+      446
+    ],
+    [
+      "chop a tree",
+      275
+    ],
+    [
+      "craft stick",
+      255
+    ],
+    [
+      "craft crafting_table",
+      229
+    ],
+    [
+      "craft planks",
+      219
+    ],
+    [
+      "craft wooden_pickaxe",
+      195
+    ],
+    [
+      "craft furnace",
+      177
+    ],
+    [
+      "craft stone_pickaxe",
+      164
+    ],
+    [
+      "dig down and mine iron_ore",
+      157
+    ],
+    [
+      "smelt iron_ingot",
+      129
+    ],
+    [
+      "craft iron_pickaxe",
+      84
+    ],
+    [
+      "dig down and mine gold_ore",
+      34
+    ],
+    [
+      "dig down and mine diamond",
+      28
+    ],
+    [
+      "smelt gold_ingot",
+      18
+    ],
+    [
+      "craft chest",
+      12
+    ]
+  ],
+  "args": {
+    "train": 0.7,
+    "val": 0.15,
+    "seed": 20260501
+  }
+}
