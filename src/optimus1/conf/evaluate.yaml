@@ -62,6 +62,12 @@ memory:
     reuse_threshold: 0.72
     retrieve_threshold: 0.45
     bootstrap_legacy: True
+    decisioner:
+      enabled: False
+      checkpoint: artifacts/decisioner/rads_v2.pt
+      min_p_success: 0.20
+      device: cuda
+      log_evidence_topk: 5
   decomposed_plan:
     save_path: save_decomposed_plan/<status>
     path: decomposed_plan/<status>

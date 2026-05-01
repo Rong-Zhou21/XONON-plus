@@ -34,6 +34,11 @@ MAX_MINUTES="${MAX_MINUTES:-10}"     # 单任务最长分钟数
 EXP_NUM="${EXP_NUM:-99000}"          # 结果文件编号（避免重名）
 SERVER_PORT="${SERVER_PORT:-9100}"   # STEVE-1 action server 端口
 GPU="${GPU:-0}"                      # CUDA_VISIBLE_DEVICES
+
+# 决策器开关：1=启用 RADS 决策器，0=baseline retrieval-only
+DECISIONER_ENABLED="${DECISIONER_ENABLED:-0}"
+DECISIONER_CKPT="${DECISIONER_CKPT:-artifacts/decisioner/rads_v2.pt}"
+DECISIONER_MIN_P="${DECISIONER_MIN_P:-0.20}"
 # ====================================================================
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -65,6 +70,12 @@ cleanup() {
 cleanup
 sleep 3
 
+if [ "$DECISIONER_ENABLED" = "1" ]; then
+  DECISIONER_LABEL="ENABLED  (ckpt=$DECISIONER_CKPT, min_p=$DECISIONER_MIN_P)"
+else
+  DECISIONER_LABEL="disabled (baseline retrieval-only)"
+fi
+
 cat <<INFO
 ==========================================
  XENON-plus v3 single-task run
@@ -80,9 +91,20 @@ cat <<INFO
  video_dir    : $VIDEO_DIR
  results_dir  : $RESULTS_DIR
  log          : $LOG_FILE
+ decisioner   : $DECISIONER_LABEL
  start_time   : $(date)
 ==========================================
 INFO
+
+if [ "$DECISIONER_ENABLED" = "1" ]; then
+  DECISIONER_OVERRIDES=(
+    "memory.case_memory.decisioner.enabled=true"
+    "memory.case_memory.decisioner.checkpoint=$DECISIONER_CKPT"
+    "memory.case_memory.decisioner.min_p_success=$DECISIONER_MIN_P"
+  )
+else
+  DECISIONER_OVERRIDES=("memory.case_memory.decisioner.enabled=false")
+fi
 
 xvfb-run -a python -u src/optimus1/main_planning.py \
   server.port="$SERVER_PORT" \
@@ -96,6 +118,7 @@ xvfb-run -a python -u src/optimus1/main_planning.py \
   world_seed="$WORLD_SEED" \
   record.video.path="$VIDEO_DIR" \
   results.path="$RESULTS_DIR" \
+  "${DECISIONER_OVERRIDES[@]}" \
   2>&1 | tee "$LOG_FILE"
 
 RC=${PIPESTATUS[0]}

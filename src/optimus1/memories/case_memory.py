@@ -98,6 +98,39 @@ class CaseBasedMemory:
         self._pending_decisions: Dict[tuple[str, str], List[str]] = {}
         self._rebuild_pending_index()
 
+        # ----- decisioner (RADS) runtime hook -------------------------------
+        # When `memory.case_memory.decisioner.enabled` is True, every call to
+        # select_case_decision() is routed through the trained decisioner
+        # instead of `_best_exact_success_case` + cosine retrieval. The model
+        # is loaded lazily; failure to load is non-fatal and falls back to the
+        # baseline path so a misconfigured run never deadlocks the agent.
+        self.decisioner = None
+        self.decisioner_min_p = 0.20
+        self.decisioner_evidence_topk = 5
+        decisioner_cfg = case_cfg.get("decisioner") or {}
+        if bool(decisioner_cfg.get("enabled", False)):
+            ckpt = str(decisioner_cfg.get("checkpoint", "artifacts/decisioner/rads_v2.pt"))
+            self.decisioner_min_p = float(decisioner_cfg.get("min_p_success", 0.20))
+            self.decisioner_evidence_topk = int(decisioner_cfg.get("log_evidence_topk", 5))
+            requested_device = str(decisioner_cfg.get("device", "cuda"))
+            device = requested_device if (
+                requested_device == "cpu" or torch.cuda.is_available()
+            ) else "cpu"
+            try:
+                from ..decisioner.runtime import RADSRuntime
+                self.decisioner = RADSRuntime.load(ckpt, device=device)
+                if self.logger:
+                    self.logger.info(
+                        f"[decisioner] enabled. checkpoint={ckpt} device={device} "
+                        f"min_p_success={self.decisioner_min_p}"
+                    )
+            except Exception as exc:
+                if self.logger:
+                    self.logger.warning(
+                        f"[decisioner] load failed ({exc}); falling back to baseline path"
+                    )
+                self.decisioner = None
+
     def _load_cases(self) -> List[Dict[str, Any]]:
         if not os.path.exists(self.case_file_path):
             return []
@@ -348,6 +381,16 @@ class CaseBasedMemory:
         run_uuid: str,
         original_final_goal: str,
     ) -> Dict[str, Any] | None:
+        if self.decisioner is not None:
+            decision = self._select_case_decision_rads(
+                waypoint, wp_num, state_snapshot, run_uuid, original_final_goal
+            )
+            if decision is not None:
+                return decision
+            # On low-confidence or empty candidate set, fall through to None
+            # so the upper layer can invoke planner.
+            return None
+
         exact = self._best_exact_success_case(waypoint)
         if exact is not None:
             return self._decision_from_case(
@@ -389,6 +432,133 @@ class CaseBasedMemory:
                 "selected_case_id": best["id"],
                 "retrieved_cases": self._summarise_retrieved_cases(retrieved),
             },
+        )
+
+    def _candidate_actions_with_reps(self, waypoint: str) -> Dict[str, Dict[str, Any]]:
+        """Distinct (action -> representative case) for the given waypoint.
+
+        Prefers a successful case as the representative because its
+        selected_subgoal_str is what we want to reuse downstream. Falls back to
+        any case carrying that action when no success exists yet.
+        """
+        by_action: Dict[str, Dict[str, Any]] = {}
+        for case in self.cases:
+            if _normalise_waypoint(case.get("waypoint", "")) != _normalise_waypoint(waypoint):
+                continue
+            action = case.get("selected_action")
+            if not action:
+                continue
+            outcome = case.get("outcome", {}) or {}
+            existing = by_action.get(action)
+            existing_success = (
+                existing is not None
+                and (existing.get("outcome", {}) or {}).get("success") is True
+            )
+            this_success = outcome.get("success") is True
+            if existing is None or (this_success and not existing_success):
+                by_action[action] = case
+        return by_action
+
+    def _select_case_decision_rads(
+        self,
+        waypoint: str,
+        wp_num: int,
+        state_snapshot: Dict[str, Any],
+        run_uuid: str,
+        original_final_goal: str,
+    ) -> Dict[str, Any] | None:
+        candidates = self._candidate_actions_with_reps(waypoint)
+        if not candidates:
+            return None
+
+        position_in_run = sum(1 for c in self.cases if c.get("run_uuid") == run_uuid)
+
+        scored: List[tuple[str, Dict[str, Any], Any]] = []
+        for action, rep_case in candidates.items():
+            query_case = {
+                "waypoint": waypoint,
+                "waypoint_num": wp_num,
+                "original_final_goal": original_final_goal,
+                "selected_action": action,
+                "state_snapshot": state_snapshot,
+                "id": f"{run_uuid}:query",
+                "run_uuid": run_uuid,
+            }
+            # The decisioner's feature extractor reads `_position_in_run` if
+            # present; we patch it onto the dict for this scoring call only.
+            query_case["_position_in_run"] = position_in_run
+            try:
+                result = self.decisioner.score(
+                    query_case,
+                    topk_evidence=self.decisioner_evidence_topk,
+                    exclude_run_uuid=run_uuid,
+                )
+            except Exception as exc:
+                if self.logger:
+                    self.logger.warning(
+                        f"[decisioner] score failed for action={action!r}: {exc}"
+                    )
+                continue
+            scored.append((action, rep_case, result))
+
+        if not scored:
+            return None
+
+        scored.sort(key=lambda x: x[2].p_success, reverse=True)
+        best_action, best_rep, best_result = scored[0]
+
+        if self.logger:
+            ranking = ", ".join(
+                f"{a}={r.p_success:.3f}" for a, _, r in scored
+            )
+            self.logger.info(
+                f"[decisioner] waypoint={waypoint} ranking=[{ranking}] "
+                f"best={best_action!r} p={best_result.p_success:.3f} "
+                f"conf={best_result.confidence:.3f}"
+            )
+
+        if best_result.p_success < self.decisioner_min_p:
+            if self.logger:
+                self.logger.info(
+                    f"[decisioner] best p_success={best_result.p_success:.3f} "
+                    f"< min={self.decisioner_min_p}; falling back to planner"
+                )
+            return None
+
+        trace = {
+            "source": "rads_decisioner",
+            "p_success": float(best_result.p_success),
+            "confidence": float(best_result.confidence),
+            "attention_concentration": float(best_result.attention_concentration),
+            "min_p_success": self.decisioner_min_p,
+            "selected_case_id": best_rep.get("id"),
+            "candidates": [
+                {
+                    "action": a,
+                    "p_success": float(r.p_success),
+                    "confidence": float(r.confidence),
+                }
+                for a, _, r in scored
+            ],
+            "evidence": [
+                {
+                    "case_id": e.case_id,
+                    "waypoint": e.waypoint,
+                    "selected_action": e.selected_action,
+                    "success": e.success,
+                    "attention": float(e.attention),
+                }
+                for e in best_result.evidence
+            ],
+        }
+        return self._decision_from_case(
+            best_rep,
+            waypoint,
+            wp_num,
+            state_snapshot,
+            run_uuid,
+            original_final_goal,
+            trace,
         )
 
     def _best_exact_success_case(self, waypoint: str) -> Dict[str, Any] | None:
