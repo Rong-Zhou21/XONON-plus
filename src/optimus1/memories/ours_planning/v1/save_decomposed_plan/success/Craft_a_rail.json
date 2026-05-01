@@ -94,6 +94,87 @@
       ],
       "status": "success",
       "steps": 8064
+    },
+    {
+      "id": "mbg6taEyYVrERcaPDa7uZo",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "rail",
+      "video": "videos/v2/Iron_Craft_a_rail/plains/success/2026_05_01_03_07_50_craft_rail_mbg6taEyYVrERcaPDa7uZo.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            5
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            6
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            6
+          ]
+        },
+        {
+          "task": "craft rail",
+          "goal": [
+            "rail",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6926
     }
   ]
 }

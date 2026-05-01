@@ -199,6 +199,22 @@
       ],
       "status": "failed",
       "steps": 12001
+    },
+    {
+      "id": "fuSzZdJHeauTKgcC3qukDF",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/v2/Iron_Craft_a_tripwire_hook/plains/failed/2026_05_01_03_29_22_Craft_a_tripwire_hook_fuSzZdJHeauTKgcC3qukDF.mp4",
+      "planning": [
+        {
+          "task": "Craft a tripwire hook",
+          "goal": "tripwire_hook",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12001
     }
   ]
 }

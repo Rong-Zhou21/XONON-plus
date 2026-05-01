@@ -1,0 +1,435 @@
+{
+  "run_uuid": "b3ceMyW6LWVbhUxGyRUn2Y",
+  "seed": 0,
+  "prefix": "ours_planning",
+  "benchmark": "iron",
+  "task": "craft_an_iron_bars",
+  "goal": "iron_bars",
+  "exp_num": 62012,
+  "biome": "plains",
+  "is_fixed_memory": false,
+  "max_minutes": 10,
+  "success": false,
+  "status_detailed": "timeout_non_programmatic",
+  "infra_early_stop": false,
+  "video_file": "videos/v2/Iron_Craft_an_iron_bars/plains/failed/2026_05_01_03_47_09_dig_down_and_mine_iron_ore_b3ceMyW6LWVbhUxGyRUn2Y.mp4",
+  "steps": 11908,
+  "minutes": 9.92,
+  "metrics": {
+    "chop a tree_0": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 1819
+    },
+    "craft planks_1": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 145
+    },
+    "craft crafting_table_2": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 108
+    },
+    "craft stick_3": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 88
+    },
+    "craft wooden_pickaxe_4": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 437
+    },
+    "dig down and mine cobblestone_5": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 6168
+    },
+    "craft furnace_6": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 328
+    },
+    "craft stone_pickaxe_7": {
+      "SuccessMonitor": 1,
+      "StepMonitor": 352
+    },
+    "dig down and mine iron_ore_8": {
+      "SuccessMonitor": 0,
+      "StepMonitor": 2463
+    }
+  },
+  "completed_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        6
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        19
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    }
+  ],
+  "completed_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        6
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        19
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    }
+  ],
+  "failed_subgoals": [
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        6
+      ]
+    }
+  ],
+  "remain_plans": [
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        6
+      ]
+    }
+  ],
+  "all_subgoals": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        6
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        19
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        6
+      ]
+    }
+  ],
+  "all_plans": [
+    {
+      "task": "chop a tree",
+      "goal": [
+        "logs",
+        6
+      ]
+    },
+    {
+      "task": "craft planks",
+      "goal": [
+        "planks",
+        19
+      ]
+    },
+    {
+      "task": "craft crafting_table",
+      "goal": [
+        "crafting_table",
+        1
+      ]
+    },
+    {
+      "task": "craft stick",
+      "goal": [
+        "stick",
+        4
+      ]
+    },
+    {
+      "task": "craft wooden_pickaxe",
+      "goal": [
+        "wooden_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine cobblestone",
+      "goal": [
+        "cobblestone",
+        11
+      ]
+    },
+    {
+      "task": "craft furnace",
+      "goal": [
+        "furnace",
+        1
+      ]
+    },
+    {
+      "task": "craft stone_pickaxe",
+      "goal": [
+        "stone_pickaxe",
+        1
+      ]
+    },
+    {
+      "task": "dig down and mine iron_ore",
+      "goal": [
+        "iron_ore",
+        6
+      ]
+    }
+  ],
+  "failed_waypoints": [
+    "iron_ore"
+  ],
+  "recovery_events": {
+    "surface_escape": 0,
+    "surface_search": 0,
+    "collect_drops": 0,
+    "movement_escape": 0,
+    "tunnel_recovery": 6,
+    "respawn_reset": 1,
+    "checker_error": 0,
+    "inventory_cleanup": 0,
+    "inventory_cleanup_blocked": 0
+  },
+  "resource_ledger": {
+    "last_inventory": {
+      "cobblestone": 4,
+      "oak_planks": 11,
+      "dirt": 7,
+      "stick": 2,
+      "furnace": 1,
+      "wooden_pickaxe": 1,
+      "wheat_seeds": 1,
+      "stone_pickaxe": 1,
+      "coal": 1,
+      "crafting_table": 1,
+      "andesite": 1,
+      "diorite": 3,
+      "oak_log": 1,
+      "gravel": 2
+    },
+    "last_pickup_stats": {
+      "andesite": 1,
+      "coal": 1,
+      "cobblestone": 15,
+      "crafting_table": 3,
+      "diorite": 6,
+      "dirt": 7,
+      "gravel": 2,
+      "oak_log": 6,
+      "stick": 2,
+      "wheat_seeds": 1
+    },
+    "last_mine_block_stats": {
+      "andesite": 1,
+      "coal_ore": 1,
+      "crafting_table": 3,
+      "diorite": 3,
+      "dirt": 7,
+      "grass": 7,
+      "grass_block": 2,
+      "gravel": 2,
+      "oak_leaves": 17,
+      "oak_log": 6,
+      "stone": 15
+    },
+    "max_inventory": {
+      "oak_log": 6,
+      "oak_planks": 20,
+      "crafting_table": 1,
+      "stick": 6,
+      "wooden_pickaxe": 1,
+      "dirt": 7,
+      "wheat_seeds": 1,
+      "diorite": 3,
+      "coal": 1,
+      "cobblestone": 11,
+      "andesite": 1,
+      "furnace": 1,
+      "stone_pickaxe": 1,
+      "gravel": 2
+    },
+    "collected": {
+      "oak_log": 8,
+      "oak_planks": 61,
+      "crafting_table": 5,
+      "stick": 12,
+      "wooden_pickaxe": 2,
+      "dirt": 7,
+      "wheat_seeds": 1,
+      "diorite": 6,
+      "coal": 1,
+      "cobblestone": 18,
+      "andesite": 1,
+      "furnace": 1,
+      "stone_pickaxe": 2,
+      "gravel": 2
+    },
+    "pickup": {
+      "oak_log": 6,
+      "stick": 2,
+      "crafting_table": 3,
+      "dirt": 7,
+      "wheat_seeds": 1,
+      "diorite": 6,
+      "coal": 1,
+      "cobblestone": 15,
+      "andesite": 1,
+      "gravel": 2
+    },
+    "mined_blocks": {
+      "grass": 7,
+      "oak_leaves": 17,
+      "oak_log": 6,
+      "crafting_table": 3,
+      "dirt": 7,
+      "grass_block": 2,
+      "diorite": 3,
+      "coal_ore": 1,
+      "stone": 15,
+      "andesite": 1,
+      "gravel": 2
+    }
+  },
+  "inventory_slots_used": 14
+}

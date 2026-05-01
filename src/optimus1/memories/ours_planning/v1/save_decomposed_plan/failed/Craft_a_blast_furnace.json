@@ -419,6 +419,24 @@
       ],
       "status": "failed",
       "steps": 11997
+    },
+    {
+      "id": "LMbvPdwUr2uSbJFkAqjcpN",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "blast_furnace",
+      "video": "videos/v2/Iron_Craft_a_blast_furnace/plains/failed/2026_05_01_03_56_33_chop_a_tree_LMbvPdwUr2uSbJFkAqjcpN.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }

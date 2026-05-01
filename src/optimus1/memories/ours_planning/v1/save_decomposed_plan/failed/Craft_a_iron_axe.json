@@ -112,6 +112,24 @@
       ],
       "status": "failed",
       "steps": 11997
+    },
+    {
+      "id": "Vf65RUYGVbeo3ZpW5vY8zG",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_axe",
+      "video": "videos/v2/Iron_Craft_a_iron_axe/plains/failed/2026_05_01_02_37_00_chop_a_tree_Vf65RUYGVbeo3ZpW5vY8zG.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }
