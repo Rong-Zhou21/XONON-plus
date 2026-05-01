@@ -341,6 +341,26 @@ class CustomEnvWrapper(gym.Wrapper):
             return False
         return any(token in text for token in ("mine", "dig", "ore", "cobblestone", "stone", "diamond", "redstone"))
 
+    def _lock_jump_during_attack(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        if self._is_tunnel_resource_acquisition(goal, prompt):
+            return True
+        if not self._is_surface_resource_acquisition(goal, prompt):
+            return False
+
+        contact_ticks = int(
+            os.environ.get(
+                "XENON_SURFACE_ATTACK_LOCK_TICKS",
+                os.environ.get("XENON_TREE_CONTACT_ATTACK_TICKS", "16"),
+            )
+        )
+        return (
+            int(self.cache.get("surface_attack_streak", 0)) >= contact_ticks
+            and self.num_steps - int(self.cache.get("last_surface_attack_step", -1000000)) <= 2
+        )
+
+    def _lock_full_movement_during_attack(self, goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        return self._is_tunnel_resource_acquisition(goal, prompt)
+
     def _attack_hold_ticks(self, goal: tuple[str, int] | None, prompt: str | None) -> int:
         text = self._prompt_text(goal, prompt)
         if any(token in text for token in ("chop", "punch", "tree", "log", "logs")):
@@ -795,13 +815,26 @@ class CustomEnvWrapper(gym.Wrapper):
         action["camera"] = np.array([-8, 10 * self._control_state["escape_turn"]])
         return action
 
-    def _collect_drop_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
+    def _collect_drop_action(
+        self,
+        action: Dict[str, Any],
+        goal: tuple[str, int] | None = None,
+        prompt: str | None = None,
+    ) -> Dict[str, Any]:
         self._control_state["collect_drop_ticks"] -= 1
 
+        policy_jump = self._button_down(action, "jump")
         for key in ("attack", "use", "back", "left", "right", "sneak", "sprint", "inventory", "drop"):
             self._set_button(action, key, 0)
         self._set_button(action, "forward", 1)
-        self._set_button(action, "jump", 0)
+        if self._lock_jump_during_attack(goal, prompt):
+            self._set_button(action, "jump", 0)
+        else:
+            self._set_button(
+                action,
+                "jump",
+                1 if policy_jump or self._control_state["collect_drop_ticks"] % 12 == 0 else 0,
+            )
         return action
 
     def _surface_search_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
@@ -809,11 +842,12 @@ class CustomEnvWrapper(gym.Wrapper):
         if self._control_state["surface_search_ticks"] % 60 == 0:
             self._control_state["escape_turn"] *= -1
 
+        policy_jump = self._button_down(action, "jump")
         for key in ("attack", "use", "back", "left", "right", "sneak", "inventory", "drop"):
             self._set_button(action, key, 0)
         self._set_button(action, "forward", 1)
         self._set_button(action, "sprint", 1)
-        self._set_button(action, "jump", 1 if self._control_state["surface_search_ticks"] % 45 == 0 else 0)
+        self._set_button(action, "jump", 1 if policy_jump or self._control_state["surface_search_ticks"] % 12 == 0 else 0)
         action["camera"] = np.array([-1, 3 * self._control_state["escape_turn"]])
         return action
 
@@ -915,7 +949,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self._maybe_log_action_debug("stabilize_escape", original_action, action, goal, prompt)
             return action
         if self._control_state["collect_drop_ticks"] > 0:
-            action = self._collect_drop_action(action)
+            action = self._collect_drop_action(action, goal, prompt)
             self._maybe_log_action_debug("stabilize_collect_drops", original_action, action, goal, prompt)
             return action
         if self._control_state["surface_search_ticks"] > 0:
@@ -936,16 +970,26 @@ class CustomEnvWrapper(gym.Wrapper):
 
         if self._control_state["attack_hold"] > 0:
             self._set_button(action, "attack", 1)
-            locked_keys = ("jump", "forward", "back", "left", "right", "sprint", "sneak", "use")
-            if original_attack:
-                locked_keys = ("jump", "left", "right", "sprint", "sneak", "use")
+            if self._lock_full_movement_during_attack(goal, prompt):
+                locked_keys = ("jump", "forward", "back", "left", "right", "sprint", "sneak", "use")
+                if original_attack:
+                    locked_keys = ("jump", "left", "right", "sprint", "sneak", "use")
+            elif self._lock_jump_during_attack(goal, prompt):
+                locked_keys = ("jump", "sprint", "sneak", "use")
+            else:
+                locked_keys = ("sneak", "use")
             for key in locked_keys:
                 self._set_button(action, key, 0)
             if not original_attack:
                 action["camera"] = np.array([0, 0])
             self._control_state["attack_hold"] -= 1
         elif original_attack:
-            for key in ("jump", "left", "right", "sprint", "sneak"):
+            locked_keys = ("left", "right", "sneak")
+            if self._lock_full_movement_during_attack(goal, prompt):
+                locked_keys = ("jump", "left", "right", "sprint", "sneak")
+            elif self._lock_jump_during_attack(goal, prompt):
+                locked_keys = ("jump", "sprint", "sneak")
+            for key in locked_keys:
                 self._set_button(action, key, 0)
 
         if self._is_surface_resource_acquisition(goal, prompt):
@@ -1029,7 +1073,7 @@ class CustomEnvWrapper(gym.Wrapper):
         action["drop"] = 0
         # attack时不乱动
         if self._button_down(action, "attack"):
-            action["jump"] = action["left"] = action["right"] = np.array(0)
+            action["left"] = action["right"] = np.array(0)
             action["sneak"] = action["sprint"] = np.array(0)
         observation, reward, done, info = self.env.step(action)
         if isinstance(info, dict) and info.get("error"):
