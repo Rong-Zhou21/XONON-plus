@@ -1,0 +1,141 @@
+{
+  "suite": "iron_never_success_after_log_jump_lock",
+  "code_commit": "761cc9e",
+  "result_dir": "/home/yzb/zhourong/XENON-plus/exp_results/v2",
+  "video_dir": "/home/yzb/zhourong/XENON-plus/videos/v2",
+  "task_ids": [
+    2,
+    10,
+    12,
+    14
+  ],
+  "tasks": [
+    {
+      "task_id": 2,
+      "task": "craft_a_iron_axe",
+      "goal": "iron_axe",
+      "exp_num": 53002,
+      "success": false,
+      "status_detailed": "crash_RuntimeError",
+      "infra_early_stop": false,
+      "steps": 12001,
+      "minutes": 10.0,
+      "failed_waypoints": [],
+      "video_file": "videos/v2/Iron_Craft_a_iron_axe/plains/failed/2026_05_01_08_24_33_Craft_a_iron_axe_FML43E77CWxWcf4fFznHuS.mp4",
+      "result_file": "exp_results/v2/ours_planning_craft_a_iron_axe_53002_failed_plains_FML4.json",
+      "attempts": [
+        {
+          "task_id": 2,
+          "task": "craft_a_iron_axe",
+          "goal": "iron_axe",
+          "exp_num": 53002,
+          "success": false,
+          "status_detailed": "crash_RuntimeError",
+          "infra_early_stop": false,
+          "steps": 12001,
+          "minutes": 10.0,
+          "failed_waypoints": [],
+          "video_file": "videos/v2/Iron_Craft_a_iron_axe/plains/failed/2026_05_01_08_24_33_Craft_a_iron_axe_FML43E77CWxWcf4fFznHuS.mp4",
+          "result_file": "exp_results/v2/ours_planning_craft_a_iron_axe_53002_failed_plains_FML4.json"
+        }
+      ]
+    },
+    {
+      "task_id": 10,
+      "task": "craft_a_tripwire_hook",
+      "goal": "tripwire_hook",
+      "exp_num": 53010,
+      "success": true,
+      "status_detailed": "success",
+      "infra_early_stop": false,
+      "steps": 4783,
+      "minutes": 3.99,
+      "failed_waypoints": [],
+      "video_file": "videos/v2/Iron_Craft_a_tripwire_hook/plains/success/2026_05_01_08_43_14_craft_tripwire_hook_5mFoPVBa6joHqM3CLUKucU.mp4",
+      "result_file": "exp_results/v2/ours_planning_craft_a_tripwire_hook_53010_success_plains_5mFo.json",
+      "attempts": [
+        {
+          "task_id": 10,
+          "task": "craft_a_tripwire_hook",
+          "goal": "tripwire_hook",
+          "exp_num": 53010,
+          "success": true,
+          "status_detailed": "success",
+          "infra_early_stop": false,
+          "steps": 4783,
+          "minutes": 3.99,
+          "failed_waypoints": [],
+          "video_file": "videos/v2/Iron_Craft_a_tripwire_hook/plains/success/2026_05_01_08_43_14_craft_tripwire_hook_5mFoPVBa6joHqM3CLUKucU.mp4",
+          "result_file": "exp_results/v2/ours_planning_craft_a_tripwire_hook_53010_success_plains_5mFo.json"
+        }
+      ]
+    },
+    {
+      "task_id": 12,
+      "task": "craft_an_iron_bars",
+      "goal": "iron_bars",
+      "exp_num": 53012,
+      "success": true,
+      "status_detailed": "success",
+      "infra_early_stop": false,
+      "steps": 6007,
+      "minutes": 5.01,
+      "failed_waypoints": [],
+      "video_file": "videos/v2/Iron_Craft_an_iron_bars/plains/success/2026_05_01_08_51_03_craft_iron_bars_VEPr8rrbDSz9aAvjSei6GW.mp4",
+      "result_file": "exp_results/v2/ours_planning_craft_an_iron_bars_53012_success_plains_VEPr.json",
+      "attempts": [
+        {
+          "task_id": 12,
+          "task": "craft_an_iron_bars",
+          "goal": "iron_bars",
+          "exp_num": 53012,
+          "success": true,
+          "status_detailed": "success",
+          "infra_early_stop": false,
+          "steps": 6007,
+          "minutes": 5.01,
+          "failed_waypoints": [],
+          "video_file": "videos/v2/Iron_Craft_an_iron_bars/plains/success/2026_05_01_08_51_03_craft_iron_bars_VEPr8rrbDSz9aAvjSei6GW.mp4",
+          "result_file": "exp_results/v2/ours_planning_craft_an_iron_bars_53012_success_plains_VEPr.json"
+        }
+      ]
+    },
+    {
+      "task_id": 14,
+      "task": "craft_a_blast_furnace",
+      "goal": "blast_furnace",
+      "exp_num": 53014,
+      "success": false,
+      "status_detailed": "timeout_non_programmatic",
+      "infra_early_stop": false,
+      "steps": 11997,
+      "minutes": 10.0,
+      "failed_waypoints": [
+        "logs"
+      ],
+      "video_file": "videos/v2/Iron_Craft_a_blast_furnace/plains/failed/2026_05_01_08_59_37_chop_a_tree_MxjoHfGeWtmmD6otV5cjgG.mp4",
+      "result_file": "exp_results/v2/ours_planning_craft_a_blast_furnace_53014_failed_plains_Mxjo.json",
+      "attempts": [
+        {
+          "task_id": 14,
+          "task": "craft_a_blast_furnace",
+          "goal": "blast_furnace",
+          "exp_num": 53014,
+          "success": false,
+          "status_detailed": "timeout_non_programmatic",
+          "infra_early_stop": false,
+          "steps": 11997,
+          "minutes": 10.0,
+          "failed_waypoints": [
+            "logs"
+          ],
+          "video_file": "videos/v2/Iron_Craft_a_blast_furnace/plains/failed/2026_05_01_08_59_37_chop_a_tree_MxjoHfGeWtmmD6otV5cjgG.mp4",
+          "result_file": "exp_results/v2/ours_planning_craft_a_blast_furnace_53014_failed_plains_Mxjo.json"
+        }
+      ]
+    }
+  ],
+  "total": 4,
+  "successes": 2,
+  "failures": 2
+}

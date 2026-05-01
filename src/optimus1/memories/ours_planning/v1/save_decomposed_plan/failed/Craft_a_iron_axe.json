@@ -130,6 +130,22 @@
       ],
       "status": "failed",
       "steps": 11997
+    },
+    {
+      "id": "FML43E77CWxWcf4fFznHuS",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_axe",
+      "video": "videos/v2/Iron_Craft_a_iron_axe/plains/failed/2026_05_01_08_24_33_Craft_a_iron_axe_FML43E77CWxWcf4fFznHuS.mp4",
+      "planning": [
+        {
+          "task": "Craft a iron axe",
+          "goal": "iron_axe",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12001
     }
   ]
 }
