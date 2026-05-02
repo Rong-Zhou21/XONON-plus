@@ -1124,6 +1124,7 @@ class CustomEnvWrapper(gym.Wrapper):
         observation, reward, done, info = self.env.step(action)
         if isinstance(info, dict) and info.get("error"):
             info["isGuiOpen"] = observation.get("isGuiOpen", False)
+            self.cache["info"] = info
             return observation, reward, done, info
         # 推送 POV 到宿主机 monitor_server（异步、O(1)、失败静默）
         _push_pov_to_monitor(observation)
@@ -1134,6 +1135,11 @@ class CustomEnvWrapper(gym.Wrapper):
         info.update(self.status_mod.get_status())
 
         info["isGuiOpen"] = observation["isGuiOpen"]
+
+        # Mirror what step() does so methods like pillar_up that read
+        # self.cache["info"] (location_stats, plain_inventory) work correctly
+        # when driven exclusively through raw_step.
+        self.cache["info"] = info
 
         return observation, reward, done, info
 

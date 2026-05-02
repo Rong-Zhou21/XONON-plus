@@ -252,13 +252,16 @@ def main(cfg: DictConfig):
         json.dump(out, fp, indent=2, default=str)
     LOG.info(f"saved verification result -> {out_path}")
     LOG.info("=== SUMMARY ===")
-    LOG.info(json.dumps({
-        "dig_dy": dig_summary["end_y"] - dig_summary["start_y"],
+    summary = {
         "pillar_dy": pillar_result["dy"],
         "pillar_success": pillar_result["success"],
         "pillar_reason": pillar_result["reason"],
         "blocks_used": pillar_result["blocks_used"],
-    }, indent=2))
+    }
+    if dig_summary is not None:
+        summary["dig_dy"] = dig_summary["end_y"] - dig_summary["start_y"]
+        summary["dig_died"] = dig_summary.get("died", False)
+    LOG.info(json.dumps(summary, indent=2))
 
     try:
         env.close()
