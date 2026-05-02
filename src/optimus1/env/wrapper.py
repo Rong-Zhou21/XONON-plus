@@ -1538,7 +1538,14 @@ class CustomEnvWrapper(gym.Wrapper):
             self.raw_step(action)
             steps_used += 1
 
-        # Phase 2: pillar cycle
+        # Phase 2: pillar cycle. Each cycle is 5 ticks:
+        #   t0: select hotbar slot + jump (no use yet -- the agent must leave
+        #       the floor block before placing, otherwise the placement target
+        #       is occupied by the agent and the block won't be placed).
+        #   t1: rising; keep slot selected, no use yet.
+        #   t2: at jump peak; emit `use` so the block is placed on top of the
+        #       original floor block (which is now beneath the agent).
+        #   t3, t4: noop -- let the agent land on the freshly placed block.
         while blocks_used < max_blocks and steps_used < max_steps:
             try:
                 cur_y = float(self.cache["info"]["location_stats"].get("ypos", last_y))
@@ -1552,26 +1559,42 @@ class CustomEnvWrapper(gym.Wrapper):
             if slot is None:
                 break
 
-            # One placement cycle: select slot, jump, use, hold pitch down
-            action = self.env.noop_action()
-            action[f"hotbar.{slot + 1}"] = np.array(1)
-            action["jump"] = np.array(1)
-            action["use"] = np.array(1)
-            try:
-                cur_pitch = float(self.cache["info"]["location_stats"].get("pitch", 0))
-            except Exception:
-                cur_pitch = 0.0
-            if cur_pitch < 85.0:
-                action["camera"] = np.array([min(90.0 - cur_pitch, 8.0), 0])
-            else:
-                action["camera"] = np.array([0, 0])
-            self.raw_step(action)
+            def _hold_pitch_down(a):
+                try:
+                    cp = float(self.cache["info"]["location_stats"].get("pitch", 0))
+                except Exception:
+                    cp = 0.0
+                if cp < 88.0:
+                    a["camera"] = np.array([min(90.0 - cp, 6.0), 0])
+
+            # t0 – jump (no use)
+            a0 = self.env.noop_action()
+            a0[f"hotbar.{slot + 1}"] = np.array(1)
+            a0["jump"] = np.array(1)
+            _hold_pitch_down(a0)
+            self.raw_step(a0)
             steps_used += 1
 
-            # Wait for landing on the placed block (~3 ticks)
-            for _ in range(3):
-                wait_action = self.env.noop_action()
-                self.raw_step(wait_action)
+            # t1 – rising; keep slot selected
+            a1 = self.env.noop_action()
+            a1[f"hotbar.{slot + 1}"] = np.array(1)
+            _hold_pitch_down(a1)
+            self.raw_step(a1)
+            steps_used += 1
+
+            # t2 – at peak: place block under feet
+            a2 = self.env.noop_action()
+            a2[f"hotbar.{slot + 1}"] = np.array(1)
+            a2["use"] = np.array(1)
+            _hold_pitch_down(a2)
+            self.raw_step(a2)
+            steps_used += 1
+
+            # t3, t4 – land on the placed block
+            for _ in range(2):
+                aw = self.env.noop_action()
+                _hold_pitch_down(aw)
+                self.raw_step(aw)
                 steps_used += 1
 
             try:
