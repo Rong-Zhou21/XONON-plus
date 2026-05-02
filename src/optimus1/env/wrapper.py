@@ -1421,6 +1421,221 @@ class CustomEnvWrapper(gym.Wrapper):
     # def give_night_vision(self):
     #     self.env.execute_cmd("/effect give @a night_vision 99999 250 true")
 
+    # ---------------------------------------------------------------- #
+    #  Scripted recovery: pillar-up                                     #
+    # ---------------------------------------------------------------- #
+
+    PILLAR_PREFER_BLOCKS: tuple[str, ...] = (
+        "cobblestone",
+        "cobbled_deepslate",
+        "stone",
+        "dirt",
+        "andesite",
+        "diorite",
+        "granite",
+        "sand",
+        "gravel",
+    )
+
+    def _find_placeable_block_slot(
+        self, prefer: tuple[str, ...] | None = None
+    ) -> tuple[int | None, str | None]:
+        """Locate a hotbar (0-8) slot containing a placeable block. Returns
+        (slot_index, item_name) or (None, None) if no placeable block found
+        in the hotbar. Inventory beyond hotbar (slot 9-) is ignored because
+        the pillar cycle needs to keep the block selected without opening
+        inventory."""
+        prefer = prefer or self.PILLAR_PREFER_BLOCKS
+        try:
+            inventory = self.cache["info"].get("plain_inventory", {})
+        except Exception:
+            return None, None
+        for block_name in prefer:
+            for slot, item in inventory.items():
+                try:
+                    slot_int = int(slot)
+                except Exception:
+                    continue
+                if not (0 <= slot_int <= 8):
+                    continue
+                if self._plain_item_type(item.get("type", "")) != block_name:
+                    continue
+                if int(item.get("quantity", 0) or 0) <= 0:
+                    continue
+                return slot_int, block_name
+        return None, None
+
+    def pillar_up(
+        self,
+        target_dy: int = 20,
+        max_blocks: int = 32,
+        max_steps: int = 400,
+        prefer_blocks: tuple[str, ...] | None = None,
+    ) -> Dict[str, Any]:
+        """Scripted pillar-up. Place blocks under the agent to rise vertically.
+
+        Bypasses STEVE-1 entirely (uses raw_step). Trace logged to
+        `recovery_events["pillar_up"]`.
+
+        Returns:
+            dict with keys: success, blocks_used, dy, start_y, end_y,
+                            steps_used, reason, trajectory.
+        """
+        prefer = prefer_blocks or self.PILLAR_PREFER_BLOCKS
+
+        # snapshot starting state
+        try:
+            start_y = float(self.cache["info"]["location_stats"].get("ypos", 64.0))
+        except Exception:
+            start_y = 64.0
+        target_y = start_y + float(target_dy)
+        traj = [start_y]
+
+        slot, block_name = self._find_placeable_block_slot(prefer)
+        if slot is None:
+            res = {
+                "success": False,
+                "blocks_used": 0,
+                "dy": 0.0,
+                "start_y": start_y,
+                "end_y": start_y,
+                "steps_used": 0,
+                "reason": "no_placeable_block_in_hotbar",
+                "trajectory": traj,
+            }
+            self._record_recovery("pillar_up", res)
+            return res
+
+        if self.logger:
+            self.logger.info(
+                f"[pillar_up] start: y={start_y:.1f} target_dy={target_dy} "
+                f"max_blocks={max_blocks} block={block_name} slot={slot}"
+            )
+
+        steps_used = 0
+        blocks_used = 0
+        last_y = start_y
+        stuck_count = 0
+
+        # Phase 1: orient pitch downward (cumulative deltas, ~10°/step)
+        # MineRL camera = [pitch_delta, yaw_delta]; positive pitch tilts down.
+        for _ in range(15):
+            try:
+                cur_pitch = float(self.cache["info"]["location_stats"].get("pitch", 0))
+            except Exception:
+                cur_pitch = 0.0
+            if cur_pitch >= 80.0:
+                break
+            action = self.env.noop_action()
+            delta = max(min(90.0 - cur_pitch, 12.0), -12.0)
+            action["camera"] = np.array([delta, 0])
+            self.raw_step(action)
+            steps_used += 1
+
+        # Phase 2: pillar cycle
+        while blocks_used < max_blocks and steps_used < max_steps:
+            try:
+                cur_y = float(self.cache["info"]["location_stats"].get("ypos", last_y))
+            except Exception:
+                cur_y = last_y
+            if cur_y >= target_y:
+                break
+
+            # Re-acquire slot in case the block was consumed or item moved
+            slot, block_name = self._find_placeable_block_slot(prefer)
+            if slot is None:
+                break
+
+            # One placement cycle: select slot, jump, use, hold pitch down
+            action = self.env.noop_action()
+            action[f"hotbar.{slot + 1}"] = np.array(1)
+            action["jump"] = np.array(1)
+            action["use"] = np.array(1)
+            try:
+                cur_pitch = float(self.cache["info"]["location_stats"].get("pitch", 0))
+            except Exception:
+                cur_pitch = 0.0
+            if cur_pitch < 85.0:
+                action["camera"] = np.array([min(90.0 - cur_pitch, 8.0), 0])
+            else:
+                action["camera"] = np.array([0, 0])
+            self.raw_step(action)
+            steps_used += 1
+
+            # Wait for landing on the placed block (~3 ticks)
+            for _ in range(3):
+                wait_action = self.env.noop_action()
+                self.raw_step(wait_action)
+                steps_used += 1
+
+            try:
+                new_y = float(self.cache["info"]["location_stats"].get("ypos", last_y))
+            except Exception:
+                new_y = last_y
+            traj.append(new_y)
+
+            if new_y > last_y + 0.5:
+                blocks_used += 1
+                last_y = new_y
+                stuck_count = 0
+            else:
+                stuck_count += 1
+                if stuck_count >= 4:
+                    break
+
+        # Phase 3: restore pitch to roughly horizontal
+        for _ in range(12):
+            try:
+                cur_pitch = float(self.cache["info"]["location_stats"].get("pitch", 0))
+            except Exception:
+                cur_pitch = 0.0
+            if abs(cur_pitch) < 5.0:
+                break
+            action = self.env.noop_action()
+            delta = max(min(-cur_pitch, 12.0), -12.0)
+            action["camera"] = np.array([delta, 0])
+            self.raw_step(action)
+            steps_used += 1
+
+        try:
+            end_y = float(self.cache["info"]["location_stats"].get("ypos", last_y))
+        except Exception:
+            end_y = last_y
+        success = (end_y - start_y) >= 1.0
+        if blocks_used == 0:
+            reason = "no_placement_succeeded"
+        elif end_y >= target_y - 0.5:
+            reason = "reached_target"
+        elif stuck_count >= 4:
+            reason = "stuck_no_progress"
+        elif steps_used >= max_steps:
+            reason = "step_budget_exhausted"
+        else:
+            reason = "block_budget_exhausted"
+
+        result = {
+            "success": success,
+            "blocks_used": blocks_used,
+            "dy": end_y - start_y,
+            "start_y": start_y,
+            "end_y": end_y,
+            "steps_used": steps_used,
+            "reason": reason,
+            "trajectory": traj,
+        }
+        self._record_recovery("pillar_up", result)
+        if self.logger:
+            self.logger.info(
+                f"[pillar_up] done: dy={result['dy']:.1f} blocks_used={blocks_used} "
+                f"steps_used={steps_used} reason={reason} success={success}"
+            )
+        return result
+
+    def _record_recovery(self, name: str, payload: Dict[str, Any]) -> None:
+        events = self._control_state.setdefault("recovery_events", {})
+        log = events.setdefault(name, [])
+        log.append(copy.deepcopy(payload))
+
     def get_status(self):
         status = self.status_mod.get_status()
         status["resource_ledger"] = copy.deepcopy(self.cache.get("resource_ledger", {}))
