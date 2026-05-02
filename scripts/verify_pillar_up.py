@@ -1,26 +1,21 @@
 #!/usr/bin/env python3
 """Targeted verification of CustomEnvWrapper.pillar_up().
 
-What it does (one episode):
-    1. Build the MineRL env exactly the way main_planning does.
-    2. Phase A — dig down: pitch the camera straight down and hold attack
-       for N ticks, falling through the world while harvesting cobblestone
-       and dirt naturally (no STEVE-1, no planner, no decisioner).
-    3. When inventory contains >= MIN_BLOCKS placeable items, stop digging.
-    4. Phase B — pillar up: call env.pillar_up(target_dy=...).
-    5. Print start_y / end_y / blocks_used / reason and dump full result
-       JSON to /tmp/pillar_verify_<seed>_<timestamp>.json.
+Two modes (set MODE env var):
+  - MODE=instant  pillar at surface; the env is started with a preloaded
+                  hotbar of cobblestone (via cfg.env.initial_inventory).
+                  No digging, just verify the pillar mechanism in isolation.
+  - MODE=natural  Phase A (low-tech "look down + attack" via raw_step) to
+                  harvest >= MIN_BLOCKS placeable blocks naturally, then
+                  Phase B pillar.
 
-The agent's frame stream is already wired into monitor_server via
-wrapper._push_pov_to_monitor, so opening http://<host>:8080/ in a browser
-will show the run live as long as monitor_server is up.
+In both modes the wrapper's _push_pov_to_monitor() streams POV frames to
+monitor_server, so opening http://<host>:8080/ in a browser shows the
+agent live.
 
-Usage:
-    # inside container, after monitor_server is running on the host:
-    xvfb-run -a python -u scripts/verify_pillar_up.py \\
-        benchmark=stone seed=0 world_seed=10 server.port=9100 \\
-        env.times=1 env.max_minutes=10 \\
-        prefix=ours_planning exp_num=70001
+Output:
+  /tmp/pillar_verify_seed<N>_<ts>.json with config, dig_phase summary
+  (or null), pillar_phase result including the full y-trajectory.
 """
 
 from __future__ import annotations
@@ -50,9 +45,10 @@ _h.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(message)s"))
 LOG.addHandler(_h)
 
 # ---------- knobs ----------
+MODE = os.environ.get("VERIFY_MODE", "instant").lower()  # "instant" | "natural"
 DIG_MAX_STEPS = 1500          # cap for the dig-down phase
 DIG_MIN_BLOCKS = 8            # stop digging when we have >= this many placeable blocks
-PILLAR_TARGET_DY = 20         # rise this much in pillar-up
+PILLAR_TARGET_DY = 15         # rise this much in pillar-up (smaller for instant verification)
 PILLAR_MAX_BLOCKS = 24
 PILLAR_MAX_STEPS = 400
 # ---------------------------
@@ -111,18 +107,32 @@ def dig_down_phase(env: CustomEnvWrapper, max_steps: int, min_blocks: int) -> Di
         action["camera"] = np.array([min(90 - cur_pitch, 12), 0])
         env.raw_step(action)
 
-    # 2. attack loop — break the block under feet, fall, repeat
+    # 2. attack loop — break the block under feet, fall, repeat. Use sneak
+    # to reduce risk of walking off edges / fall damage; check `done` so we
+    # bail cleanly if the agent dies mid-descent.
     steps_used = 0
     blocks_collected = _placeable_count_in_hotbar(env.get_status())
-    while steps_used < max_steps:
+    died = False
+    for _ in range(max_steps):
         action = env.env.noop_action()
         action["attack"] = np.array(1)
-        # tiny camera correction every step so pitch stays down
+        action["sneak"] = np.array(1)
         cur_pitch = _pitch(env.get_status())
         if cur_pitch < 85:
             action["camera"] = np.array([min(90 - cur_pitch, 5), 0])
-        env.raw_step(action)
+        try:
+            _, _, done, _ = env.raw_step(action)
+        except Exception as exc:
+            LOG.warning(f"raw_step raised: {exc}; ending dig phase")
+            died = True
+            break
         steps_used += 1
+        if done:
+            LOG.warning(
+                f"env returned done=True at dig step {steps_used}; agent likely died"
+            )
+            died = True
+            break
 
         if steps_used % 60 == 0:
             status = env.get_status()
@@ -139,13 +149,14 @@ def dig_down_phase(env: CustomEnvWrapper, max_steps: int, min_blocks: int) -> Di
     blocks_collected = _placeable_count_in_hotbar(end_status)
     LOG.info(
         f"end Phase A: dy={end_y - start_y:+.1f} (start={start_y:.1f} end={end_y:.1f}) "
-        f"blocks={blocks_collected} steps={steps_used}"
+        f"blocks={blocks_collected} steps={steps_used} died={died}"
     )
     return {
         "start_y": start_y,
         "end_y": end_y,
         "blocks": blocks_collected,
         "steps": steps_used,
+        "died": died,
     }
 
 
@@ -172,7 +183,31 @@ def pillar_phase(env: CustomEnvWrapper) -> Dict[str, Any]:
 
 @hydra.main(version_base=None, config_path="../src/optimus1/conf", config_name="evaluate")
 def main(cfg: DictConfig):
-    LOG.info(f"hydra cwd: {os.getcwd()}")
+    LOG.info(f"hydra cwd: {os.getcwd()}  mode={MODE}")
+
+    # In `instant` mode preload the hotbar so we can verify the pillar
+    # mechanism without depending on a successful dig phase. We do this by
+    # mutating the cfg before register_custom_env reads it.
+    if MODE == "instant":
+        from omegaconf import OmegaConf
+        with open(os.devnull):
+            pass
+        try:
+            inv = list(cfg["env"].get("initial_inventory", []) or [])
+        except Exception:
+            inv = []
+        # Insert 32 cobblestone in hotbar slot 0; do not overwrite existing.
+        present = any(
+            (i.get("type") if isinstance(i, dict) else None) == "cobblestone"
+            for i in inv
+        )
+        if not present:
+            inv = list(inv) + [
+                {"type": "cobblestone", "quantity": 32, "slot": 0}
+            ]
+            OmegaConf.update(cfg, "env.initial_inventory", inv, force_add=True)
+        LOG.info(f"instant-mode initial_inventory = {inv}")
+
     register_custom_env(cfg)
     env = env_make(cfg["env"]["name"], cfg, LOG)
 
@@ -180,14 +215,23 @@ def main(cfg: DictConfig):
     env.reset()
     time.sleep(1.0)
 
-    # Phase A: dig down
-    dig_summary = dig_down_phase(env, DIG_MAX_STEPS, DIG_MIN_BLOCKS)
+    # Refresh status with one no-op step so cache/info are populated.
+    try:
+        env.raw_step(env.env.noop_action())
+    except Exception as exc:
+        LOG.warning(f"warm-up raw_step raised: {exc}")
 
-    # Phase B: pillar up
+    if MODE == "natural":
+        dig_summary = dig_down_phase(env, DIG_MAX_STEPS, DIG_MIN_BLOCKS)
+    else:
+        dig_summary = None
+        LOG.info("=== Phase A skipped (mode=instant) ===")
+
     pillar_result = pillar_phase(env)
 
     out = {
         "config": {
+            "mode": MODE,
             "benchmark": str(cfg.get("benchmark", "?")),
             "seed": int(cfg.get("seed", 0)),
             "world_seed": int(cfg.get("world_seed", 0)),

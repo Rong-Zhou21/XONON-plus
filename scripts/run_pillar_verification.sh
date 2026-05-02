@@ -37,6 +37,10 @@ SEED="${SEED:-0}"
 SERVER_PORT="${SERVER_PORT:-9100}"
 GPU="${GPU:-0}"
 EXP_NUM="${EXP_NUM:-70001}"
+# instant: pillar at surface with preloaded 32 cobblestone (fast, mechanism-only test)
+# natural: dig down with raw actions to harvest blocks first, then pillar
+VERIFY_MODE="${VERIFY_MODE:-instant}"
+export VERIFY_MODE
 # ====================
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
