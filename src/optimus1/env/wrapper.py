@@ -1660,6 +1660,526 @@ class CustomEnvWrapper(gym.Wrapper):
             )
         return result
 
+    # ---------------------------------------------------------------- #
+    #  Environment perception & raise-to-height action                  #
+    #                                                                   #
+    #  Higher-level wrappers around the low-level `pillar_up` primitive.#
+    #  These give the planner / decisioner a single entry point for     #
+    #  "lift me up to access an ore band" without having to manage      #
+    #  hotbar slots, pitch, or block selection by hand.                 #
+    # ---------------------------------------------------------------- #
+
+    # Canonical ore-band map (mirrors `random_ore` near the top of this
+    # file). Keys are ore names; values are (min_y, max_y) inclusive.
+    # Used by `perceive_height_context` to suggest a target_y.
+    ORE_HEIGHT_BANDS: Dict[str, Tuple[int, int]] = {
+        "coal_ore": (45, 50),
+        "iron_ore": (26, 43),
+        "gold_ore": (17, 26),
+        "redstone_ore": (5, 16),
+        "diamond_ore": (1, 14),
+    }
+
+    def _hotbar_free_slot(self, prefer_dest: int = 0) -> int:
+        """Return a hotbar slot suitable to receive a placeable block.
+
+        Preference order:
+          1. The caller-suggested `prefer_dest` if it is currently empty.
+          2. The first empty hotbar slot.
+          3. The first hotbar slot whose item is *not* a tool / weapon
+             (so we never trash a pickaxe / axe / sword while preparing
+             to pillar up).
+          4. Fallback: `prefer_dest`.
+        """
+        try:
+            inventory = self.cache["info"].get("plain_inventory", {})
+        except Exception:
+            inventory = {}
+
+        def _slot_item(s: int) -> Tuple[str, int]:
+            item = inventory.get(s) or inventory.get(str(s)) or {}
+            if not isinstance(item, dict):
+                return "air", 0
+            return (
+                self._plain_item_type(item.get("type", "air")),
+                self._plain_item_quantity(item.get("quantity", 0)),
+            )
+
+        # 1. caller preference, if empty
+        name, qty = _slot_item(prefer_dest)
+        if name in ("air", "none", "") or qty <= 0:
+            return prefer_dest
+
+        # 2. any empty hotbar slot
+        for slot in range(9):
+            name, qty = _slot_item(slot)
+            if name in ("air", "none", "") or qty <= 0:
+                return slot
+
+        # 3. first hotbar slot that does not hold a tool / weapon
+        protected_suffixes = ("_pickaxe", "_axe", "_shovel", "_hoe", "_sword")
+        for slot in range(9):
+            name, qty = _slot_item(slot)
+            if not any(name.endswith(suf) for suf in protected_suffixes):
+                return slot
+
+        # 4. give up, overwrite the requested destination
+        return prefer_dest
+
+    def _find_placeable_block_anywhere(
+        self,
+        prefer: tuple[str, ...] | None = None,
+    ) -> Tuple[int | None, str | None, int]:
+        """Search the entire inventory for a placeable block.
+
+        Returns ``(slot_index, item_name, quantity)``. ``slot_index`` is
+        the observation slot id (0-8 = hotbar, 9-35 = main inventory).
+        Returns ``(None, None, 0)`` if no placeable block exists.
+        """
+        prefer = prefer or self.PILLAR_PREFER_BLOCKS
+        try:
+            inventory = self.cache["info"].get("plain_inventory", {})
+        except Exception:
+            return None, None, 0
+        for block_name in prefer:
+            best_slot: int | None = None
+            best_qty = 0
+            best_in_hotbar = False
+            for raw_slot, item in inventory.items():
+                try:
+                    slot_int = int(raw_slot)
+                except Exception:
+                    continue
+                if not (0 <= slot_int <= 35):
+                    continue
+                if self._plain_item_type(item.get("type", "")) != block_name:
+                    continue
+                qty = self._plain_item_quantity(item.get("quantity", 0))
+                if qty <= 0:
+                    continue
+                in_hotbar = 0 <= slot_int <= 8
+                # Prefer hotbar slots, otherwise pick the largest stack.
+                if best_slot is None:
+                    best_slot, best_qty, best_in_hotbar = slot_int, qty, in_hotbar
+                elif in_hotbar and not best_in_hotbar:
+                    best_slot, best_qty, best_in_hotbar = slot_int, qty, in_hotbar
+                elif in_hotbar == best_in_hotbar and qty > best_qty:
+                    best_slot, best_qty, best_in_hotbar = slot_int, qty, in_hotbar
+            if best_slot is not None:
+                return best_slot, block_name, best_qty
+        return None, None, 0
+
+    def _ensure_placeable_block_in_hotbar(
+        self,
+        prefer: tuple[str, ...] | None = None,
+        dest_hotbar_slot: int = 0,
+    ) -> Tuple[int | None, str | None, str]:
+        """Guarantee a placeable block is reachable from the hotbar.
+
+        If a placeable block already lives in the hotbar (slot 0-8) the
+        method returns immediately. Otherwise it tries to relocate one
+        stack from the main inventory (slot 9-35) into a hotbar slot
+        using the ``/replaceitem`` cheat (the same channel that
+        ``random_ore`` uses for ``/setblock``).
+
+        Returns ``(slot, block_name, prep_action)`` where ``prep_action``
+        is one of:
+
+        * ``"hotbar_ready"`` -- a placeable block was already in hotbar.
+        * ``"swapped_to_hotbar"`` -- pulled from main inventory.
+        * ``"none_available"`` -- no placeable block anywhere.
+        * ``"swap_failed"`` -- block exists in main inventory but the
+          ``/replaceitem`` command failed (and we cannot fall back).
+        """
+        prefer = prefer or self.PILLAR_PREFER_BLOCKS
+
+        # Fast path: existing pillar_up logic already finds a hotbar slot.
+        slot, block_name = self._find_placeable_block_slot(prefer)
+        if slot is not None:
+            return slot, block_name, "hotbar_ready"
+
+        # Search main inventory.
+        any_slot, any_block, qty = self._find_placeable_block_anywhere(prefer)
+        if any_slot is None or any_block is None:
+            return None, None, "none_available"
+        if 0 <= any_slot <= 8:
+            # Should have been caught above, but be defensive.
+            return any_slot, any_block, "hotbar_ready"
+
+        target_slot = self._hotbar_free_slot(dest_hotbar_slot)
+        # Cap quantity at 64 (Minecraft stack limit) so /replaceitem
+        # accepts the count argument cleanly.
+        qty = max(1, min(int(qty), 64))
+        cmd_put = (
+            f"/replaceitem entity @s slot.hotbar.{target_slot} "
+            f"minecraft:{any_block} {qty}"
+        )
+        cmd_clear = (
+            f"/replaceitem entity @s slot.inventory.{any_slot - 9} "
+            f"minecraft:air 1"
+        )
+        try:
+            self.env.execute_cmd(cmd_put)
+            self.env.execute_cmd(cmd_clear)
+        except Exception as exc:
+            if self.logger:
+                self.logger.warning(
+                    f"[pillar_up_smart] /replaceitem failed: {exc!s}; "
+                    f"cmd_put={cmd_put!r} cmd_clear={cmd_clear!r}"
+                )
+            return None, None, "swap_failed"
+
+        # Refresh status / cache so the next pillar_up sees the new
+        # inventory layout. A single noop step suffices.
+        try:
+            self.raw_step(self.env.noop_action())
+        except Exception:
+            pass
+
+        if self.logger:
+            self.logger.info(
+                f"[pillar_up_smart] swapped {any_block} x{qty} "
+                f"from inv-slot {any_slot} -> hotbar.{target_slot}"
+            )
+        return target_slot, any_block, "swapped_to_hotbar"
+
+    def perceive_height_context(
+        self,
+        look_for: str | None = None,
+        ascend_margin: int = 1,
+    ) -> Dict[str, Any]:
+        """Snapshot the agent's vertical environment.
+
+        Reports the current Y, the canonical ore band the agent is
+        currently in (if any), the placeable-block inventory state, and
+        — when ``look_for`` is provided — a recommended ``target_dy``
+        and ``target_y`` to reach the corresponding ore band.
+
+        Args:
+            look_for: optional ore name (e.g. ``"diamond_ore"``). The
+                method maps this to the canonical Minecraft Y range and
+                proposes a target Y. ``None`` skips the recommendation.
+            ascend_margin: extra blocks to add on top of the band's max
+                Y when the agent must climb up. Helps the policy reach
+                ores that sit slightly above the agent.
+
+        Returns a dict with keys:
+            current_y, current_pitch, current_yaw, in_band (str|None),
+            placeable_in_hotbar (int), placeable_in_inventory (int),
+            placeable_total (int), preferred_block (str|None),
+            target_band (Tuple[int,int]|None), target_y (float|None),
+            recommend_pillar_up (bool), recommended_dy (int|None),
+            recommended_action (str: "noop"/"pillar_up"/"descend"/"unsupported"),
+            reason (str).
+        """
+        loc = (self.cache.get("info") or {}).get("location_stats", {}) or {}
+
+        def _scalar(key: str, default: float) -> float:
+            try:
+                return float(np.asarray(loc.get(key, default)).reshape(-1)[0])
+            except Exception:
+                return float(default)
+
+        current_y = _scalar("ypos", 64.0)
+        current_pitch = _scalar("pitch", 0.0)
+        current_yaw = _scalar("yaw", 0.0)
+
+        # Tally placeable-block availability (hotbar vs. main inventory).
+        try:
+            inventory = self.cache["info"].get("plain_inventory", {})
+        except Exception:
+            inventory = {}
+        placeable_in_hotbar = 0
+        placeable_in_inventory = 0
+        preferred_block: str | None = None
+        for block_name in self.PILLAR_PREFER_BLOCKS:
+            for raw_slot, item in inventory.items():
+                try:
+                    slot_int = int(raw_slot)
+                except Exception:
+                    continue
+                if not (0 <= slot_int <= 35):
+                    continue
+                if self._plain_item_type(item.get("type", "")) != block_name:
+                    continue
+                qty = self._plain_item_quantity(item.get("quantity", 0))
+                if qty <= 0:
+                    continue
+                if 0 <= slot_int <= 8:
+                    placeable_in_hotbar += qty
+                else:
+                    placeable_in_inventory += qty
+                if preferred_block is None:
+                    preferred_block = block_name
+        placeable_total = placeable_in_hotbar + placeable_in_inventory
+
+        # Which canonical band does the agent stand in right now?
+        in_band: str | None = None
+        for ore, (lo, hi) in self.ORE_HEIGHT_BANDS.items():
+            if lo <= current_y <= hi:
+                in_band = ore
+                break
+
+        # Compute a recommendation toward `look_for` if requested.
+        target_band: Tuple[int, int] | None = None
+        target_y: float | None = None
+        recommended_dy: int | None = None
+        recommended_action = "noop"
+        reason = "no_target_specified"
+
+        if look_for:
+            band = self.ORE_HEIGHT_BANDS.get(look_for)
+            if band is None:
+                recommended_action = "unsupported"
+                reason = f"unknown_ore:{look_for}"
+            else:
+                target_band = band
+                lo, hi = band
+                if current_y < lo:
+                    target_y = float(min(hi, lo + max(0, ascend_margin)))
+                    recommended_dy = max(1, int(round(target_y - current_y)))
+                    if placeable_total > 0:
+                        recommended_action = "pillar_up"
+                        reason = (
+                            f"below_band:y={current_y:.1f}<lo={lo} "
+                            f"need_dy={recommended_dy}"
+                        )
+                    else:
+                        recommended_action = "unsupported"
+                        reason = "below_band_but_no_placeable_block"
+                elif current_y > hi + ascend_margin:
+                    # Mining downward is out of scope for this primitive;
+                    # only flag the situation so the planner can decide.
+                    target_y = float(hi)
+                    recommended_dy = -int(round(current_y - hi))
+                    recommended_action = "descend"
+                    reason = (
+                        f"above_band:y={current_y:.1f}>hi={hi} "
+                        f"need_dy={recommended_dy}"
+                    )
+                else:
+                    target_y = float(current_y)
+                    recommended_dy = 0
+                    recommended_action = "noop"
+                    reason = f"already_in_band:{look_for}"
+
+        return {
+            "current_y": current_y,
+            "current_pitch": current_pitch,
+            "current_yaw": current_yaw,
+            "in_band": in_band,
+            "placeable_in_hotbar": int(placeable_in_hotbar),
+            "placeable_in_inventory": int(placeable_in_inventory),
+            "placeable_total": int(placeable_total),
+            "preferred_block": preferred_block,
+            "target_band": target_band,
+            "target_y": target_y,
+            "recommend_pillar_up": recommended_action == "pillar_up",
+            "recommended_dy": recommended_dy,
+            "recommended_action": recommended_action,
+            "reason": reason,
+        }
+
+    def pillar_up_smart(
+        self,
+        target_dy: int = 5,
+        target_y: float | None = None,
+        max_blocks: int = 32,
+        max_steps: int = 400,
+        prefer_blocks: tuple[str, ...] | None = None,
+        dest_hotbar_slot: int = 0,
+    ) -> Dict[str, Any]:
+        """Inventory-aware wrapper around :py:meth:`pillar_up`.
+
+        Differences vs. the low-level primitive:
+
+        * Pulls a placeable block from main inventory into the hotbar
+          (via ``/replaceitem``) when no placeable block is in hotbar.
+        * Accepts an absolute ``target_y`` in addition to ``target_dy``;
+          if both are given ``target_y`` takes precedence.
+        * Returns the same dict as ``pillar_up`` plus ``prep_action``,
+          ``target_y``, ``preferred_block``, and ``planned_dy`` for
+          inspection by the planner / decisioner.
+
+        Notes:
+            * ``target_dy`` is clamped to ``[1, max_blocks]`` to avoid
+              wasting blocks; pass a larger ``max_blocks`` for big climbs.
+            * If no placeable block exists anywhere in the inventory the
+              method returns ``success=False, reason="no_placeable_block"``
+              without performing any environment interaction beyond the
+              cache refresh that may already have happened.
+        """
+        # Snapshot starting Y so we can resolve target_y vs target_dy.
+        try:
+            start_y = float(self.cache["info"]["location_stats"].get("ypos", 64.0))
+        except Exception:
+            start_y = 64.0
+
+        if target_y is not None:
+            planned_dy = int(round(float(target_y) - start_y))
+        else:
+            planned_dy = int(target_dy)
+        if planned_dy <= 0:
+            res = {
+                "success": True,
+                "blocks_used": 0,
+                "dy": 0.0,
+                "start_y": start_y,
+                "end_y": start_y,
+                "steps_used": 0,
+                "reason": "already_at_or_above_target",
+                "trajectory": [start_y],
+                "prep_action": "noop",
+                "target_y": float(target_y) if target_y is not None else start_y,
+                "planned_dy": planned_dy,
+                "preferred_block": None,
+            }
+            self._record_recovery("pillar_up_smart", res)
+            return res
+
+        planned_dy = max(1, min(planned_dy, int(max_blocks)))
+
+        slot, block_name, prep_action = self._ensure_placeable_block_in_hotbar(
+            prefer=prefer_blocks, dest_hotbar_slot=dest_hotbar_slot
+        )
+        if slot is None:
+            res = {
+                "success": False,
+                "blocks_used": 0,
+                "dy": 0.0,
+                "start_y": start_y,
+                "end_y": start_y,
+                "steps_used": 0,
+                "reason": f"no_placeable_block:{prep_action}",
+                "trajectory": [start_y],
+                "prep_action": prep_action,
+                "target_y": float(target_y) if target_y is not None else start_y + planned_dy,
+                "planned_dy": planned_dy,
+                "preferred_block": None,
+            }
+            self._record_recovery("pillar_up_smart", res)
+            if self.logger:
+                self.logger.warning(
+                    f"[pillar_up_smart] aborted: {res['reason']} "
+                    f"y={start_y:.1f} planned_dy={planned_dy}"
+                )
+            return res
+
+        if self.logger:
+            self.logger.info(
+                f"[pillar_up_smart] start: y={start_y:.1f} planned_dy={planned_dy} "
+                f"target_y={(start_y + planned_dy):.1f} block={block_name} "
+                f"slot={slot} prep={prep_action}"
+            )
+
+        result = self.pillar_up(
+            target_dy=planned_dy,
+            max_blocks=max_blocks,
+            max_steps=max_steps,
+            prefer_blocks=prefer_blocks,
+        )
+        result = dict(result)
+        result["prep_action"] = prep_action
+        result["target_y"] = (
+            float(target_y) if target_y is not None else start_y + planned_dy
+        )
+        result["planned_dy"] = planned_dy
+        result["preferred_block"] = block_name
+        self._record_recovery("pillar_up_smart", result)
+        return result
+
+    def raise_to_height(
+        self,
+        target_y: float,
+        max_blocks: int = 64,
+        max_steps: int = 600,
+        prefer_blocks: tuple[str, ...] | None = None,
+    ) -> Dict[str, Any]:
+        """Convenience wrapper: raise the agent until y >= ``target_y``.
+
+        This is the preferred entry point for the planner / decisioner
+        because the recipe-driven goal is usually expressed in absolute
+        coordinates ("be at y=50 to mine coal") rather than as a delta.
+        """
+        return self.pillar_up_smart(
+            target_y=float(target_y),
+            max_blocks=max_blocks,
+            max_steps=max_steps,
+            prefer_blocks=prefer_blocks,
+        )
+
+    def raise_to_ore_band(
+        self,
+        ore: str,
+        max_blocks: int = 64,
+        max_steps: int = 600,
+        prefer_blocks: tuple[str, ...] | None = None,
+        ascend_margin: int = 1,
+    ) -> Dict[str, Any]:
+        """Pillar up so the agent enters the canonical Y band of ``ore``.
+
+        Combines :py:meth:`perceive_height_context` and
+        :py:meth:`pillar_up_smart` so the planner only has to say
+        "I want to mine coal" and the wrapper figures out the target Y.
+
+        Returns the dict produced by ``pillar_up_smart``, augmented with
+        ``ore``, ``perception`` (the perception snapshot used) and
+        ``skipped`` (True if no climb was needed).
+        """
+        ctx = self.perceive_height_context(look_for=ore, ascend_margin=ascend_margin)
+        if ctx["recommended_action"] == "noop":
+            res = {
+                "success": True,
+                "blocks_used": 0,
+                "dy": 0.0,
+                "start_y": ctx["current_y"],
+                "end_y": ctx["current_y"],
+                "steps_used": 0,
+                "reason": ctx["reason"],
+                "trajectory": [ctx["current_y"]],
+                "prep_action": "noop",
+                "target_y": ctx["target_y"] if ctx["target_y"] is not None else ctx["current_y"],
+                "planned_dy": 0,
+                "preferred_block": ctx["preferred_block"],
+                "ore": ore,
+                "perception": ctx,
+                "skipped": True,
+            }
+            self._record_recovery("raise_to_ore_band", res)
+            return res
+        if ctx["recommended_action"] != "pillar_up" or ctx["target_y"] is None:
+            res = {
+                "success": False,
+                "blocks_used": 0,
+                "dy": 0.0,
+                "start_y": ctx["current_y"],
+                "end_y": ctx["current_y"],
+                "steps_used": 0,
+                "reason": ctx["reason"],
+                "trajectory": [ctx["current_y"]],
+                "prep_action": "noop",
+                "target_y": ctx["target_y"] if ctx["target_y"] is not None else ctx["current_y"],
+                "planned_dy": ctx["recommended_dy"] or 0,
+                "preferred_block": ctx["preferred_block"],
+                "ore": ore,
+                "perception": ctx,
+                "skipped": True,
+            }
+            self._record_recovery("raise_to_ore_band", res)
+            return res
+        result = self.pillar_up_smart(
+            target_y=ctx["target_y"],
+            max_blocks=max_blocks,
+            max_steps=max_steps,
+            prefer_blocks=prefer_blocks,
+        )
+        result = dict(result)
+        result["ore"] = ore
+        result["perception"] = ctx
+        result["skipped"] = False
+        self._record_recovery("raise_to_ore_band", result)
+        return result
+
     def _record_recovery(self, name: str, payload: Dict[str, Any]) -> None:
         events = self._control_state.setdefault("recovery_events", {})
         log = events.setdefault(name, [])

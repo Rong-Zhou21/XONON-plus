@@ -673,6 +673,268 @@ def _ensure_best_pickaxe_equipped(
         env.can_open_inventory = previous_can_open_inventory
 
 
+# Map planner-level normalised ore names back to the canonical wrapper
+# keys used by `CustomEnvWrapper.ORE_HEIGHT_BANDS`. The wrapper keeps the
+# `_ore` suffix because that is what `random_ore` writes to the world.
+_PILLAR_PLANNER_TO_WRAPPER_ORE: Dict[str, str] = {
+    "coal": "coal_ore",
+    "coal_ore": "coal_ore",
+    "iron_ore": "iron_ore",
+    "iron": "iron_ore",
+    "gold_ore": "gold_ore",
+    "gold": "gold_ore",
+    "redstone": "redstone_ore",
+    "redstone_ore": "redstone_ore",
+    "diamond": "diamond_ore",
+    "diamond_ore": "diamond_ore",
+}
+
+
+def _maybe_pillar_up_for_ore(
+    env: CustomEnvWrapper,
+    prompt: str,
+    target: list[Any] | tuple[Any, ...] | None,
+    logger: logging.Logger,
+) -> None:
+    """Perceive the current height and pillar up if it would help mining.
+
+    This is the high-level glue between the new env-wrapper primitives
+    (``perceive_height_context`` / ``raise_to_ore_band``) and the planning
+    loop. It is opt-in: behaviour is unchanged unless the env var
+    ``XENON_ENABLE_PILLAR_UP_FOR_ORE`` is set to ``1``. Even when enabled,
+    the helper only acts when:
+
+    1. the current sub-goal is a pickaxe-mining sub-goal,
+    2. the target ore maps to a known canonical Y band,
+    3. the agent currently sits below that band, and
+    4. at least one placeable block (cobblestone / dirt / stone / ...)
+       exists somewhere in the agent's inventory.
+
+    All other situations are no-ops, so this helper never fights the
+    existing dig-down logic for diamonds at the bottom of the world.
+    """
+    if os.environ.get("XENON_ENABLE_PILLAR_UP_FOR_ORE", "0") != "1":
+        return
+    if not _is_pickaxe_mining_subgoal(prompt, target):
+        return
+    if not target:
+        return
+    planner_ore = _normalise_ore_name(target[0])
+    wrapper_ore = _PILLAR_PLANNER_TO_WRAPPER_ORE.get(planner_ore)
+    if wrapper_ore is None:
+        return
+
+    try:
+        ascend_margin = int(os.environ.get("XENON_PILLAR_ORE_MARGIN", "1"))
+    except ValueError:
+        ascend_margin = 1
+    try:
+        max_blocks = int(os.environ.get("XENON_PILLAR_ORE_MAX_BLOCKS", "32"))
+    except ValueError:
+        max_blocks = 32
+    try:
+        max_steps = int(os.environ.get("XENON_PILLAR_ORE_MAX_STEPS", "400"))
+    except ValueError:
+        max_steps = 400
+
+    try:
+        ctx = env.perceive_height_context(
+            look_for=wrapper_ore, ascend_margin=ascend_margin
+        )
+    except Exception as exc:
+        logger.warning(f"perceive_height_context({wrapper_ore}) failed: {exc!s}")
+        return
+
+    if ctx.get("recommended_action") != "pillar_up":
+        logger.info(
+            "[pillar_up_for_ore] skip: ore=%s recommendation=%s reason=%s",
+            wrapper_ore,
+            ctx.get("recommended_action"),
+            ctx.get("reason"),
+        )
+        return
+    if int(ctx.get("placeable_total", 0)) <= 0:
+        logger.info(
+            "[pillar_up_for_ore] skip: ore=%s no placeable block in inventory",
+            wrapper_ore,
+        )
+        return
+
+    logger.info(
+        "[pillar_up_for_ore] activating: ore=%s y=%.1f -> target_y=%s "
+        "recommended_dy=%s placeable_hotbar=%d placeable_total=%d",
+        wrapper_ore,
+        float(ctx.get("current_y", 0.0)),
+        ctx.get("target_y"),
+        ctx.get("recommended_dy"),
+        int(ctx.get("placeable_in_hotbar", 0)),
+        int(ctx.get("placeable_total", 0)),
+    )
+    try:
+        result = env.raise_to_ore_band(
+            wrapper_ore,
+            max_blocks=max_blocks,
+            max_steps=max_steps,
+            ascend_margin=ascend_margin,
+        )
+    except Exception as exc:
+        logger.warning(f"raise_to_ore_band({wrapper_ore}) failed: {exc!s}")
+        return
+    logger.info(
+        "[pillar_up_for_ore] result: ore=%s success=%s dy=%.1f "
+        "blocks_used=%s reason=%s",
+        wrapper_ore,
+        result.get("success"),
+        float(result.get("dy", 0.0)),
+        result.get("blocks_used"),
+        result.get("reason"),
+    )
+
+
+def _ore_band_midpoint(wrapper_ore: str) -> int | None:
+    """Return the integer midpoint of the wrapper's canonical ore band.
+
+    Bands come from ``CustomEnvWrapper.ORE_HEIGHT_BANDS``. Evidence for
+    these ranges (verified against both the project's ``random_ore``
+    spawner and the official Minecraft pre-1.17 distribution table) is
+    documented in the wrapper. Midpoints used for horizontal-mine
+    targeting:
+
+        coal_ore [45,50] -> 47
+        iron_ore [26,43] -> 34
+        gold_ore [17,26] -> 21
+        redstone_ore [5,16] -> 10
+        diamond_ore [1,14] -> 7
+    """
+    band = CustomEnvWrapper.ORE_HEIGHT_BANDS.get(wrapper_ore)
+    if band is None:
+        return None
+    lo, hi = band
+    return (int(lo) + int(hi)) // 2
+
+
+def _maybe_relevel_for_overshoot(
+    env: CustomEnvWrapper,
+    planner_ore: str,
+    new_deeper_seen: list[str],
+    logger: logging.Logger,
+) -> Dict[str, Any] | None:
+    """Pillar up to the target ore's mid-band Y after an overshoot.
+
+    Trigger semantics (set by the caller):
+        the agent is mining a target ore, has not yet collected the
+        required count, but has *already* observed (mined / picked up
+        / currently holds) at least one strictly more advanced ore.
+        That means the dig-down went past the target band and the
+        agent now sits too low to find more of the target ore by
+        digging forward at the current Y.
+
+    What this helper does:
+        1. Maps the planner-side ore name (``"coal"``, ``"iron_ore"``,
+           ``"gold_ore"``, ``"redstone"``, ``"diamond"``) onto the
+           wrapper's canonical key.
+        2. Reads ``perceive_height_context`` to learn current Y and
+           placeable-block availability.
+        3. If the agent is below mid-band by at least
+           ``XENON_OVERSHOOT_RELEVEL_MIN_DY`` blocks (default 2) AND
+           there is at least one placeable block in the inventory,
+           calls ``raise_to_height(mid_y)`` to lift the agent back up
+           into the target band.
+        4. Logs perception + result; never raises.
+
+    Returns the ``raise_to_height`` result dict, or ``None`` when the
+    helper opted not to act.
+
+    Behaviour is gated by ``XENON_ENABLE_PILLAR_UP_FOR_OVERSHOOT``
+    (default ``"1"`` ON). Set to ``"0"`` to disable for an A/B test.
+    Tunables:
+      * ``XENON_OVERSHOOT_RELEVEL_MIN_DY`` (default 2)
+      * ``XENON_OVERSHOOT_RELEVEL_MAX_BLOCKS`` (default 64)
+      * ``XENON_OVERSHOOT_RELEVEL_MAX_STEPS`` (default 600)
+    """
+    if os.environ.get("XENON_ENABLE_PILLAR_UP_FOR_OVERSHOOT", "1") != "1":
+        return None
+
+    wrapper_ore = _PILLAR_PLANNER_TO_WRAPPER_ORE.get(planner_ore)
+    if wrapper_ore is None:
+        return None
+    mid_y = _ore_band_midpoint(wrapper_ore)
+    if mid_y is None:
+        return None
+
+    try:
+        ctx = env.perceive_height_context(look_for=wrapper_ore)
+    except Exception as exc:
+        logger.warning(
+            f"[overshoot_relevel] perceive_height_context({wrapper_ore}) "
+            f"failed: {exc!s}"
+        )
+        return None
+
+    cur_y = float(ctx.get("current_y", 64.0))
+    needed_dy = float(mid_y) - cur_y
+    try:
+        min_dy = float(os.environ.get("XENON_OVERSHOOT_RELEVEL_MIN_DY", "2"))
+    except ValueError:
+        min_dy = 2.0
+    if needed_dy < min_dy:
+        logger.info(
+            "[overshoot_relevel] skip: ore=%s cur_y=%.1f mid_y=%d "
+            "needed_dy=%.1f < min_dy=%.1f (already in or above band)",
+            wrapper_ore, cur_y, mid_y, needed_dy, min_dy,
+        )
+        return None
+    if int(ctx.get("placeable_total", 0)) <= 0:
+        logger.info(
+            "[overshoot_relevel] skip: ore=%s no placeable block in inventory; "
+            "leaving height unchanged.",
+            wrapper_ore,
+        )
+        return None
+
+    try:
+        max_blocks = int(os.environ.get("XENON_OVERSHOOT_RELEVEL_MAX_BLOCKS", "64"))
+    except ValueError:
+        max_blocks = 64
+    try:
+        max_steps = int(os.environ.get("XENON_OVERSHOOT_RELEVEL_MAX_STEPS", "600"))
+    except ValueError:
+        max_steps = 600
+
+    logger.info(
+        "[overshoot_relevel] activating: ore=%s cur_y=%.1f -> mid_y=%d "
+        "(band=%s) deeper_seen=%s placeable_hotbar=%d placeable_total=%d",
+        wrapper_ore,
+        cur_y,
+        mid_y,
+        ctx.get("target_band"),
+        new_deeper_seen,
+        int(ctx.get("placeable_in_hotbar", 0)),
+        int(ctx.get("placeable_total", 0)),
+    )
+    try:
+        result = env.raise_to_height(
+            float(mid_y), max_blocks=max_blocks, max_steps=max_steps
+        )
+    except Exception as exc:
+        logger.warning(
+            f"[overshoot_relevel] raise_to_height({mid_y}) failed: {exc!s}"
+        )
+        return None
+    logger.info(
+        "[overshoot_relevel] result: ore=%s success=%s end_y=%.1f dy=%.1f "
+        "blocks_used=%s reason=%s prep_action=%s",
+        wrapper_ore,
+        result.get("success"),
+        float(result.get("end_y", 0.0)),
+        float(result.get("dy", 0.0)),
+        result.get("blocks_used"),
+        result.get("reason"),
+        result.get("prep_action"),
+    )
+    return result
+
+
 def new_agent_do(
     cfg: DictConfig,
     env: CustomEnvWrapper,
@@ -877,6 +1139,12 @@ def new_agent_do(
                     num_step,
                     logger,
                 )
+                _maybe_pillar_up_for_ore(
+                    env,
+                    current_sg_prompt,
+                    current_sg_target,
+                    logger,
+                )
                 tree_chop_active = _is_tree_chop_subgoal(current_sg_prompt, current_sg_target)
                 tree_log_activity = _log_activity_count(env.get_status()) if tree_chop_active else 0
                 tree_last_activity_step = env.num_steps
@@ -1011,6 +1279,17 @@ def new_agent_do(
                             and env.num_steps - mining_last_switch_step >= mining_switch_cooldown_ticks
                         )
                         if can_switch and overshot_layer:
+                            # Before flipping STEVE-1 to "dig forward", first
+                            # pillar up to the target ore's mid-band Y so the
+                            # subsequent horizontal mine actually intersects
+                            # the target ore. This is the user-requested
+                            # "环境感知 + 抬升 + 横向挖掘" flow: when an upgraded
+                            # ore is collected the agent has clearly gone past
+                            # the target band, so re-level and mine forward
+                            # rather than re-digging down.
+                            _maybe_relevel_for_overshoot(
+                                env, mining_target_ore, new_deeper_seen, logger
+                            )
                             current_sg_prompt = mining_forward_prompt
                             mining_mode = "dig_forward"
                             mining_last_switch_step = env.num_steps
