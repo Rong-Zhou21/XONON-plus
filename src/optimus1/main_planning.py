@@ -23,7 +23,7 @@ import numpy as np
 import torch
 import transformers
 
-from optimus1.env import CustomEnvWrapper, env_make, register_custom_env
+from optimus1.env import CustomEnvWrapper, PerceptionActionSuite, env_make, register_custom_env
 from optimus1.helper import NewHelper
 from optimus1.memories import CaseBasedMemory
 from optimus1.memories import KnowledgeGraph as OracleGraph
@@ -1275,10 +1275,15 @@ def new_agent_do(
                                     f"{current_sg_prompt} at timestep {env.num_steps}."
                                 )
                         elif (
-                            tree_mode == "chop"
+                            os.environ.get("XENON_ENABLE_TREE_EXPLORE", "1") == "1"
+                            and tree_mode == "chop"
                             and current_sg_prompt == temp_sg_prompt
                             and env.num_steps - tree_last_activity_step >= tree_chop_stale_ticks
                         ):
+                            # Master gate: managed by PerceptionActionSuite
+                            # (default ON). When OFF the agent stays on the
+                            # original chop prompt and never temporarily
+                            # diverts to "find a tree".
                             current_sg_prompt = tree_explore_prompt
                             tree_mode = "explore"
                             tree_last_activity_step = env.num_steps
@@ -1476,6 +1481,11 @@ def main(cfg: DictConfig):
     register_custom_env(cfg)
 
     logger = get_logger(__name__)
+
+    # Cascade XENON_PERCEPTION_ACTION_SUITE into per-feature env vars so
+    # the wrapper / planner gates downstream see consistent defaults.
+    # Per-feature env vars exported by the user are NOT overwritten.
+    PerceptionActionSuite.apply_from_env(logger)
 
     benchmark = ""
     if "wooden" in cfg["env"]["name"].lower():

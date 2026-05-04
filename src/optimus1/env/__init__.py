@@ -4,6 +4,7 @@ import gym
 from omegaconf import DictConfig
 
 from .wrapper import CustomEnvWrapper
+from .perception_action import PerceptionActionSuite
 
 from .custom_env import *
 from .inventory_agent_start import *

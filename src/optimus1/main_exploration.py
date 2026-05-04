@@ -23,7 +23,7 @@ import numpy as np
 import torch
 import transformers
 
-from optimus1.env import CustomEnvWrapper, env_make, register_custom_env
+from optimus1.env import CustomEnvWrapper, PerceptionActionSuite, env_make, register_custom_env
 from optimus1.helper import NewHelper
 from optimus1.memories import KnowledgeGraph as OracleGraph
 from optimus1.memories import DecomposedMemory
@@ -710,6 +710,11 @@ def main(cfg: DictConfig):
     register_custom_env(cfg)
 
     logger = get_logger(__name__)
+
+    # Cascade XENON_PERCEPTION_ACTION_SUITE into per-feature env vars so
+    # the wrapper / planner gates downstream see consistent defaults.
+    # Per-feature env vars exported by the user are NOT overwritten.
+    PerceptionActionSuite.apply_from_env(logger)
 
     seed = int(cfg["seed"])
     random.seed(seed)

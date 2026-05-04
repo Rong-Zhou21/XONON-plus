@@ -674,6 +674,9 @@ class CustomEnvWrapper(gym.Wrapper):
         goal: tuple[str, int] | None,
         prompt: str | None,
     ) -> Dict[str, Any]:
+        # Master gate: managed by PerceptionActionSuite (default ON).
+        if os.environ.get("XENON_ENABLE_INVENTORY_CLEANUP", "1") != "1":
+            return action
         used_slots = self._used_inventory_slots()
         pressure_threshold = self._inventory_pressure_threshold(goal, prompt)
         if used_slots < pressure_threshold:
@@ -768,6 +771,9 @@ class CustomEnvWrapper(gym.Wrapper):
         goal: tuple[str, int] | None,
         prompt: str | None,
     ) -> bool:
+        # Master gate: managed by PerceptionActionSuite (default ON).
+        if os.environ.get("XENON_ENABLE_COLLECT_DROPS", "1") != "1":
+            return False
         if goal is None or not self._is_resource_acquisition(goal, prompt):
             return False
         if self._ledger_satisfies_goal(goal):
@@ -810,6 +816,9 @@ class CustomEnvWrapper(gym.Wrapper):
         return self._current_air() < int(os.environ.get("XENON_LOW_AIR_THRESHOLD", "280"))
 
     def _should_movement_escape(self, action: Dict[str, Any], goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        # Master gate: managed by PerceptionActionSuite (default ON).
+        if os.environ.get("XENON_ENABLE_MOVEMENT_ESCAPE", "1") != "1":
+            return False
         if self._is_tunnel_resource_acquisition(goal, prompt):
             return False
         if self._movement_intent(action) and self._stagnant_motion() and not self._button_down(action, "attack"):
@@ -823,6 +832,9 @@ class CustomEnvWrapper(gym.Wrapper):
         )
 
     def _should_tunnel_recovery(self, action: Dict[str, Any], goal: tuple[str, int] | None, prompt: str | None) -> bool:
+        # Master gate: managed by PerceptionActionSuite (default ON).
+        if os.environ.get("XENON_ENABLE_TUNNEL_RECOVERY", "1") != "1":
+            return False
         if not self._is_tunnel_resource_acquisition(goal, prompt):
             self._control_state["resource_stagnant_ticks"] = 0
             return False

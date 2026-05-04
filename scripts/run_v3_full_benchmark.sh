@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# XENON-plus v3 全 67 任务批跑脚本
+# XENON-plus 全 67 任务批跑脚本（输出到 v4，启用感知-动作 suite）
 #
 # 任务分布（与 v2 一致）：
 #     wooden  : 0..9    (10) max_minutes=3
@@ -12,18 +12,34 @@
 #     armor   : 0..12   (13) max_minutes=30
 #     total   : 67
 #
-# 视频/结果固定输出到 v3 目录：
-#     videos/v3/<Category_Task>/<biome>/<status>/*.mp4
-#     exp_results/v3/ours_planning_<task>_<exp_num>_*.json
+# 视频/结果默认写入 v4 目录（可被 VIDEO_DIR / RESULTS_DIR 环境变量覆盖）：
+#     videos/v4/<Category_Task>/<biome>/<status>/*.mp4
+#     exp_results/v4/ours_planning_<task>_<exp_num>_*.json
+#
+# 默认启用本轮新加的 "环境感知 + 行动" 统一开关
+#     PERCEPTION_ACTION_SUITE=1
+# 它在 main_planning 启动时把以下 9 项 feature 一起切到推荐默认：
+#     underground:   pillar-up overshoot relevel + 3-block tunnel
+#                    pre-mining height check (per-feature 默认 OFF)
+#     surface:       low-air escape, surface search, tree-explore prompt
+#     inventory:     hotbar-pressure cleanup, dropped-resource pickup
+#     stagnation:    movement-stagnant escape, tunnel-stagnant recovery
+# 想关任意单项做消融：直接 export 对应 XENON_ENABLE_* 即可（suite 不覆盖）。
 #
 # 启动：
-#     # baseline 跑一遍
-#     DECISIONER_ENABLED=0 bash scripts/run_v3_full_benchmark.sh
+#     # 1) 默认：suite=ON，baseline planner
+#     bash scripts/run_v3_full_benchmark.sh
 #
-#     # 决策器跑一遍（exp_num base 自动错开，不会和 baseline 撞名）
+#     # 2) 决策器（RADS）+ suite=ON
 #     DECISIONER_ENABLED=1 bash scripts/run_v3_full_benchmark.sh
 #
-# 断点续跑：脚本会跳过 exp_results/v3/ 中已存在的同 exp_num 结果文件。
+#     # 3) 完整基线对照：suite=OFF（重现"加 perception-action 之前"行为）
+#     PERCEPTION_ACTION_SUITE=0 bash scripts/run_v3_full_benchmark.sh
+#
+#     # 4) 单项消融：suite=ON 但关 pillar-up
+#     XENON_ENABLE_PILLAR_UP_FOR_OVERSHOOT=0 bash scripts/run_v3_full_benchmark.sh
+#
+# 断点续跑：脚本会跳过 exp_results/v4/ 中已存在的同 exp_num 结果文件。
 # 中途 Ctrl-C 后再次运行即可从下一个未完成任务继续。
 #
 # 总耗时（worst case）：
@@ -51,7 +67,13 @@ GPU="${GPU:-0}"
 SERVER_PORT="${SERVER_PORT:-9100}"
 SEED="${SEED:-0}"
 TASK_COOLDOWN_SEC="${TASK_COOLDOWN_SEC:-10}"   # 每任务结束后清进程的等待秒数
-SKIP_DONE="${SKIP_DONE:-1}"                    # 1=跳过 exp_results/v3 已有的 exp_num
+SKIP_DONE="${SKIP_DONE:-1}"                    # 1=跳过 exp_results/v4 已有的 exp_num
+
+# ===== Perception-Action Suite（这一轮新增的"环境感知 + 行动"统一开关）=====
+# 1 = 全量启用（推荐，作为本轮创新点的实验默认）
+# 0 = 全部回退到旧基线（用于消融对照）
+# 单 feature 想反向覆盖时，直接 export 对应 XENON_ENABLE_* 即可，suite 不会改写。
+PERCEPTION_ACTION_SUITE="${PERCEPTION_ACTION_SUITE:-1}"
 # ====================================================================
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -67,9 +89,15 @@ export QWEN_BACKEND="${QWEN_BACKEND:-vllm}"
 export QWEN_VLLM_BASE_URL="${QWEN_VLLM_BASE_URL:-http://172.17.0.1:8000/v1}"
 export QWEN_VLLM_MODEL="${QWEN_VLLM_MODEL:-Qwen/Qwen2.5-VL-7B-Instruct}"
 export XENON_DISABLE_STUCK_KILL="${XENON_DISABLE_STUCK_KILL:-1}"
+# Propagate the suite toggle into the python process. main_planning.main()
+# calls PerceptionActionSuite.apply_from_env() right after env registration,
+# which cascades this into every per-feature env var the wrapper / planner
+# reads. User-set per-feature env vars (XENON_ENABLE_*) are not overwritten,
+# so single-feature ablations still work.
+export XENON_PERCEPTION_ACTION_SUITE="$PERCEPTION_ACTION_SUITE"
 
-VIDEO_DIR="videos/v3"
-RESULTS_DIR="exp_results/v3"
+VIDEO_DIR="${VIDEO_DIR:-videos/v4}"
+RESULTS_DIR="${RESULTS_DIR:-exp_results/v4}"
 mkdir -p "$VIDEO_DIR" "$RESULTS_DIR"
 
 SUMMARY_FILE="${SUMMARY_FILE:-/tmp/xenon_v3_${RUN_LABEL}_$(date +%Y%m%d_%H%M%S)_summary.log}"
@@ -165,18 +193,19 @@ fi
 
 cat <<INFO | tee "$SUMMARY_FILE"
 ============================================================
- XENON-plus v3 full benchmark (67 tasks)
+ XENON-plus full benchmark (67 tasks, v4 outputs)
 ============================================================
- run_label    : $RUN_LABEL
- decisioner   : $([ "$DECISIONER_ENABLED" = "1" ] && echo "ENABLED  ckpt=$DECISIONER_CKPT min_p=$DECISIONER_MIN_P" || echo "disabled (baseline)")
- exp_num_base : $EXP_NUM_BASE
- GPU          : $GPU
- server_port  : $SERVER_PORT
- video_dir    : $VIDEO_DIR
- results_dir  : $RESULTS_DIR
- summary      : $SUMMARY_FILE
- skip_done    : $SKIP_DONE
- start_time   : $(date)
+ run_label              : $RUN_LABEL
+ decisioner             : $([ "$DECISIONER_ENABLED" = "1" ] && echo "ENABLED  ckpt=$DECISIONER_CKPT min_p=$DECISIONER_MIN_P" || echo "disabled (baseline)")
+ perception_action_suite: $([ "$PERCEPTION_ACTION_SUITE" = "1" ] && echo "ON  (suite-managed perception+action features active)" || echo "OFF (baseline; suite-managed features off)")
+ exp_num_base           : $EXP_NUM_BASE
+ GPU                    : $GPU
+ server_port            : $SERVER_PORT
+ video_dir              : $VIDEO_DIR
+ results_dir            : $RESULTS_DIR
+ summary                : $SUMMARY_FILE
+ skip_done              : $SKIP_DONE
+ start_time             : $(date)
 ============================================================
 INFO
 
