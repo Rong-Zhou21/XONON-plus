@@ -207,6 +207,7 @@ class CustomEnvWrapper(gym.Wrapper):
         self.cache["surface_attack_streak"] = 0
         self.cache["last_surface_log_step"] = -1000000
         self.cache["last_surface_search_step"] = -1000000
+        self.cache["last_surface_turn_around_step"] = -1000000
         self.cache["last_collect_drop_step"] = -1000000
         self.cache["position_window"] = deque(maxlen=120)
         self.cache["resource_ledger"] = {
@@ -225,6 +226,7 @@ class CustomEnvWrapper(gym.Wrapper):
             "escape_turn": 1,
             "tunnel_recovery_ticks": 0,
             "surface_search_ticks": 0,
+            "surface_turn_around_ticks": 0,
             "collect_drop_ticks": 0,
             "surface_log_jump_lock_ticks": 0,
             "resource_stagnant_ticks": 0,
@@ -236,6 +238,8 @@ class CustomEnvWrapper(gym.Wrapper):
             "recovery_events": {
                 "surface_escape": 0,
                 "surface_search": 0,
+                "surface_turn_around": 0,
+                "ground_pitch_clamp": 0,
                 "collect_drops": 0,
                 "movement_escape": 0,
                 "tunnel_recovery": 0,
@@ -831,6 +835,67 @@ class CustomEnvWrapper(gym.Wrapper):
             and self._stale_progress_ticks() >= int(os.environ.get("XENON_ESCAPE_MIN_STALE_PROGRESS", "240"))
         )
 
+    def _safe_pitch(self) -> float:
+        """Best-effort read of the agent's current pitch in degrees.
+
+        MineRL convention: positive pitch = looking down, negative = looking up.
+        Falls back to 0.0 if location_stats are not yet available.
+        """
+        for source in (
+            (self.cache.get("info") or {}).get("location_stats"),
+            getattr(self.status_mod, "location_stats", None),
+        ):
+            if not source:
+                continue
+            try:
+                value = source.get("pitch", 0)
+            except AttributeError:
+                continue
+            try:
+                arr = np.asarray(value).reshape(-1)
+                if arr.size:
+                    return float(arr[0])
+            except Exception:
+                continue
+        return 0.0
+
+    def _should_surface_turn_around(
+        self,
+        action: Dict[str, Any],
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> bool:
+        """Trigger a 180-degree yaw turn when surface exploration is
+        horizontally stagnant (agent is wedged against terrain).
+
+        Master gate: managed by PerceptionActionSuite (default ON).
+        Only fires during surface (chop / find-a-tree) mode and never
+        while the agent is actively attacking, so it does not cancel
+        a successful tree-chopping engagement.
+        """
+        if os.environ.get("XENON_ENABLE_SURFACE_TURNAROUND", "1") != "1":
+            return False
+        if not self._is_surface_resource_acquisition(goal, prompt):
+            return False
+        if self._button_down(action, "attack"):
+            return False
+        if int(self._control_state.get("attack_hold", 0)) > 0:
+            return False
+        if self.num_steps - int(self.cache.get("last_surface_turn_around_step", -1000000)) < int(
+            os.environ.get("XENON_SURFACE_TURNAROUND_COOLDOWN_TICKS", "200")
+        ):
+            return False
+        if self._ledger_satisfies_goal(goal):
+            return False
+        horizontal, _ = self._position_delta()
+        # _position_delta returns 999.0 sentinel when the window is not
+        # full yet; that path is correctly excluded by the threshold check.
+        if horizontal >= float(os.environ.get("XENON_SURFACE_TURNAROUND_HORIZONTAL_DELTA", "1.0")):
+            return False
+        return self._stale_goal_progress_ticks() >= int(
+            os.environ.get("XENON_SURFACE_TURNAROUND_STALE_TICKS", "120")
+        )
+
     def _should_tunnel_recovery(self, action: Dict[str, Any], goal: tuple[str, int] | None, prompt: str | None) -> bool:
         # Master gate: managed by PerceptionActionSuite (default ON).
         if os.environ.get("XENON_ENABLE_TUNNEL_RECOVERY", "1") != "1":
@@ -896,6 +961,26 @@ class CustomEnvWrapper(gym.Wrapper):
         action["camera"] = np.array([-1, 3 * self._control_state["escape_turn"]])
         return action
 
+    def _surface_turn_around_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
+        """Force a 180-degree yaw rotation while keeping the agent walking
+        forward, so that the next exploration step faces away from the
+        obstacle the policy was wedged against.
+
+        Pitch is gently nudged toward 0 (level horizon) so the agent
+        does not finish the manoeuvre staring at the sky.
+        """
+        self._control_state["surface_turn_around_ticks"] -= 1
+        for key in ("attack", "use", "back", "left", "right", "sneak", "inventory", "drop", "jump"):
+            self._set_button(action, key, 0)
+        self._set_button(action, "forward", 1)
+        self._set_button(action, "sprint", 1)
+        yaw_delta = float(os.environ.get("XENON_SURFACE_TURNAROUND_YAW_PER_TICK", "6.0"))
+        cur_pitch = self._safe_pitch()
+        # Slide pitch back toward 0 (max 4 deg / tick), bounded both ways.
+        pitch_delta = max(min(0.0 - cur_pitch, 4.0), -4.0)
+        action["camera"] = np.array([pitch_delta, yaw_delta * self._control_state["escape_turn"]])
+        return action
+
     def _tunnel_recovery_action(self, action: Dict[str, Any]) -> Dict[str, Any]:
         self._control_state["tunnel_recovery_ticks"] -= 1
         if self._control_state["tunnel_recovery_ticks"] % 20 == 0:
@@ -924,6 +1009,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["resource_stagnant_ticks"] = 0
             self._control_state["tunnel_recovery_ticks"] = 0
             self._control_state["surface_search_ticks"] = 0
+            self._control_state["surface_turn_around_ticks"] = 0
             self._control_state["collect_drop_ticks"] = 0
             self._control_state["last_prompt"] = prompt
             self.cache["surface_attack_streak"] = 0
@@ -988,6 +1074,29 @@ class CustomEnvWrapper(gym.Wrapper):
                 f"resource_stagnant_ticks={self._control_state['resource_stagnant_ticks']}, "
                 f"stale_progress={self._stale_progress_ticks()}, prompt={prompt}"
             )
+        elif (
+            self._control_state["escape_ticks"] <= 0
+            and self._control_state["collect_drop_ticks"] <= 0
+            and self._control_state["surface_search_ticks"] <= 0
+            and self._control_state["surface_turn_around_ticks"] <= 0
+            and self._should_surface_turn_around(action, goal, prompt)
+        ):
+            # Flip the rotation direction every activation so consecutive
+            # triggers don't keep banging the agent into the same hill.
+            self._control_state["escape_turn"] *= -1
+            self._control_state["surface_turn_around_ticks"] = int(
+                os.environ.get("XENON_SURFACE_TURNAROUND_TICKS", "30")
+            )
+            self._control_state["attack_hold"] = 0
+            self.cache["last_surface_turn_around_step"] = self.num_steps
+            self.cache["last_goal_progress_step"] = self.num_steps
+            self._control_state["recovery_events"]["surface_turn_around"] += 1
+            horizontal_now, _ = self._position_delta()
+            self.logger.info(
+                "Activating surface 180-deg turn-around primitive: "
+                f"horizontal_delta={horizontal_now:.2f}, "
+                f"stale_goal_progress={self._stale_goal_progress_ticks()}, prompt={prompt}"
+            )
 
         if self._control_state["escape_ticks"] > 0:
             action = self._escape_action(action)
@@ -998,6 +1107,9 @@ class CustomEnvWrapper(gym.Wrapper):
         if self._control_state["surface_search_ticks"] > 0:
             action = self._surface_search_action(action)
             return self._finish_stabilized_action("stabilize_surface_search", original_action, action, goal, prompt)
+        if self._control_state["surface_turn_around_ticks"] > 0:
+            action = self._surface_turn_around_action(action)
+            return self._finish_stabilized_action("stabilize_surface_turn_around", original_action, action, goal, prompt)
         if self._control_state["tunnel_recovery_ticks"] > 0:
             action = self._tunnel_recovery_action(action)
             return self._finish_stabilized_action("stabilize_tunnel", original_action, action, goal, prompt)
@@ -1042,6 +1154,42 @@ class CustomEnvWrapper(gym.Wrapper):
         else:
             self.cache["surface_attack_streak"] = 0
 
+        # Ground-exploration pitch clamp: when the agent is on the surface
+        # looking for / chopping a tree but is *not* currently attacking,
+        # bound the camera pitch into a near-horizontal band so STEVE-1
+        # cannot drift its view toward the sky during navigation. This
+        # only touches the regular (non-scripted) action path; underground
+        # mining and all scripted recovery primitives are unaffected.
+        if (
+            os.environ.get("XENON_ENABLE_GROUND_PITCH_CLAMP", "1") == "1"
+            and self._is_surface_resource_acquisition(goal, prompt)
+            and not self._is_tunnel_resource_acquisition(goal, prompt)
+            and not self._button_down(action, "attack")
+            and int(self._control_state.get("attack_hold", 0)) == 0
+        ):
+            try:
+                cam_arr = np.asarray(action.get("camera", [0.0, 0.0]), dtype=float).reshape(-1)
+            except Exception:
+                cam_arr = np.array([0.0, 0.0])
+            if cam_arr.size >= 1:
+                pitch_delta = float(cam_arr[0])
+                yaw_delta = float(cam_arr[1]) if cam_arr.size >= 2 else 0.0
+                cur_pitch = self._safe_pitch()
+                # MineRL convention: positive pitch = looking down,
+                # negative = looking up. -15 = roughly 15 deg above
+                # horizon, +75 = looking down at feet.
+                min_pitch = float(os.environ.get("XENON_GROUND_PITCH_MIN", "-15.0"))
+                max_pitch = float(os.environ.get("XENON_GROUND_PITCH_MAX", "75.0"))
+                target_pitch = cur_pitch + pitch_delta
+                clamped_delta = pitch_delta
+                if target_pitch < min_pitch:
+                    clamped_delta = min_pitch - cur_pitch
+                elif target_pitch > max_pitch:
+                    clamped_delta = max_pitch - cur_pitch
+                if clamped_delta != pitch_delta:
+                    action["camera"] = np.array([clamped_delta, yaw_delta])
+                    self._control_state["recovery_events"]["ground_pitch_clamp"] += 1
+
         return self._finish_stabilized_action("stabilize", original_action, action, goal, prompt)
 
     def _record_step_state(
@@ -1080,6 +1228,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["escape_ticks"] = 0
             self._control_state["tunnel_recovery_ticks"] = 0
             self._control_state["surface_search_ticks"] = 0
+            self._control_state["surface_turn_around_ticks"] = 0
             self._control_state["collect_drop_ticks"] = 0
             self._control_state["surface_log_jump_lock_ticks"] = 0
             self._control_state["movement_stagnant_ticks"] = 0

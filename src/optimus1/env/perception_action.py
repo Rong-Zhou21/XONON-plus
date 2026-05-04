@@ -118,12 +118,15 @@ class PerceptionActionSuite:
         # --- Group 2: surface exploration -------------------------------
         _Feature(
             env_var="XENON_ENABLE_LOW_AIR_ESCAPE",
-            on_value="1",
+            on_value="0",
             off_value="0",
             group="surface",
             title=(
                 "When O2 < threshold the agent triggers a sprint-jump "
-                "escape primitive (climbs back out of water)."
+                "escape primitive (climbs back out of water). "
+                "Disabled by user request: agent should drown and respawn "
+                "instead of escaping. Set XENON_ENABLE_LOW_AIR_ESCAPE=1 "
+                "explicitly to opt in."
             ),
         ),
         _Feature(
@@ -146,6 +149,31 @@ class PerceptionActionSuite:
                 "When chop is stagnant the planner switches STEVE-1's "
                 "prompt to 'find a tree' and back. New master gate; "
                 "previously this fired unconditionally."
+            ),
+        ),
+        _Feature(
+            env_var="XENON_ENABLE_SURFACE_TURNAROUND",
+            on_value="1",
+            off_value="0",
+            group="surface",
+            title=(
+                "When surface (chop / find-a-tree) is stagnant on the "
+                "horizontal plane (xz delta below threshold) the agent "
+                "performs a scripted 180-degree yaw turn so that it "
+                "stops banging into the same hill / wall."
+            ),
+        ),
+        _Feature(
+            env_var="XENON_ENABLE_GROUND_PITCH_CLAMP",
+            on_value="1",
+            off_value="0",
+            group="surface",
+            title=(
+                "While in surface (tree / chop / find-a-tree) and not "
+                "actively attacking, clamp the camera pitch into a "
+                "near-horizontal band so the agent does not stare at "
+                "the sky during exploration. Underground mining is "
+                "not affected."
             ),
         ),
         # --- Group 3: inventory perception ------------------------------
