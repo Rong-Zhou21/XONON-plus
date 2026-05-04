@@ -476,13 +476,39 @@ def _normalise_ore_name(item: Any) -> str:
 
 
 def _is_layered_mining_subgoal(prompt: str, target: list[Any] | tuple[Any, ...] | None) -> bool:
+    """Return True for mining sub-goals that should run the layered
+    overshoot / pillar-up logic.
+
+    Includes both layered ores (``ORE_LAYER_ORDER``) and ``cobblestone``,
+    because the agent typically dig-downs through every band while
+    collecting cobblestone for stone tools — and that is exactly when a
+    "deeper ore in inventory" signal indicates the agent has gone too
+    far. For cobblestone the *effective* mining_target_ore is remapped
+    elsewhere to ``iron_ore`` (the natural next tier) so the deeper-seen
+    set and the overshoot Y band both make sense.
+    """
     if not target:
         return False
     target_item = _normalise_ore_name(target[0])
     prompt_text = (prompt or "").lower()
-    if target_item not in ORE_LAYER_ORDER:
+    if target_item not in ORE_LAYER_ORDER and target_item != "cobblestone":
         return False
     return "mine" in prompt_text or "dig" in prompt_text
+
+
+def _effective_mining_target_ore(planner_target: str) -> str:
+    """Map a planner sub-goal target onto the ore name the pillar-up
+    machinery should reference.
+
+    Cobblestone has no Y band of its own, but stone-tier mining is the
+    natural precursor to iron mining. Reusing ``iron_ore``'s band gives
+    the overshoot logic a sensible reference depth (anything below
+    iron's lowest valid Y minus the configured margin counts as too
+    deep) without needing to peek at the upcoming waypoint chain.
+    """
+    if planner_target == "cobblestone":
+        return os.environ.get("XENON_COBBLESTONE_PILLAR_TARGET", "iron_ore")
+    return planner_target
 
 
 def _ore_required_count(target: list[Any] | tuple[Any, ...] | None) -> int:
@@ -1196,7 +1222,13 @@ def new_agent_do(
                 tree_explore_ticks = int(os.environ.get("XENON_TREE_EXPLORE_TICKS", "420"))
                 tree_contact_attack_ticks = int(os.environ.get("XENON_TREE_CONTACT_ATTACK_TICKS", "16"))
                 mining_direction_active = _is_layered_mining_subgoal(current_sg_prompt, current_sg_target)
-                mining_target_ore = _normalise_ore_name(current_sg_target[0]) if mining_direction_active else ""
+                # planner_target is the raw sub-goal item (e.g. "cobblestone");
+                # mining_target_ore is the canonical ore the pillar-up
+                # machinery references. They differ for "cobblestone", which
+                # is remapped onto iron_ore so the overshoot Y band and the
+                # deeper-ores-seen comparison both make sense.
+                _planner_target = _normalise_ore_name(current_sg_target[0]) if mining_direction_active else ""
+                mining_target_ore = _effective_mining_target_ore(_planner_target) if mining_direction_active else ""
                 mining_required = _ore_required_count(current_sg_target)
                 mining_initial_status = env.get_status()
                 mining_activity = _ore_activity_count(mining_initial_status, mining_target_ore) if mining_direction_active else 0
@@ -1206,7 +1238,11 @@ def new_agent_do(
                 mining_initial_deeper_seen = set(
                     _deeper_ores_seen(mining_initial_status, mining_target_ore)
                 ) if mining_direction_active else set()
-                mining_switch_cooldown_ticks = int(os.environ.get("XENON_MINING_DIRECTION_SWITCH_COOLDOWN_TICKS", "240"))
+                # Cooldown lowered from the original 240 default to 120 ticks
+                # (~6s) so the trigger can fire again sooner after the agent
+                # finishes a pillar-up + brief dig-forward burst, in case it
+                # has already overshot the band again.
+                mining_switch_cooldown_ticks = int(os.environ.get("XENON_MINING_DIRECTION_SWITCH_COOLDOWN_TICKS", "120"))
                 mining_last_switch_step = -1000000
 
                 while True:
@@ -1319,43 +1355,86 @@ def new_agent_do(
                             mining_last_activity_step = env.num_steps
                             step_waypoint_obtained = env.num_steps
                         target_incomplete = current_available < mining_required
-                        # NOTE: as of the perception-action revision, the
-                        # *pillar-up* arm fires on `deeper_seen` alone — even if
-                        # the target count is already satisfied — because the
-                        # user-stated semantics are "as soon as a deeper ore is
-                        # encountered, lift back up to the target band". The
-                        # original `target_incomplete` gate is preserved for
-                        # logging only. The cooldown / mining_mode / prompt
-                        # safety gates inside `can_switch` still bound how
-                        # often the trigger can fire.
-                        overshot_layer = len(new_deeper_seen) > 0
+                        # Trigger 1 (deeper ore in possession): the user's
+                        # explicit ask — "as soon as you've collected an ore
+                        # deeper than your current target, you've overshot,
+                        # lift back up". We deliberately use *deeper_seen*
+                        # rather than *new_deeper_seen*: ores accumulated in
+                        # earlier sub-goals are *still* evidence that the
+                        # agent is below the target band right now, and the
+                        # cooldown gate inside `can_switch` already prevents
+                        # repeated firing on the same overshoot. Set
+                        # XENON_OVERSHOOT_REQUIRE_NEW_DEEPER=1 to restore the
+                        # stricter "only ores acquired during this sub-goal
+                        # count" semantics for an A/B test.
+                        require_new = os.environ.get("XENON_OVERSHOOT_REQUIRE_NEW_DEEPER", "0") == "1"
+                        overshot_seen = new_deeper_seen if require_new else list(deeper_seen)
+                        overshot_layer = len(overshot_seen) > 0
+
+                        # Trigger 2 (current Y below target band): independent
+                        # of seen-deeper-ores, fires when the agent has dug
+                        # below the target ore band by at least
+                        # XENON_OVERSHOOT_Y_MARGIN blocks. Catches the case
+                        # where the agent dug deep but happens to be
+                        # surrounded by dirt/stone/granite (no deeper ore
+                        # picked up yet) — the user's "挖到最底层" scenario.
+                        y_overshoot = False
+                        cur_y_value = None
+                        target_band_min = None
+                        try:
+                            loc = env_status_now.get("location_stats") or {}
+                            ypos_raw = loc.get("ypos", None)
+                            if ypos_raw is not None:
+                                cur_y_value = float(np.asarray(ypos_raw).reshape(-1)[0])
+                            wrapper_ore = _PILLAR_PLANNER_TO_WRAPPER_ORE.get(mining_target_ore)
+                            if wrapper_ore is not None:
+                                band = CustomEnvWrapper.ORE_HEIGHT_BANDS.get(wrapper_ore)
+                                if band is not None and cur_y_value is not None:
+                                    target_band_min = int(band[0])
+                                    y_margin = float(os.environ.get("XENON_OVERSHOOT_Y_MARGIN", "5"))
+                                    y_overshoot = cur_y_value < (target_band_min - y_margin)
+                        except Exception:
+                            y_overshoot = False
+
+                        should_pillar_up = overshot_layer or y_overshoot
                         can_switch = (
                             mining_mode == "dig_down"
                             and current_sg_prompt == temp_sg_prompt
                             and env.num_steps - mining_last_switch_step >= mining_switch_cooldown_ticks
                         )
-                        if can_switch and overshot_layer:
+                        if can_switch and should_pillar_up:
                             # Before flipping STEVE-1 to "dig forward", first
                             # pillar up to the target ore's mid-band Y so the
                             # subsequent horizontal mine actually intersects
                             # the target ore. This is the user-requested
-                            # "环境感知 + 抬升 + 横向挖掘" flow: when an upgraded
-                            # ore is collected the agent has clearly gone past
-                            # the target band, so re-level and mine forward
-                            # rather than re-digging down.
+                            # "环境感知 + 抬升 + 横向挖掘" flow: as soon as the
+                            # agent is below the target band (either because
+                            # it overshot or because deeper ores are already
+                            # in possession), re-level and mine forward
+                            # rather than continuing to dig down.
                             _maybe_relevel_for_overshoot(
-                                env, mining_target_ore, new_deeper_seen, logger
+                                env, mining_target_ore, overshot_seen, logger
                             )
                             current_sg_prompt = mining_forward_prompt
                             mining_mode = "dig_forward"
                             mining_last_switch_step = env.num_steps
                             step_waypoint_obtained = env.num_steps
+                            trigger_reason = []
+                            if overshot_layer:
+                                trigger_reason.append(f"deeper_ores={overshot_seen}")
+                            if y_overshoot:
+                                trigger_reason.append(
+                                    f"y_overshoot(cur_y={cur_y_value:.1f}, "
+                                    f"band_min={target_band_min}, "
+                                    f"margin={os.environ.get('XENON_OVERSHOOT_Y_MARGIN', '5')})"
+                                )
                             logger.info(
                                 "Mining direction adjustment: switching STEVE-1 prompt to "
                                 f"{current_sg_prompt} for waypoint {waypoint}; "
-                                f"reason=advanced_ore_seen, target={mining_target_ore}, "
+                                f"reason={'+'.join(trigger_reason) or 'unknown'}, "
+                                f"target={mining_target_ore} (planner_target={_planner_target}), "
                                 f"current={current_available}, required={mining_required}, "
-                                f"advanced_ores={new_deeper_seen}, timestep={env.num_steps}."
+                                f"timestep={env.num_steps}."
                             )
                         elif mining_mode == "dig_forward" and not target_incomplete:
                             current_sg_prompt = copy.deepcopy(temp_sg_prompt)

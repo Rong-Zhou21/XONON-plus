@@ -236,50 +236,132 @@ for JOB in "${JOBS[@]}"; do
     continue
   fi
 
-  LOG_FILE="/tmp/xenon_v3_${RUN_LABEL}_${BENCH}_t${TID}_exp${EXP_NUM}_$(date +%Y%m%d_%H%M%S).log"
+  # 任务级重试机制 ---------------------------------------------
+  # MineRL/Malmo 偶尔在 Java 客户端启动后 ~8 秒内超时（"TimeoutError:
+  # timed out" / "Connection timed out!"），导致 status_detailed=
+  # env_step_timeout 且 steps 极少（~100-200）。这是环境 race，重试
+  # 一次通常就能成功。同样 crash_TypeError / crash_RuntimeError 在前
+  # 1000 步内的早期崩溃也常因 Java 启动状态没跑稳。
+  #
+  # 重试条件（任一即可）：
+  #   * status_detailed == env_step_timeout 且 steps < CRASH_RETRY_STEP_THRESHOLD
+  #   * status_detailed 以 "crash_" 开头 且 steps < CRASH_RETRY_STEP_THRESHOLD
+  #
+  # 上限由 MAX_RETRIES_ON_CRASH 控制（默认 2），关闭重试设为 0。
+  MAX_RETRIES_ON_CRASH="${MAX_RETRIES_ON_CRASH:-2}"
+  CRASH_RETRY_STEP_THRESHOLD="${CRASH_RETRY_STEP_THRESHOLD:-1000}"
+  CRASH_RETRY_COOLDOWN_SEC="${CRASH_RETRY_COOLDOWN_SEC:-15}"
+
+  attempt=0
+  STATUS=""
   T_START=$(date +%s)
 
-  printf "[%2d/%d] %-9s task=%-2s exp=%-6s max_min=%-2s start=%s log=%s\n" \
-    "$DONE" "$TOTAL_TASKS" "$BENCH" "$TID" "$EXP_NUM" "$MAXMIN" \
-    "$(date +%H:%M:%S)" "$LOG_FILE" | tee -a "$SUMMARY_FILE"
+  while : ; do
+    if [ "$attempt" -gt 0 ]; then
+      printf "       retry %d/%d (env crash detected, last status=%s)\n" \
+        "$attempt" "$MAX_RETRIES_ON_CRASH" "$STATUS" | tee -a "$SUMMARY_FILE"
+      cleanup
+      sleep "$CRASH_RETRY_COOLDOWN_SEC"
+    fi
 
-  xvfb-run -a python -u src/optimus1/main_planning.py \
-    server.port="$SERVER_PORT" \
-    env.times=1 \
-    env.max_minutes="$MAXMIN" \
-    benchmark="$BENCH" \
-    evaluate="[$TID]" \
-    prefix=ours_planning \
-    exp_num="$EXP_NUM" \
-    seed="$SEED" \
-    world_seed="$WORLD_SEED" \
-    record.video.path="$VIDEO_DIR" \
-    results.path="$RESULTS_DIR" \
-    "${DECISIONER_OVERRIDES[@]}" \
-    > "$LOG_FILE" 2>&1
-  RC=$?
+    LOG_FILE="/tmp/xenon_v3_${RUN_LABEL}_${BENCH}_t${TID}_exp${EXP_NUM}_$(date +%Y%m%d_%H%M%S).log"
 
-  T_ELAPSED=$(( $(date +%s) - T_START ))
+    if [ "$attempt" -eq 0 ]; then
+      printf "[%2d/%d] %-9s task=%-2s exp=%-6s max_min=%-2s start=%s log=%s\n" \
+        "$DONE" "$TOTAL_TASKS" "$BENCH" "$TID" "$EXP_NUM" "$MAXMIN" \
+        "$(date +%H:%M:%S)" "$LOG_FILE" | tee -a "$SUMMARY_FILE"
+    else
+      printf "       retry log=%s\n" "$LOG_FILE" | tee -a "$SUMMARY_FILE"
+    fi
 
-  RESULT_FILE=$(ls -t "$RESULTS_DIR"/*_${EXP_NUM}_*.json 2>/dev/null | head -1)
-  if [ -n "$RESULT_FILE" ]; then
-    STATUS=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
+    xvfb-run -a python -u src/optimus1/main_planning.py \
+      server.port="$SERVER_PORT" \
+      env.times=1 \
+      env.max_minutes="$MAXMIN" \
+      benchmark="$BENCH" \
+      evaluate="[$TID]" \
+      prefix=ours_planning \
+      exp_num="$EXP_NUM" \
+      seed="$SEED" \
+      world_seed="$WORLD_SEED" \
+      record.video.path="$VIDEO_DIR" \
+      results.path="$RESULTS_DIR" \
+      "${DECISIONER_OVERRIDES[@]}" \
+      > "$LOG_FILE" 2>&1
+    RC=$?
+
+    RESULT_FILE=$(ls -t "$RESULTS_DIR"/*_${EXP_NUM}_*.json 2>/dev/null | head -1)
+    if [ -n "$RESULT_FILE" ]; then
+      STATUS=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
 import json, sys
 d = json.load(open(sys.argv[1]))
 print(f"{'SUCCESS' if d.get('success') else 'FAIL'} status={d.get('status_detailed')} steps={d.get('steps')} minutes={d.get('minutes')}")
 PY
 )
+    else
+      STATUS="NO_RESULT (rc=$RC)"
+    fi
+
+    # 是否需要重试？
+    should_retry=0
+    if [ "$attempt" -lt "$MAX_RETRIES_ON_CRASH" ]; then
+      if [ -z "$RESULT_FILE" ]; then
+        # 完全没结果文件 — 进程崩溃太早，连 results.json 都没写出来
+        should_retry=1
+      else
+        # 有结果文件，看 status_detailed + steps
+        STATUS_DETAILED=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
+import json, sys
+d = json.load(open(sys.argv[1]))
+print(d.get("status_detailed", ""))
+PY
+)
+        STATUS_STEPS=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
+import json, sys
+d = json.load(open(sys.argv[1]))
+print(int(d.get("steps", 0) or 0))
+PY
+)
+        # 已经成功 → 永远不重试
+        IS_SUCCESS=$(echo "$STATUS" | grep -c "^SUCCESS")
+        if [ "$IS_SUCCESS" -eq 0 ]; then
+          # env_step_timeout + 早期 → 重试
+          if [ "$STATUS_DETAILED" = "env_step_timeout" ] && [ "$STATUS_STEPS" -lt "$CRASH_RETRY_STEP_THRESHOLD" ]; then
+            should_retry=1
+          # crash_*Error + 早期 → 重试
+          elif echo "$STATUS_DETAILED" | grep -qE "^crash_" && [ "$STATUS_STEPS" -lt "$CRASH_RETRY_STEP_THRESHOLD" ]; then
+            should_retry=1
+          fi
+        fi
+      fi
+    fi
+
+    if [ "$should_retry" -eq 1 ]; then
+      # 删除当次失败的结果，避免下次尝试时被 SKIP 逻辑误判已完成
+      [ -n "$RESULT_FILE" ] && rm -f "$RESULT_FILE"
+      attempt=$((attempt + 1))
+      continue
+    fi
+    break
+  done
+
+  T_ELAPSED=$(( $(date +%s) - T_START ))
+
+  if [ -n "$RESULT_FILE" ]; then
     if echo "$STATUS" | grep -q "^SUCCESS"; then
       SUCCESS=$((SUCCESS + 1))
     else
       FAIL=$((FAIL + 1))
     fi
   else
-    STATUS="NO_RESULT (rc=$RC)"
     NORESULT=$((NORESULT + 1))
   fi
 
-  printf "       result=%s elapsed=%ds\n" "$STATUS" "$T_ELAPSED" | tee -a "$SUMMARY_FILE"
+  if [ "$attempt" -gt 0 ]; then
+    printf "       result=%s elapsed=%ds (after %d retries)\n" "$STATUS" "$T_ELAPSED" "$attempt" | tee -a "$SUMMARY_FILE"
+  else
+    printf "       result=%s elapsed=%ds\n" "$STATUS" "$T_ELAPSED" | tee -a "$SUMMARY_FILE"
+  fi
 
   cleanup
   sleep "$TASK_COOLDOWN_SEC"
