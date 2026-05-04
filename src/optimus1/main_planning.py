@@ -926,12 +926,54 @@ def _maybe_relevel_for_overshoot(
         "blocks_used=%s reason=%s prep_action=%s",
         wrapper_ore,
         result.get("success"),
-        float(result.get("end_y", 0.0)),
         float(result.get("dy", 0.0)),
         result.get("blocks_used"),
         result.get("reason"),
         result.get("prep_action"),
     )
+
+    # Safety net (user-requested "保护机制"): right after pillar-up,
+    # hard-script a 3-block forward tunnel into the target ore band so
+    # the subsequent STEVE-1 "dig forward and mine X" prompt has a
+    # cleared corridor to step into. Without this the agent often spends
+    # the first dozens of ticks of dig-forward bouncing against the
+    # solid wall it just landed against. Disable with
+    # XENON_OVERSHOOT_TUNNEL_BLOCKS=0.
+    try:
+        tunnel_blocks = int(os.environ.get("XENON_OVERSHOOT_TUNNEL_BLOCKS", "3"))
+    except ValueError:
+        tunnel_blocks = 3
+    try:
+        tunnel_max_steps = int(os.environ.get("XENON_OVERSHOOT_TUNNEL_MAX_STEPS", "240"))
+    except ValueError:
+        tunnel_max_steps = 240
+    if tunnel_blocks > 0 and bool(result.get("success")):
+        try:
+            tunnel = env.dig_forward_blocks(
+                n_blocks=tunnel_blocks,
+                max_steps=tunnel_max_steps,
+            )
+        except Exception as exc:
+            logger.warning(
+                f"[overshoot_relevel] dig_forward_blocks failed: {exc!s}"
+            )
+        else:
+            logger.info(
+                "[overshoot_relevel] tunnel: blocks_dug=%s/%d steps=%s "
+                "reason=%s end=(%.1f,%.1f,%.1f)",
+                tunnel.get("blocks_dug"),
+                tunnel_blocks,
+                tunnel.get("steps_used"),
+                tunnel.get("reason"),
+                float(tunnel.get("end_x", 0.0)),
+                float(tunnel.get("end_y", 0.0)),
+                float(tunnel.get("end_z", 0.0)),
+            )
+            result["tunnel"] = tunnel
+    elif tunnel_blocks > 0:
+        logger.info(
+            "[overshoot_relevel] tunnel skipped: pillar-up was unsuccessful"
+        )
     return result
 
 
@@ -1272,7 +1314,16 @@ def new_agent_do(
                             mining_last_activity_step = env.num_steps
                             step_waypoint_obtained = env.num_steps
                         target_incomplete = current_available < mining_required
-                        overshot_layer = target_incomplete and len(new_deeper_seen) > 0
+                        # NOTE: as of the perception-action revision, the
+                        # *pillar-up* arm fires on `deeper_seen` alone — even if
+                        # the target count is already satisfied — because the
+                        # user-stated semantics are "as soon as a deeper ore is
+                        # encountered, lift back up to the target band". The
+                        # original `target_incomplete` gate is preserved for
+                        # logging only. The cooldown / mining_mode / prompt
+                        # safety gates inside `can_switch` still bound how
+                        # often the trigger can fire.
+                        overshot_layer = len(new_deeper_seen) > 0
                         can_switch = (
                             mining_mode == "dig_down"
                             and current_sg_prompt == temp_sg_prompt

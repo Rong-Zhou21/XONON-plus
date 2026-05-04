@@ -2180,6 +2180,181 @@ class CustomEnvWrapper(gym.Wrapper):
         self._record_recovery("raise_to_ore_band", result)
         return result
 
+    # ---------------------------------------------------------------- #
+    #  Scripted forward tunnel (post-pillar-up safety)                  #
+    # ---------------------------------------------------------------- #
+
+    def _mined_block_count(self) -> int:
+        """Total Minecraft mined-block stat across all item types."""
+        ledger = self.cache.get("resource_ledger") or {}
+        mined = ledger.get("mined_blocks") or {}
+        try:
+            return sum(int(v) for v in mined.values() if isinstance(v, (int, float)))
+        except Exception:
+            return 0
+
+    def dig_forward_blocks(
+        self,
+        n_blocks: int = 3,
+        max_steps: int = 240,
+        max_steps_per_block: int = 80,
+        prefer_pickaxe: bool = True,
+    ) -> Dict[str, Any]:
+        """Scripted: mine ``n_blocks`` straight ahead at the current Y.
+
+        Used as a safety net immediately after ``raise_to_height`` so the
+        agent has a 3-block tunnel into the target ore band before the
+        STEVE-1 "dig forward and mine X" prompt takes over.
+
+        Bypasses STEVE-1 (uses ``raw_step``). Pitch is held at ~0 (look
+        horizontal) and ``attack`` + ``forward`` are pressed each tick.
+        Block-break detection uses the Minecraft mine-block stat delta
+        exposed via the resource ledger.
+
+        Args:
+            n_blocks: how many forward blocks to mine.
+            max_steps: total tick budget.
+            max_steps_per_block: tick budget per block.
+            prefer_pickaxe: switch to best pickaxe via ``find_best_pickaxe``
+                before digging.
+
+        Returns:
+            dict {success, blocks_dug, steps_used, reason, start_x,
+                  start_y, start_z, end_x, end_y, end_z}.
+        """
+        loc = (self.cache.get("info") or {}).get("location_stats", {}) or {}
+
+        def _scalar(key: str, default: float) -> float:
+            try:
+                return float(np.asarray(loc.get(key, default)).reshape(-1)[0])
+            except Exception:
+                return float(default)
+
+        start_x = _scalar("xpos", 0.0)
+        start_y = _scalar("ypos", 0.0)
+        start_z = _scalar("zpos", 0.0)
+
+        steps_used = 0
+        blocks_dug = 0
+
+        if self.logger:
+            self.logger.info(
+                f"[dig_forward_blocks] start: n={n_blocks} "
+                f"pos=({start_x:.1f},{start_y:.1f},{start_z:.1f})"
+            )
+
+        # Equip best pickaxe (mirrors find_best_pickaxe used elsewhere).
+        if prefer_pickaxe:
+            try:
+                slot = self.find_best_pickaxe()
+            except Exception:
+                slot = None
+            if slot:
+                a_eq = self.env.noop_action()
+                a_eq[slot] = np.array(1)
+                self.raw_step(a_eq)
+                steps_used += 1
+
+        # Phase 1: pitch back to ~0 (look horizontal).
+        for _ in range(15):
+            try:
+                cur_pitch = float(
+                    np.asarray(
+                        (self.cache.get("info") or {}).get("location_stats", {}).get(
+                            "pitch", 0
+                        )
+                    ).reshape(-1)[0]
+                )
+            except Exception:
+                cur_pitch = 0.0
+            if abs(cur_pitch) < 5.0:
+                break
+            a = self.env.noop_action()
+            delta = max(min(-cur_pitch, 12.0), -12.0)
+            a["camera"] = np.array([delta, 0])
+            self.raw_step(a)
+            steps_used += 1
+
+        # Phase 2: per block, hold attack + forward until mine_block stat
+        # increments, then move on to next block.
+        per_block_initial = self._mined_block_count()
+        reason = "ok"
+        while blocks_dug < int(n_blocks) and steps_used < int(max_steps):
+            per_block_steps = 0
+            mined_at_block_start = self._mined_block_count()
+            broke_one = False
+            while (
+                per_block_steps < int(max_steps_per_block)
+                and steps_used < int(max_steps)
+            ):
+                a = self.env.noop_action()
+                a["attack"] = np.array(1)
+                a["forward"] = np.array(1)
+                # Re-equip pickaxe each tick is unnecessary; raw_step's
+                # built-in find_best_pickaxe path runs only via step(),
+                # not raw_step(). The single equip we did above suffices.
+                # Keep pitch nudge in case agent's view drifted.
+                try:
+                    cur_pitch = float(
+                        np.asarray(
+                            (self.cache.get("info") or {}).get("location_stats", {}).get(
+                                "pitch", 0
+                            )
+                        ).reshape(-1)[0]
+                    )
+                except Exception:
+                    cur_pitch = 0.0
+                if abs(cur_pitch) > 6.0:
+                    a["camera"] = np.array(
+                        [max(min(-cur_pitch, 6.0), -6.0), 0]
+                    )
+                self.raw_step(a)
+                steps_used += 1
+                per_block_steps += 1
+                if self._mined_block_count() > mined_at_block_start:
+                    blocks_dug += 1
+                    broke_one = True
+                    break
+            if not broke_one:
+                reason = "stuck_no_block_break"
+                break
+
+        end_loc = (self.cache.get("info") or {}).get("location_stats", {}) or {}
+
+        def _end_scalar(key: str) -> float:
+            try:
+                return float(np.asarray(end_loc.get(key, 0.0)).reshape(-1)[0])
+            except Exception:
+                return 0.0
+
+        end_x, end_y, end_z = _end_scalar("xpos"), _end_scalar("ypos"), _end_scalar("zpos")
+        if blocks_dug >= int(n_blocks):
+            reason = "reached_target"
+        elif steps_used >= int(max_steps):
+            reason = "step_budget_exhausted"
+
+        result = {
+            "success": blocks_dug >= int(n_blocks),
+            "blocks_dug": blocks_dug,
+            "steps_used": steps_used,
+            "reason": reason,
+            "start_x": start_x,
+            "start_y": start_y,
+            "start_z": start_z,
+            "end_x": end_x,
+            "end_y": end_y,
+            "end_z": end_z,
+            "mined_total_delta": self._mined_block_count() - per_block_initial,
+        }
+        self._record_recovery("dig_forward_blocks", result)
+        if self.logger:
+            self.logger.info(
+                f"[dig_forward_blocks] done: blocks_dug={blocks_dug}/{n_blocks} "
+                f"steps_used={steps_used} reason={reason} "
+                f"end=({end_x:.1f},{end_y:.1f},{end_z:.1f})"
+            )
+        return result
+
     def _record_recovery(self, name: str, payload: Dict[str, Any]) -> None:
         events = self._control_state.setdefault("recovery_events", {})
         log = events.setdefault(name, [])
