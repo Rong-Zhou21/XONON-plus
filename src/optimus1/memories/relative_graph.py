@@ -405,7 +405,13 @@ class KnowledgeGraph:
         while not q.empty():
             cur = q.get()
             res.append(cur)
-            for k in sub_graph[cur]:
+            # Some items appear as children in the recipe DAG but never
+            # as keys (raw materials like iron_ore that have no recipe
+            # to recursively decompose into). Treat such leaves as
+            # having no children rather than raising KeyError, which
+            # used to crash mid-task on activator_rail / boots / leggings
+            # right after a smelt-iron sub-goal completed.
+            for k in sub_graph.get(cur, []):
                 in_degree[k] -= 1
                 if in_degree[k] == 0 and k != "":
                     q.put(k)

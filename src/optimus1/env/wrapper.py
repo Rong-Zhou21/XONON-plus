@@ -1345,6 +1345,7 @@ class CustomEnvWrapper(gym.Wrapper):
     ) -> None:
         previous_health = self._control_state.get("last_health")
         previous_position = self._control_state.get("last_position")
+        previous_is_alive = self._control_state.get("last_is_alive")
         life_stats = observation.get("life_stats", {})
         self.cache["last_life_stats"] = life_stats
         loc = observation.get("location_stats", {})
@@ -1361,14 +1362,45 @@ class CustomEnvWrapper(gym.Wrapper):
             pass
         health = self._life_stat_number(life_stats, ("life", "health"), 20.0)
         self._control_state["last_health"] = health
-        if (
+        # Track is_alive in addition to health: lava deals enough damage
+        # in one tick to skip past the previous_health <= 2 frame, so a
+        # health-only detector would miss lava deaths and the planner
+        # would never reset after respawn. is_alive flips False -> True
+        # cleanly across any respawn, regardless of damage source.
+        is_alive_raw = life_stats.get("is_alive", 1)
+        try:
+            is_alive = bool(np.asarray(is_alive_raw).reshape(-1)[0])
+        except Exception:
+            is_alive = True
+        self._control_state["last_is_alive"] = is_alive
+
+        # Two independent death-respawn detectors (any one fires a reset):
+        #
+        #   (a) Health-based: previous_health <= 2, current >= 19, with
+        #       a position jump > XENON_RESPAWN_POSITION_JUMP. Catches
+        #       gradual deaths (drowning, fall, mob) where we observed a
+        #       low-health frame.
+        #
+        #   (b) is_alive transition: last frame had is_alive False, this
+        #       frame is_alive True. Catches single-tick fatal damage —
+        #       most importantly lava — where health goes 20 -> 0 -> 20
+        #       fast enough that no <=2 frame is observed.
+        #
+        # Either path resets control state and requests a STEVE-1 policy
+        # reset so the planner re-issues the current sub-goal cleanly.
+        respawn_health = (
             previous_health is not None
             and pos is not None
             and previous_position is not None
             and health >= 19.0
             and float(previous_health) <= 2.0
             and self._position_jump(previous_position, pos) > float(os.environ.get("XENON_RESPAWN_POSITION_JUMP", "6.0"))
-        ):
+        )
+        respawn_is_alive = (
+            previous_is_alive is False
+            and is_alive is True
+        )
+        if respawn_health or respawn_is_alive:
             self._control_state["attack_hold"] = 0
             self._control_state["escape_ticks"] = 0
             self._control_state["tunnel_recovery_ticks"] = 0
@@ -1382,9 +1414,10 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["policy_reset_requested"] = True
             self._control_state["recovery_events"]["respawn_reset"] += 1
             self.cache["position_window"].clear()
+            reason = "is_alive_transition" if respawn_is_alive else "health_low_to_full"
             self.logger.info(
-                "Detected death/respawn transition; clearing low-level control state "
-                "and requesting STEVE-1 policy reset."
+                f"Detected death/respawn transition (reason={reason}); "
+                f"clearing low-level control state and requesting STEVE-1 policy reset."
             )
         deltas = self._record_resource_ledger(observation)
         if self._is_surface_resource_acquisition(goal, prompt):

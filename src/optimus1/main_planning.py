@@ -952,6 +952,7 @@ def _maybe_relevel_for_overshoot(
         "blocks_used=%s reason=%s prep_action=%s",
         wrapper_ore,
         result.get("success"),
+        float(result.get("end_y", 0.0)),
         float(result.get("dy", 0.0)),
         result.get("blocks_used"),
         result.get("reason"),
@@ -1396,7 +1397,29 @@ def new_agent_do(
                         except Exception:
                             y_overshoot = False
 
-                        should_pillar_up = overshot_layer or y_overshoot
+                        # Trigger 3 (bedrock-stuck): when the agent has dug
+                        # below an absolute Y floor (default 8, just above
+                        # bedrock at y=0-4) AND has had no mining activity
+                        # for a long time, force a pillar-up. This catches
+                        # the user's "挖到最坚硬矿石/基岩，一直挖不动" scenario
+                        # where Trigger 2 cannot fire — for diamond targets
+                        # the band_min is 1 so y < 1-5 = -4 is impossible.
+                        # The absolute floor doesn't depend on the target
+                        # band so it works for every layered subgoal.
+                        bedrock_stuck = False
+                        try:
+                            absolute_floor_y = float(os.environ.get("XENON_BEDROCK_FLOOR_Y", "8.0"))
+                            no_activity_required = int(os.environ.get("XENON_BEDROCK_STAGNANT_TICKS", "1200"))
+                            if (
+                                cur_y_value is not None
+                                and cur_y_value <= absolute_floor_y
+                                and (env.num_steps - mining_last_activity_step) >= no_activity_required
+                            ):
+                                bedrock_stuck = True
+                        except Exception:
+                            bedrock_stuck = False
+
+                        should_pillar_up = overshot_layer or y_overshoot or bedrock_stuck
                         can_switch = (
                             mining_mode == "dig_down"
                             and current_sg_prompt == temp_sg_prompt
@@ -1427,6 +1450,11 @@ def new_agent_do(
                                     f"y_overshoot(cur_y={cur_y_value:.1f}, "
                                     f"band_min={target_band_min}, "
                                     f"margin={os.environ.get('XENON_OVERSHOOT_Y_MARGIN', '5')})"
+                                )
+                            if bedrock_stuck:
+                                trigger_reason.append(
+                                    f"bedrock_stuck(cur_y={cur_y_value:.1f}, "
+                                    f"no_activity_ticks={env.num_steps - mining_last_activity_step})"
                                 )
                             logger.info(
                                 "Mining direction adjustment: switching STEVE-1 prompt to "
