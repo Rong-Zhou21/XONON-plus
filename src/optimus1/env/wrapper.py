@@ -592,8 +592,94 @@ class CustomEnvWrapper(gym.Wrapper):
             "mine_block": mine_delta,
         }
 
+    # Items whose count NEVER decreases (tools, equipment, blocks the
+    # agent never crafts back into something else). For these the
+    # historical "max-ever-observed" / "ever-collected" / "ever-picked-up"
+    # ledger remains a useful fallback when the live inventory query is
+    # briefly stale right after a craft.
+    #
+    # The complementary set — raw consumables (logs, planks, sticks,
+    # cobblestone, ores, ingots) — gets used up by subsequent crafts, so
+    # checking historical "max-ever-observed" against the goal count
+    # would trivially say "yes" forever once the agent has briefly held
+    # any quantity. That trips the planner into an infinite re-plan
+    # loop where every "go fetch N more logs" sub-goal claims success
+    # without the agent doing anything. Those items must consult the
+    # *current* inventory only.
+    _LEDGER_FALLBACK_GOAL_ITEMS: frozenset[str] = frozenset({
+        "crafting_table",
+        "furnace",
+        "blast_furnace",
+        "smoker",
+        "chest",
+        "hopper",
+        "ladder",
+        "torch",
+        "bowl",
+        "shears",
+        "stonecutter",
+        "tripwire_hook",
+        "wooden_pickaxe",
+        "stone_pickaxe",
+        "iron_pickaxe",
+        "golden_pickaxe",
+        "diamond_pickaxe",
+        "wooden_axe",
+        "stone_axe",
+        "iron_axe",
+        "golden_axe",
+        "diamond_axe",
+        "wooden_shovel",
+        "stone_shovel",
+        "iron_shovel",
+        "golden_shovel",
+        "diamond_shovel",
+        "wooden_hoe",
+        "stone_hoe",
+        "iron_hoe",
+        "golden_hoe",
+        "diamond_hoe",
+        "wooden_sword",
+        "stone_sword",
+        "iron_sword",
+        "golden_sword",
+        "diamond_sword",
+    })
+
+    def _ledger_fallback_allowed(self, goal: tuple[str, int] | None) -> bool:
+        """Return True only when the goal item is non-consumable.
+
+        See `_LEDGER_FALLBACK_GOAL_ITEMS` for the rationale. Set
+        `XENON_LEDGER_FALLBACK_ALL=1` to restore the legacy behaviour
+        (ledger fallback for every goal) as an A/B knob.
+        """
+        if goal is None:
+            return False
+        if os.environ.get("XENON_LEDGER_FALLBACK_ALL", "0") == "1":
+            return True
+        try:
+            item = str(goal[0]).lower().replace(" ", "_")
+        except Exception:
+            return False
+        if item in self._LEDGER_FALLBACK_GOAL_ITEMS:
+            return True
+        if item.endswith("_pickaxe") or item.endswith("_axe") \
+                or item.endswith("_shovel") or item.endswith("_hoe") \
+                or item.endswith("_sword"):
+            return True
+        return False
+
     def _ledger_satisfies_goal(self, goal: tuple[str, int] | None) -> bool:
         if goal is None:
+            return False
+        # Consumable raw materials (logs, planks, sticks, cobblestone,
+        # ores, ingots, ...) MUST go through the live-inventory check
+        # only. The historical ledger only counts up, never down, so it
+        # would falsely report "satisfied" the moment the agent ever
+        # held any quantity — even after it crafted them away — which
+        # caused infinite re-plan loops in the chest / iron / golden
+        # tasks.
+        if not self._ledger_fallback_allowed(goal):
             return False
         expanded_items = self._goal_item_names(goal)
         number = self._goal_quantity(goal)
