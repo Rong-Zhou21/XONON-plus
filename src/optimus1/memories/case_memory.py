@@ -79,6 +79,13 @@ class CaseBasedMemory:
         os.makedirs(self.case_dir_path, exist_ok=True)
         self.case_file_path = os.path.join(self.case_dir_path, "cases.json")
         self.bootstrap_marker_path = os.path.join(self.case_dir_path, "legacy_bootstrap.done")
+        # On-disk cache of `_case_embeddings` keyed by a hash of the case
+        # similarity_text list. Encoding all 4000+ cases via the BERT
+        # encoder each task start costs ~15s (140 batches at ~10it/s);
+        # the cache reduces that to a single torch.load + a hash check.
+        self.case_embeddings_cache_path = os.path.join(
+            self.case_dir_path, "cases_embeddings.pt"
+        )
 
         self.plan_dir_save_path = os.path.join(
             self.root_path, self.cfg["memory"]["decomposed_plan"]["save_path"]
@@ -158,8 +165,71 @@ class CaseBasedMemory:
         texts = [case.get("similarity_text", "") for case in cases]
         if not texts:
             return None
-        embeddings = torch.tensor(self.bert_encoder.encode(texts)).float().to(DEVICE)
-        return F.normalize(embeddings, p=2, dim=1)
+
+        # Disk-cached fast path. The cache is keyed by a SHA-256 of the
+        # joined similarity_text list. If the hash matches, we reuse
+        # the cached tensor and skip the ~15s SentenceTransformer pass
+        # entirely. The cache file is shared across processes by
+        # `flock`-guarded open since concurrent main_planning runs may
+        # try to write at the same time.
+        import hashlib
+        joined = "\u241e".join(texts).encode("utf-8")  # \u241e = unit separator
+        cur_hash = hashlib.sha256(joined).hexdigest()
+        cache_path = getattr(self, "case_embeddings_cache_path", None)
+        use_cache = cache_path is not None and os.environ.get("XENON_DISABLE_EMBEDDING_CACHE", "0") != "1"
+        if use_cache and os.path.exists(cache_path):
+            try:
+                with open(cache_path, "rb") as fp:
+                    fcntl.flock(fp, fcntl.LOCK_SH)
+                    try:
+                        cached = torch.load(fp, map_location=DEVICE)
+                    finally:
+                        fcntl.flock(fp, fcntl.LOCK_UN)
+                if (
+                    isinstance(cached, dict)
+                    and cached.get("hash") == cur_hash
+                    and isinstance(cached.get("embeddings"), torch.Tensor)
+                    and cached["embeddings"].shape[0] == len(texts)
+                ):
+                    if self.logger:
+                        self.logger.info(
+                            f"[case_memory] reusing cached embeddings "
+                            f"({len(texts)} cases, hash={cur_hash[:12]})"
+                        )
+                    return cached["embeddings"].to(DEVICE)
+            except Exception as exc:
+                if self.logger:
+                    self.logger.warning(
+                        f"[case_memory] embedding cache read failed: {exc}; recomputing"
+                    )
+
+        embeddings = torch.tensor(
+            self.bert_encoder.encode(texts, show_progress_bar=False)
+        ).float().to(DEVICE)
+        embeddings = F.normalize(embeddings, p=2, dim=1)
+
+        if use_cache:
+            try:
+                tmp_path = cache_path + ".tmp"
+                with open(tmp_path, "wb") as fp:
+                    fcntl.flock(fp, fcntl.LOCK_EX)
+                    try:
+                        torch.save({"hash": cur_hash, "embeddings": embeddings.cpu()}, fp)
+                    finally:
+                        fcntl.flock(fp, fcntl.LOCK_UN)
+                os.replace(tmp_path, cache_path)
+                if self.logger:
+                    self.logger.info(
+                        f"[case_memory] wrote embedding cache "
+                        f"({len(texts)} cases, hash={cur_hash[:12]})"
+                    )
+            except Exception as exc:
+                if self.logger:
+                    self.logger.warning(
+                        f"[case_memory] embedding cache write failed: {exc}"
+                    )
+
+        return embeddings
 
     def _refresh_embeddings(self) -> None:
         self._case_embeddings = self._encode_cases(self.cases)

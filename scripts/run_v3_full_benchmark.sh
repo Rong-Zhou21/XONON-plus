@@ -66,7 +66,7 @@ fi
 GPU="${GPU:-0}"
 SERVER_PORT="${SERVER_PORT:-9100}"
 SEED="${SEED:-0}"
-TASK_COOLDOWN_SEC="${TASK_COOLDOWN_SEC:-10}"   # 每任务结束后清进程的等待秒数
+TASK_COOLDOWN_SEC="${TASK_COOLDOWN_SEC:-3}"    # 每任务结束后清进程的等待秒数（10→3，节省 67×7s≈8min）
 SKIP_DONE="${SKIP_DONE:-1}"                    # 1=跳过 exp_results/v4 已有的 exp_num
 
 # ===== Perception-Action Suite（这一轮新增的"环境感知 + 行动"统一开关）=====

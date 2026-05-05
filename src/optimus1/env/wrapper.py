@@ -227,6 +227,7 @@ class CustomEnvWrapper(gym.Wrapper):
             "tunnel_recovery_ticks": 0,
             "surface_search_ticks": 0,
             "surface_turn_around_ticks": 0,
+            "surface_stuck_ticks": 0,
             "collect_drop_ticks": 0,
             "surface_log_jump_lock_ticks": 0,
             "resource_stagnant_ticks": 0,
@@ -952,34 +953,91 @@ class CustomEnvWrapper(gym.Wrapper):
         prompt: str | None,
     ) -> bool:
         """Trigger a 180-degree yaw turn when surface exploration is
-        horizontally stagnant (agent is wedged against terrain).
+        horizontally stagnant — agent is wedged against terrain.
 
-        Master gate: managed by PerceptionActionSuite (default ON).
-        Only fires during surface (chop / find-a-tree) mode and never
-        while the agent is actively attacking, so it does not cancel
-        a successful tree-chopping engagement.
+        Two-tier responsiveness so the agent reacts promptly when
+        actually stuck on a hill but never while actually chopping a
+        tree:
+
+        Primary signal — per-tick stuck counter
+            Increment ``surface_stuck_ticks`` on every tick where the
+            agent has movement intent (forward/back/left/right/jump/
+            sprint pressed) AND the recent xz-position delta is below
+            ``XENON_SURFACE_TURNAROUND_HORIZONTAL_DELTA`` (default 0.6).
+            Fire when the counter reaches
+            ``XENON_SURFACE_TURNAROUND_STUCK_TICKS`` (default 60).
+
+        Secondary safety — stale goal progress
+            Even after the counter is full, do not fire unless no
+            goal-relevant inventory delta has happened for at least
+            ``XENON_SURFACE_TURNAROUND_STALE_TICKS`` (default 100)
+            ticks. Prevents firing right after a successful log pickup.
+
+        Hard guards (counter is reset to 0, never accumulates):
+        * ``button_down(attack)`` — agent is actively chopping
+        * ``attack_hold > 0`` — agent is in the post-attack hold window
+        * ``num_steps - last_surface_attack_step < ATTACK_RECENT`` —
+          between adjacent swings during a real chop sequence
+          (default 30 ticks ≈ 1.5 s)
+        * not in surface mode — no leakage across mode changes
+        * resource ledger already considers the goal satisfied
+        * within ``cooldown`` ticks of the previous turn-around
+
+        Master gate: ``XENON_ENABLE_SURFACE_TURNAROUND`` (default ON
+        via PerceptionActionSuite).
         """
         if os.environ.get("XENON_ENABLE_SURFACE_TURNAROUND", "1") != "1":
             return False
+        # Out of surface mode — clear the counter so it does not leak
+        # state into the next surface session.
         if not self._is_surface_resource_acquisition(goal, prompt):
+            self._control_state["surface_stuck_ticks"] = 0
             return False
-        if self._button_down(action, "attack"):
+        # Hard guard: actively attacking right now.
+        if self._button_down(action, "attack") or int(self._control_state.get("attack_hold", 0)) > 0:
+            self._control_state["surface_stuck_ticks"] = 0
             return False
-        if int(self._control_state.get("attack_hold", 0)) > 0:
+        # Soft guard: attack was pressed in the recent past — we are in
+        # a between-swings frame of an ongoing chop sequence. Real
+        # chopping cycles attack on and off as the policy alternates;
+        # without this guard the counter would accumulate during those
+        # off frames and falsely trigger a turn-around mid-chop.
+        attack_recent = int(os.environ.get("XENON_SURFACE_TURNAROUND_ATTACK_RECENT_TICKS", "30"))
+        if self.num_steps - int(self.cache.get("last_surface_attack_step", -1000000)) < attack_recent:
+            self._control_state["surface_stuck_ticks"] = 0
             return False
+        # Cooldown after previous turn-around.
         if self.num_steps - int(self.cache.get("last_surface_turn_around_step", -1000000)) < int(
             os.environ.get("XENON_SURFACE_TURNAROUND_COOLDOWN_TICKS", "200")
         ):
             return False
         if self._ledger_satisfies_goal(goal):
+            self._control_state["surface_stuck_ticks"] = 0
             return False
+
+        # Per-tick stuck counter ----------------------------------
         horizontal, _ = self._position_delta()
+        horizontal_thresh = float(os.environ.get(
+            "XENON_SURFACE_TURNAROUND_HORIZONTAL_DELTA", "0.6"
+        ))
         # _position_delta returns 999.0 sentinel when the window is not
-        # full yet; that path is correctly excluded by the threshold check.
-        if horizontal >= float(os.environ.get("XENON_SURFACE_TURNAROUND_HORIZONTAL_DELTA", "1.0")):
+        # full yet; that case is correctly excluded by the threshold.
+        if self._movement_intent(action) and horizontal < horizontal_thresh:
+            self._control_state["surface_stuck_ticks"] = int(
+                self._control_state.get("surface_stuck_ticks", 0)
+            ) + 1
+        else:
+            self._control_state["surface_stuck_ticks"] = 0
+
+        stuck_required = int(os.environ.get(
+            "XENON_SURFACE_TURNAROUND_STUCK_TICKS", "60"
+        ))
+        if self._control_state["surface_stuck_ticks"] < stuck_required:
             return False
+        # Secondary safety: don't disturb a chop that is producing
+        # progress (logs going up).
         return self._stale_goal_progress_ticks() >= int(
-            os.environ.get("XENON_SURFACE_TURNAROUND_STALE_TICKS", "120")
+            os.environ.get("XENON_SURFACE_TURNAROUND_STALE_TICKS", "100")
         )
 
     def _should_tunnel_recovery(self, action: Dict[str, Any], goal: tuple[str, int] | None, prompt: str | None) -> bool:
@@ -1096,6 +1154,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["tunnel_recovery_ticks"] = 0
             self._control_state["surface_search_ticks"] = 0
             self._control_state["surface_turn_around_ticks"] = 0
+            self._control_state["surface_stuck_ticks"] = 0
             self._control_state["collect_drop_ticks"] = 0
             self._control_state["last_prompt"] = prompt
             self.cache["surface_attack_streak"] = 0
@@ -1315,6 +1374,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self._control_state["tunnel_recovery_ticks"] = 0
             self._control_state["surface_search_ticks"] = 0
             self._control_state["surface_turn_around_ticks"] = 0
+            self._control_state["surface_stuck_ticks"] = 0
             self._control_state["collect_drop_ticks"] = 0
             self._control_state["surface_log_jump_lock_ticks"] = 0
             self._control_state["movement_stagnant_ticks"] = 0
