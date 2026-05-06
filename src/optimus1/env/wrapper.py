@@ -2675,10 +2675,23 @@ class CustomEnvWrapper(gym.Wrapper):
             except Exception:
                 slot = None
             if slot:
-                a_eq = self.env.noop_action()
-                a_eq[slot] = np.array(1)
-                self.raw_step(a_eq)
-                steps_used += 1
+                previous_can_change_hotbar = self.can_change_hotbar
+                self.can_change_hotbar = True
+                try:
+                    for _ in range(4):
+                        if steps_used >= int(max_steps):
+                            break
+                        a_eq = self.env.noop_action()
+                        a_eq[slot] = np.array(1)
+                        self.raw_step(a_eq)
+                        steps_used += 1
+                    if self.logger:
+                        self.logger.info(
+                            f"[dig_forward_blocks] equipped pickaxe via {slot}; "
+                            f"held={self._plain_item_type(self.status_mod.equipment)}"
+                        )
+                finally:
+                    self.can_change_hotbar = previous_can_change_hotbar
 
         # Phase 1: pitch back to ~0 (look horizontal).
         for _ in range(15):
