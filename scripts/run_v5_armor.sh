@@ -224,7 +224,13 @@ PY
     fi
 
     if [ "$should_retry" -eq 1 ]; then
-      [ -n "$RESULT_FILE" ] && rm -f "$RESULT_FILE"
+      if [ -n "$RESULT_FILE" ]; then
+        RETRY_DIR="$RESULTS_DIR/retry_failures"
+        mkdir -p "$RETRY_DIR"
+        RETRY_KEEP="$RETRY_DIR/retry${attempt}_$(basename "$RESULT_FILE")"
+        mv "$RESULT_FILE" "$RETRY_KEEP"
+        printf "       preserved retry failure result=%s\n" "$RETRY_KEEP" | tee -a "$SUMMARY_FILE"
+      fi
       attempt=$((attempt + 1))
       continue
     fi
