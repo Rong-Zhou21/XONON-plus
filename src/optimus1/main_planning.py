@@ -625,6 +625,23 @@ def _forward_mining_prompt(target_ore: str) -> str:
 
 
 PICKAXE_PRIORITY = ("diamond_pickaxe", "iron_pickaxe", "stone_pickaxe", "wooden_pickaxe")
+PICKAXE_TIER = {
+    "wooden_pickaxe": 1,
+    "stone_pickaxe": 2,
+    "iron_pickaxe": 3,
+    "diamond_pickaxe": 4,
+}
+ORE_REQUIRED_PICKAXE_TIER = {
+    "cobblestone": 1,
+    "coal": 1,
+    "coal_ore": 1,
+    "iron_ore": 2,
+    "gold_ore": 3,
+    "redstone": 3,
+    "redstone_ore": 3,
+    "diamond": 3,
+    "diamond_ore": 3,
+}
 MINE_ONLY_WAYPOINTS = {
     "cobblestone",
     "coal",
@@ -711,6 +728,12 @@ def _best_pickaxe_from_status(env_status: Dict[str, Any]) -> str:
         if counts.get(pickaxe, 0) > 0:
             return pickaxe
     return ""
+
+
+def _has_capable_pickaxe_for_target(env_status: Dict[str, Any], target_ore: str) -> bool:
+    required_tier = ORE_REQUIRED_PICKAXE_TIER.get(_normalise_ore_name(target_ore), 1)
+    best_pickaxe = _best_pickaxe_from_status(env_status)
+    return PICKAXE_TIER.get(best_pickaxe, 0) >= required_tier
 
 
 def _ensure_best_pickaxe_equipped(
@@ -1439,6 +1462,16 @@ def new_agent_do(
 
                     if mining_direction_active:
                         env_status_now = env.get_status()
+                        if not _has_capable_pickaxe_for_target(env_status_now, mining_target_ore):
+                            logger.warning(
+                                "Mining subgoal needs a better pickaxe; forcing replanning: "
+                                f"target={mining_target_ore}, inventory={env_status_now.get('inventory', {})}, "
+                                f"timestep={env.num_steps}"
+                            )
+                            subgoal = None
+                            current_sg_prompt = copy.deepcopy(temp_sg_prompt)
+                            step_waypoint_obtained = env.num_steps
+                            break
                         current_activity = _ore_activity_count(env_status_now, mining_target_ore)
                         current_available = _ore_available_count(env_status_now, mining_target_ore)
                         deeper_seen = _deeper_ores_seen(env_status_now, mining_target_ore)
