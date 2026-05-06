@@ -278,6 +278,55 @@ def _select_next_planning_waypoint(
     return parsed[0][0], parsed[0][1]
 
 
+def _pickaxe_prereq_for_mining(
+    env_status: Dict[str, Any],
+    waypoint: str,
+) -> tuple[str, int] | None:
+    waypoint_name = _normalise_waypoint_name(waypoint)
+    if waypoint_name not in MINE_ONLY_WAYPOINTS:
+        return None
+    if _has_capable_pickaxe_for_target(env_status, waypoint_name):
+        return None
+
+    required_tier = ORE_REQUIRED_PICKAXE_TIER.get(waypoint_name, 1)
+    counts = _normalised_inventory_counts(env_status)
+
+    def missing(item: str, need: int) -> int:
+        return max(0, need - int(counts.get(item, 0) or 0))
+
+    if missing("stick", 2) > 0:
+        return "stick", missing("stick", 2)
+    if missing("crafting_table", 1) > 0:
+        return "crafting_table", 1
+
+    if required_tier >= 3:
+        if counts.get("iron_ingot", 0) >= 3:
+            return "iron_pickaxe", 1
+        smeltable_iron = counts.get("iron_ingot", 0) + counts.get("iron_ore", 0)
+        if smeltable_iron >= 3 and counts.get("furnace", 0) >= 1:
+            return "iron_ingot", missing("iron_ingot", 3)
+        if counts.get("furnace", 0) < 1:
+            if counts.get("cobblestone", 0) >= 8:
+                return "furnace", 1
+            return "cobblestone", missing("cobblestone", 8)
+        if not _has_capable_pickaxe_for_target(
+            {"inventory": counts}, "iron_ore"
+        ):
+            return "stone_pickaxe", 1
+        return "iron_ore", max(1, 3 - smeltable_iron)
+
+    if required_tier == 2:
+        if counts.get("cobblestone", 0) >= 3:
+            return "stone_pickaxe", 1
+        if not _has_capable_pickaxe_for_target(
+            {"inventory": counts}, "cobblestone"
+        ):
+            return "wooden_pickaxe", 1
+        return "cobblestone", missing("cobblestone", 3)
+
+    return "wooden_pickaxe", 1
+
+
 def make_plan(
     original_final_goal: str,
     env_status: dict,
@@ -298,6 +347,15 @@ def make_plan(
     logger.info(f"In make_plan")
     logger.info(f"wp_list_str: {wp_list_str}")
     wp, wp_num = _select_next_planning_waypoint(wp_list_str, logger, inventory)
+    pickaxe_prereq = _pickaxe_prereq_for_mining(env_status, wp)
+    if pickaxe_prereq is not None:
+        prereq_wp, prereq_num = pickaxe_prereq
+        logger.warning(
+            "Planner selected mining waypoint without a capable pickaxe; "
+            f"using prerequisite waypoint {prereq_wp}:{prereq_num} before {wp}. "
+            f"inventory={inventory}"
+        )
+        wp, wp_num = prereq_wp, prereq_num
 
     state_snapshot = action_memory.create_state_snapshot(env_status, obs, cfg)
     case_decision = action_memory.select_case_decision(
