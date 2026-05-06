@@ -327,6 +327,68 @@ def _pickaxe_prereq_for_mining(
     return "wooden_pickaxe", 1
 
 
+STONE_TOOL_MATERIALS = ("cobblestone", "blackstone", "cobbled_deepslate")
+STONE_TOOL_MATERIAL_NEEDS = {
+    "stone_pickaxe": 3,
+    "stone_axe": 3,
+    "stone_hoe": 2,
+    "stone_shovel": 1,
+    "stone_sword": 2,
+    "furnace": 8,
+}
+
+
+def _stone_tool_material_count(counts: Dict[str, int]) -> int:
+    return sum(int(counts.get(item, 0) or 0) for item in STONE_TOOL_MATERIALS)
+
+
+def _crafting_prereq_for_waypoint(
+    env_status: Dict[str, Any],
+    waypoint: str,
+) -> tuple[str, int] | None:
+    waypoint_name = _normalise_waypoint_name(waypoint)
+    material_need = STONE_TOOL_MATERIAL_NEEDS.get(waypoint_name)
+    if material_need is None:
+        return None
+
+    counts = _normalised_inventory_counts(env_status)
+
+    def missing(item: str, need: int) -> int:
+        return max(0, need - int(counts.get(item, 0) or 0))
+
+    if waypoint_name != "furnace":
+        if missing("stick", 2) > 0:
+            return "stick", missing("stick", 2)
+        if missing("crafting_table", 1) > 0:
+            return "crafting_table", 1
+
+    valid_stone_materials = _stone_tool_material_count(counts)
+    if valid_stone_materials >= material_need:
+        return None
+
+    if not _has_capable_pickaxe_for_target({"inventory": counts}, "cobblestone"):
+        return "wooden_pickaxe", 1
+
+    return "cobblestone", max(1, material_need - valid_stone_materials)
+
+
+def _planning_prereq_for_waypoint(
+    env_status: Dict[str, Any],
+    waypoint: str,
+) -> tuple[str, int, str] | None:
+    craft_prereq = _crafting_prereq_for_waypoint(env_status, waypoint)
+    if craft_prereq is not None:
+        prereq_wp, prereq_num = craft_prereq
+        return prereq_wp, prereq_num, "crafting_material"
+
+    mining_prereq = _pickaxe_prereq_for_mining(env_status, waypoint)
+    if mining_prereq is not None:
+        prereq_wp, prereq_num = mining_prereq
+        return prereq_wp, prereq_num, "mining_pickaxe"
+
+    return None
+
+
 def make_plan(
     original_final_goal: str,
     env_status: dict,
@@ -347,15 +409,24 @@ def make_plan(
     logger.info(f"In make_plan")
     logger.info(f"wp_list_str: {wp_list_str}")
     wp, wp_num = _select_next_planning_waypoint(wp_list_str, logger, inventory)
-    pickaxe_prereq = _pickaxe_prereq_for_mining(env_status, wp)
-    if pickaxe_prereq is not None:
-        prereq_wp, prereq_num = pickaxe_prereq
+    prereq_hops: list[tuple[str, int, str, str]] = []
+    for _ in range(4):
+        prereq = _planning_prereq_for_waypoint(env_status, wp)
+        if prereq is None:
+            break
+        prereq_wp, prereq_num, reason = prereq
+        prereq_hops.append((prereq_wp, prereq_num, reason, wp))
         logger.warning(
-            "Planner selected mining waypoint without a capable pickaxe; "
-            f"using prerequisite waypoint {prereq_wp}:{prereq_num} before {wp}. "
-            f"inventory={inventory}"
+            "Planner selected waypoint before prerequisite was ready; "
+            f"using {prereq_wp}:{prereq_num} before {wp}. "
+            f"reason={reason} inventory={inventory}"
         )
         wp, wp_num = prereq_wp, prereq_num
+    if len(prereq_hops) >= 4:
+        logger.warning(
+            "Stopped prerequisite expansion after 4 hops; "
+            f"current waypoint={wp}:{wp_num}, hops={prereq_hops}"
+        )
 
     state_snapshot = action_memory.create_state_snapshot(env_status, obs, cfg)
     case_decision = action_memory.select_case_decision(
