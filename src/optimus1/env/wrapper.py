@@ -2273,17 +2273,42 @@ class CustomEnvWrapper(gym.Wrapper):
         # Cap quantity at 64 (Minecraft stack limit) so /replaceitem
         # accepts the count argument cleanly.
         qty = max(1, min(int(qty), 64))
+
+        def _refresh_inventory(ticks: int = 3) -> None:
+            for _ in range(max(1, ticks)):
+                try:
+                    self.raw_step(self.env.noop_action())
+                except Exception:
+                    break
+
+        def _hotbar_slot_contains(slot_index: int, block_name: str) -> bool:
+            try:
+                inventory = self.cache["info"].get("plain_inventory", {})
+                item = inventory.get(slot_index) or inventory.get(str(slot_index)) or {}
+            except Exception:
+                return False
+            if not isinstance(item, dict):
+                return False
+            return (
+                self._plain_item_type(item.get("type", "")) == block_name
+                and self._plain_item_quantity(item.get("quantity", 0)) > 0
+            )
+
         cmd_put = (
-            f"/replaceitem entity @s slot.hotbar.{target_slot} "
+            f"/replaceitem entity @s hotbar.{target_slot} "
             f"minecraft:{any_block} {qty}"
         )
         cmd_clear = (
-            f"/replaceitem entity @s slot.inventory.{any_slot - 9} "
+            f"/replaceitem entity @s inventory.{any_slot - 9} "
             f"minecraft:air 1"
         )
         try:
             self.env.execute_cmd(cmd_put)
-            self.env.execute_cmd(cmd_clear)
+            _refresh_inventory(ticks=4)
+            swap_visible = _hotbar_slot_contains(target_slot, any_block)
+            if swap_visible:
+                self.env.execute_cmd(cmd_clear)
+                _refresh_inventory(ticks=1)
         except Exception as exc:
             if self.logger:
                 self.logger.warning(
@@ -2292,12 +2317,14 @@ class CustomEnvWrapper(gym.Wrapper):
                 )
             return None, None, "swap_failed"
 
-        # Refresh status / cache so the next pillar_up sees the new
-        # inventory layout. A single noop step suffices.
-        try:
-            self.raw_step(self.env.noop_action())
-        except Exception:
-            pass
+        if not swap_visible:
+            if self.logger:
+                self.logger.warning(
+                    f"[pillar_up_smart] /replaceitem did not become visible: "
+                    f"cmd_put={cmd_put!r} target_hotbar={target_slot} "
+                    f"block={any_block}"
+                )
+            return None, None, "swap_failed_not_visible"
 
         if self.logger:
             self.logger.info(
