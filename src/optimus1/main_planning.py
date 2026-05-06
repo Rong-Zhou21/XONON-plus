@@ -1114,6 +1114,34 @@ def new_agent_do(
                     break
 
                 subgoal_done = False
+                try:
+                    waypoint_num_now = _ore_required_count((subgoal or {}).get("goal"))
+                    env_status_now = env.get_status()
+                    if env._check_goal_inventory_state(
+                        env_status_now.get("inventory", {}),
+                        str(waypoint),
+                        waypoint_num_now,
+                    ):
+                        logger.info(
+                            "Skipping already-satisfied waypoint before execution: "
+                            f"waypoint={waypoint}, need={waypoint_num_now}, "
+                            f"inventory={env_status_now.get('inventory', {})}"
+                        )
+                        action_memory.save_success_failure(
+                            waypoint,
+                            language_action_str,
+                            is_success=True,
+                            outcome_status="success",
+                            env_status=env_status_now,
+                        )
+                        completed_waypoints.append(waypoint)
+                        subgoal = None
+                        continue
+                except Exception as exc:
+                    logger.warning(
+                        f"Pre-execution waypoint satisfaction check failed for "
+                        f"{waypoint}: {exc}"
+                    )
                 logger.info(f"After make_plan()")
                 logger.info(f"[yellow]Waypoint: {waypoint}, Subgoal: {subgoal}[/yellow]")
 
