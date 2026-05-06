@@ -1863,14 +1863,29 @@ class CustomEnvWrapper(gym.Wrapper):
         last_y = start_y
         stuck_count = 0
 
-        # Phase 1: orient pitch downward (cumulative deltas, ~10°/step)
-        # MineRL camera = [pitch_delta, yaw_delta]; positive pitch tilts down.
-        for _ in range(15):
+        # Tunables exposed via env vars so we can iterate without code changes.
+        max_stuck_per_cycle = int(os.environ.get("XENON_PILLAR_MAX_STUCK", "8"))
+        place_use_ticks = int(os.environ.get("XENON_PILLAR_USE_TICKS", "3"))
+        post_jump_settle = int(os.environ.get("XENON_PILLAR_SETTLE_TICKS", "4"))
+
+        def _hold_pitch_down(a, target_pitch=88.0, max_step=6.0):
+            try:
+                cp = float(self.cache["info"]["location_stats"].get("pitch", 0))
+            except Exception:
+                cp = 0.0
+            if cp < target_pitch:
+                a["camera"] = np.array([min(target_pitch - cp, max_step), 0])
+
+        # Phase 1: orient pitch fully downward. Need a strong commitment to
+        # ~88-90° before the first placement; otherwise `use` lands the block
+        # on the side of the floor instead of its top face. We push pitch
+        # higher than the original 80° threshold and verify before exiting.
+        for _ in range(20):
             try:
                 cur_pitch = float(self.cache["info"]["location_stats"].get("pitch", 0))
             except Exception:
                 cur_pitch = 0.0
-            if cur_pitch >= 80.0:
+            if cur_pitch >= 88.0:
                 break
             action = self.env.noop_action()
             delta = max(min(90.0 - cur_pitch, 12.0), -12.0)
@@ -1878,14 +1893,45 @@ class CustomEnvWrapper(gym.Wrapper):
             self.raw_step(action)
             steps_used += 1
 
-        # Phase 2: pillar cycle. Each cycle is 5 ticks:
-        #   t0: select hotbar slot + jump (no use yet -- the agent must leave
-        #       the floor block before placing, otherwise the placement target
-        #       is occupied by the agent and the block won't be placed).
-        #   t1: rising; keep slot selected, no use yet.
-        #   t2: at jump peak; emit `use` so the block is placed on top of the
-        #       original floor block (which is now beneath the agent).
-        #   t3, t4: noop -- let the agent land on the freshly placed block.
+        # Phase 1b: hotbar pre-confirmation. Hold the placeable hotbar key
+        # for a couple ticks BEFORE jumping so the held item is definitely
+        # the placeable block when `use` fires. Skipping this caused
+        # blocks_used=1 dy=0 stuck_no_progress in the V5 armor run.
+        slot, block_name = self._find_placeable_block_slot(prefer)
+        if slot is None:
+            res = {
+                "success": False,
+                "blocks_used": 0,
+                "dy": 0.0,
+                "start_y": start_y,
+                "end_y": start_y,
+                "steps_used": steps_used,
+                "reason": "no_placeable_block_during_pillar",
+                "trajectory": traj,
+            }
+            self._record_recovery("pillar_up", res)
+            return res
+        for _ in range(2):
+            a = self.env.noop_action()
+            a[f"hotbar.{slot + 1}"] = np.array(1)
+            _hold_pitch_down(a)
+            self.raw_step(a)
+            steps_used += 1
+
+        # Phase 2: pillar cycle (per-block placement). Each cycle is now
+        # 8+ ticks with a wider `use` window, so even if the agent's jump
+        # apex is offset by a tick the placement still lands.
+        #
+        #   t0: hotbar + jump  (leave the floor block)
+        #   t1: hotbar         (rising)
+        #   t2..t2+(N-1): hotbar + use   (extended placement window)
+        #   t_settle..t_settle+M: noop   (land + settle on the new block)
+        #
+        # Cycle ends with a Y check; if the agent gained < 0.5 we mark
+        # this as a "stuck" cycle. We allow up to ``max_stuck_per_cycle``
+        # consecutive stucks (default 8) before breaking out — the
+        # original 4 was too easy to hit on the first cycle when the
+        # hotbar swap was still settling.
         while blocks_used < max_blocks and steps_used < max_steps:
             try:
                 cur_y = float(self.cache["info"]["location_stats"].get("ypos", last_y))
@@ -1894,18 +1940,9 @@ class CustomEnvWrapper(gym.Wrapper):
             if cur_y >= target_y:
                 break
 
-            # Re-acquire slot in case the block was consumed or item moved
             slot, block_name = self._find_placeable_block_slot(prefer)
             if slot is None:
                 break
-
-            def _hold_pitch_down(a):
-                try:
-                    cp = float(self.cache["info"]["location_stats"].get("pitch", 0))
-                except Exception:
-                    cp = 0.0
-                if cp < 88.0:
-                    a["camera"] = np.array([min(90.0 - cp, 6.0), 0])
 
             # t0 – jump (no use)
             a0 = self.env.noop_action()
@@ -1915,23 +1952,27 @@ class CustomEnvWrapper(gym.Wrapper):
             self.raw_step(a0)
             steps_used += 1
 
-            # t1 – rising; keep slot selected
+            # t1 – rising; keep slot selected, no use yet
             a1 = self.env.noop_action()
             a1[f"hotbar.{slot + 1}"] = np.array(1)
             _hold_pitch_down(a1)
             self.raw_step(a1)
             steps_used += 1
 
-            # t2 – at peak: place block under feet
-            a2 = self.env.noop_action()
-            a2[f"hotbar.{slot + 1}"] = np.array(1)
-            a2["use"] = np.array(1)
-            _hold_pitch_down(a2)
-            self.raw_step(a2)
-            steps_used += 1
+            # t2..t2+(N-1) – broad placement window (default 3 ticks).
+            # In MineRL the jump apex / descent overlaps a few-tick band
+            # rather than a single instant, so holding `use` across that
+            # whole band reliably places the block on the floor's top face.
+            for _ in range(max(1, place_use_ticks)):
+                a_use = self.env.noop_action()
+                a_use[f"hotbar.{slot + 1}"] = np.array(1)
+                a_use["use"] = np.array(1)
+                _hold_pitch_down(a_use)
+                self.raw_step(a_use)
+                steps_used += 1
 
-            # t3, t4 – land on the placed block
-            for _ in range(2):
+            # Post-placement: settle on the new block (default 4 ticks).
+            for _ in range(max(1, post_jump_settle)):
                 aw = self.env.noop_action()
                 _hold_pitch_down(aw)
                 self.raw_step(aw)
@@ -1949,11 +1990,11 @@ class CustomEnvWrapper(gym.Wrapper):
                 stuck_count = 0
             else:
                 stuck_count += 1
-                if stuck_count >= 4:
+                if stuck_count >= max_stuck_per_cycle:
                     break
 
         # Phase 3: restore pitch to roughly horizontal
-        for _ in range(12):
+        for _ in range(15):
             try:
                 cur_pitch = float(self.cache["info"]["location_stats"].get("pitch", 0))
             except Exception:
@@ -1975,7 +2016,7 @@ class CustomEnvWrapper(gym.Wrapper):
             reason = "no_placement_succeeded"
         elif end_y >= target_y - 0.5:
             reason = "reached_target"
-        elif stuck_count >= 4:
+        elif stuck_count >= max_stuck_per_cycle:
             reason = "stuck_no_progress"
         elif steps_used >= max_steps:
             reason = "step_budget_exhausted"
@@ -2615,49 +2656,96 @@ class CustomEnvWrapper(gym.Wrapper):
             self.raw_step(a)
             steps_used += 1
 
-        # Phase 2: per block, hold attack + forward until mine_block stat
-        # increments, then move on to next block.
-        per_block_initial = self._mined_block_count()
-        reason = "ok"
-        while blocks_dug < int(n_blocks) and steps_used < int(max_steps):
-            per_block_steps = 0
-            mined_at_block_start = self._mined_block_count()
-            broke_one = False
-            while (
-                per_block_steps < int(max_steps_per_block)
-                and steps_used < int(max_steps)
-            ):
+        # Phase 2: per block, mine a 2-block-tall corridor (head + feet
+        # block in front of the agent) and physically walk the agent into
+        # the new space. The agent is 2 blocks tall — without breaking
+        # both the eye-level AND the feet-level block in front, it cannot
+        # walk through. The previous implementation only attacked at the
+        # current pitch, often leaving one of the two blocks intact, so
+        # the agent kept hitting forward without actually advancing.
+        #
+        # Cycle per block:
+        #   Phase A (head): pitch ~0, attack + forward, until a block
+        #                   breaks or budget exhausts.
+        #   Phase B (feet): pitch +28 (looking down ~28°), attack +
+        #                   forward, until a block breaks or budget
+        #                   exhausts.
+        #   Phase C (walk): forward only (no attack), pitch ~0, sprint=1
+        #                   for a few ticks so the agent steps into the
+        #                   newly carved corridor.
+        head_pitch_target = float(os.environ.get("XENON_CORRIDOR_HEAD_PITCH", "0.0"))
+        feet_pitch_target = float(os.environ.get("XENON_CORRIDOR_FEET_PITCH", "28.0"))
+        walk_ticks_per_block = int(os.environ.get("XENON_CORRIDOR_WALK_TICKS", "6"))
+
+        def _nudge_pitch_to(target_pitch: float, max_step: float = 8.0):
+            try:
+                cp = float(
+                    np.asarray(
+                        (self.cache.get("info") or {}).get("location_stats", {}).get(
+                            "pitch", 0
+                        )
+                    ).reshape(-1)[0]
+                )
+            except Exception:
+                cp = 0.0
+            return max(min(target_pitch - cp, max_step), -max_step)
+
+        def _phase_attack(target_pitch: float, label: str, budget: int) -> bool:
+            """Hold attack + forward at the given pitch until a block
+            breaks or we exhaust ``budget`` ticks. Returns True if a
+            block broke."""
+            nonlocal steps_used
+            mined_at_phase_start = self._mined_block_count()
+            ticks = 0
+            while ticks < budget and steps_used < int(max_steps):
                 a = self.env.noop_action()
                 a["attack"] = np.array(1)
                 a["forward"] = np.array(1)
-                # Re-equip pickaxe each tick is unnecessary; raw_step's
-                # built-in find_best_pickaxe path runs only via step(),
-                # not raw_step(). The single equip we did above suffices.
-                # Keep pitch nudge in case agent's view drifted.
-                try:
-                    cur_pitch = float(
-                        np.asarray(
-                            (self.cache.get("info") or {}).get("location_stats", {}).get(
-                                "pitch", 0
-                            )
-                        ).reshape(-1)[0]
-                    )
-                except Exception:
-                    cur_pitch = 0.0
-                if abs(cur_pitch) > 6.0:
-                    a["camera"] = np.array(
-                        [max(min(-cur_pitch, 6.0), -6.0), 0]
-                    )
+                pitch_delta = _nudge_pitch_to(target_pitch)
+                if abs(pitch_delta) > 0.1:
+                    a["camera"] = np.array([pitch_delta, 0])
                 self.raw_step(a)
                 steps_used += 1
-                per_block_steps += 1
-                if self._mined_block_count() > mined_at_block_start:
-                    blocks_dug += 1
-                    broke_one = True
-                    break
+                ticks += 1
+                if self._mined_block_count() > mined_at_phase_start:
+                    return True
+            return False
+
+        def _phase_walk(ticks: int):
+            """Forward + sprint, no attack, pitch ~0 — let the agent
+            step into the carved tunnel."""
+            nonlocal steps_used
+            for _ in range(ticks):
+                if steps_used >= int(max_steps):
+                    return
+                a = self.env.noop_action()
+                a["forward"] = np.array(1)
+                a["sprint"] = np.array(1)
+                pitch_delta = _nudge_pitch_to(head_pitch_target, max_step=6.0)
+                if abs(pitch_delta) > 0.1:
+                    a["camera"] = np.array([pitch_delta, 0])
+                self.raw_step(a)
+                steps_used += 1
+
+        per_block_initial = self._mined_block_count()
+        reason = "ok"
+        while blocks_dug < int(n_blocks) and steps_used < int(max_steps):
+            per_block_budget = max(int(max_steps_per_block), 30)
+            head_budget = per_block_budget // 2
+            feet_budget = per_block_budget - head_budget
+
+            broke_head = _phase_attack(head_pitch_target, "head", head_budget)
+            broke_feet = _phase_attack(feet_pitch_target, "feet", feet_budget)
+            broke_one = broke_head or broke_feet
+
             if not broke_one:
                 reason = "stuck_no_block_break"
                 break
+
+            # Step into the new space so the next iteration's "in-front"
+            # blocks are actually a fresh column.
+            _phase_walk(walk_ticks_per_block)
+            blocks_dug += 1
 
         end_loc = (self.cache.get("info") or {}).get("location_stats", {}) or {}
 

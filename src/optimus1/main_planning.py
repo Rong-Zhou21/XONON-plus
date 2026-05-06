@@ -844,48 +844,42 @@ def _maybe_relevel_for_overshoot(
     planner_ore: str,
     new_deeper_seen: list[str],
     logger: logging.Logger,
+    target_y: float | None = None,
 ) -> Dict[str, Any] | None:
-    """Pillar up to the target ore's mid-band Y after an overshoot.
+    """Pillar up after an overshoot.
 
-    Trigger semantics (set by the caller):
-        the agent is mining a target ore, has not yet collected the
-        required count, but has *already* observed (mined / picked up
-        / currently holds) at least one strictly more advanced ore.
-        That means the dig-down went past the target band and the
-        agent now sits too low to find more of the target ore by
-        digging forward at the current Y.
+    Destination Y selection:
+        * If the caller passes ``target_y`` (typically the Y at which
+          the target ore was first encountered for this sub-goal), the
+          agent is lifted to that exact height. This is the user's
+          requested semantics — "回到我们第一次挖到这个矿的高度
+          重新探索".
+        * Otherwise, fall back to the band-midpoint heuristic so the
+          first-ever pillar-up before any target ore was found still
+          has a sensible destination.
 
     What this helper does:
-        1. Maps the planner-side ore name (``"coal"``, ``"iron_ore"``,
-           ``"gold_ore"``, ``"redstone"``, ``"diamond"``) onto the
-           wrapper's canonical key.
+        1. Maps the planner-side ore name onto the wrapper's canonical
+           key.
         2. Reads ``perceive_height_context`` to learn current Y and
            placeable-block availability.
-        3. If the agent is below mid-band by at least
+        3. If the agent is below the destination by at least
            ``XENON_OVERSHOOT_RELEVEL_MIN_DY`` blocks (default 2) AND
            there is at least one placeable block in the inventory,
-           calls ``raise_to_height(mid_y)`` to lift the agent back up
-           into the target band.
+           calls ``raise_to_height(dest_y)``.
         4. Logs perception + result; never raises.
 
     Returns the ``raise_to_height`` result dict, or ``None`` when the
     helper opted not to act.
 
     Behaviour is gated by ``XENON_ENABLE_PILLAR_UP_FOR_OVERSHOOT``
-    (default ``"1"`` ON). Set to ``"0"`` to disable for an A/B test.
-    Tunables:
-      * ``XENON_OVERSHOOT_RELEVEL_MIN_DY`` (default 2)
-      * ``XENON_OVERSHOOT_RELEVEL_MAX_BLOCKS`` (default 64)
-      * ``XENON_OVERSHOOT_RELEVEL_MAX_STEPS`` (default 600)
+    (default ``"1"`` ON).
     """
     if os.environ.get("XENON_ENABLE_PILLAR_UP_FOR_OVERSHOOT", "1") != "1":
         return None
 
     wrapper_ore = _PILLAR_PLANNER_TO_WRAPPER_ORE.get(planner_ore)
     if wrapper_ore is None:
-        return None
-    mid_y = _ore_band_midpoint(wrapper_ore)
-    if mid_y is None:
         return None
 
     try:
@@ -898,16 +892,29 @@ def _maybe_relevel_for_overshoot(
         return None
 
     cur_y = float(ctx.get("current_y", 64.0))
-    needed_dy = float(mid_y) - cur_y
+
+    # Destination Y: prefer the first-encounter Y from the caller; fall
+    # back to band midpoint when unknown. Either way we still want it
+    # ABOVE the current Y for there to be anything to pillar up to.
+    band_mid = _ore_band_midpoint(wrapper_ore)
+    if target_y is not None and float(target_y) > cur_y:
+        dest_y = float(target_y)
+        dest_source = "first_target_ore_y"
+    elif band_mid is not None:
+        dest_y = float(band_mid)
+        dest_source = "band_midpoint"
+    else:
+        return None
+    needed_dy = dest_y - cur_y
     try:
         min_dy = float(os.environ.get("XENON_OVERSHOOT_RELEVEL_MIN_DY", "2"))
     except ValueError:
         min_dy = 2.0
     if needed_dy < min_dy:
         logger.info(
-            "[overshoot_relevel] skip: ore=%s cur_y=%.1f mid_y=%d "
-            "needed_dy=%.1f < min_dy=%.1f (already in or above band)",
-            wrapper_ore, cur_y, mid_y, needed_dy, min_dy,
+            "[overshoot_relevel] skip: ore=%s cur_y=%.1f dest_y=%.1f (%s) "
+            "needed_dy=%.1f < min_dy=%.1f (already in or above destination)",
+            wrapper_ore, cur_y, dest_y, dest_source, needed_dy, min_dy,
         )
         return None
     if int(ctx.get("placeable_total", 0)) <= 0:
@@ -928,11 +935,12 @@ def _maybe_relevel_for_overshoot(
         max_steps = 600
 
     logger.info(
-        "[overshoot_relevel] activating: ore=%s cur_y=%.1f -> mid_y=%d "
+        "[overshoot_relevel] activating: ore=%s cur_y=%.1f -> dest_y=%.1f (%s) "
         "(band=%s) deeper_seen=%s placeable_hotbar=%d placeable_total=%d",
         wrapper_ore,
         cur_y,
-        mid_y,
+        dest_y,
+        dest_source,
         ctx.get("target_band"),
         new_deeper_seen,
         int(ctx.get("placeable_in_hotbar", 0)),
@@ -940,11 +948,11 @@ def _maybe_relevel_for_overshoot(
     )
     try:
         result = env.raise_to_height(
-            float(mid_y), max_blocks=max_blocks, max_steps=max_steps
+            dest_y, max_blocks=max_blocks, max_steps=max_steps
         )
     except Exception as exc:
         logger.warning(
-            f"[overshoot_relevel] raise_to_height({mid_y}) failed: {exc!s}"
+            f"[overshoot_relevel] raise_to_height({dest_y:.1f}) failed: {exc!s}"
         )
         return None
     logger.info(
@@ -959,21 +967,23 @@ def _maybe_relevel_for_overshoot(
         result.get("prep_action"),
     )
 
-    # Safety net (user-requested "保护机制"): right after pillar-up,
-    # hard-script a 3-block forward tunnel into the target ore band so
-    # the subsequent STEVE-1 "dig forward and mine X" prompt has a
-    # cleared corridor to step into. Without this the agent often spends
-    # the first dozens of ticks of dig-forward bouncing against the
-    # solid wall it just landed against. Disable with
+    # Safety net: right after pillar-up, hard-script a forward 2-block-tall
+    # corridor (head + feet at every step) into the target ore band, so the
+    # subsequent STEVE-1 "dig forward and mine X" prompt has cleared room
+    # to walk into. The new dig_forward_blocks alternates pitch between
+    # head and feet level and inserts forward-only walk ticks after each
+    # break, so the agent physically advances. We carve 8 blocks by
+    # default (was 3) — enough to leave the dirt column the pillar-up
+    # placed and reach actual target-band terrain. Disable with
     # XENON_OVERSHOOT_TUNNEL_BLOCKS=0.
     try:
-        tunnel_blocks = int(os.environ.get("XENON_OVERSHOOT_TUNNEL_BLOCKS", "3"))
+        tunnel_blocks = int(os.environ.get("XENON_OVERSHOOT_TUNNEL_BLOCKS", "8"))
     except ValueError:
-        tunnel_blocks = 3
+        tunnel_blocks = 8
     try:
-        tunnel_max_steps = int(os.environ.get("XENON_OVERSHOOT_TUNNEL_MAX_STEPS", "240"))
+        tunnel_max_steps = int(os.environ.get("XENON_OVERSHOOT_TUNNEL_MAX_STEPS", "600"))
     except ValueError:
-        tunnel_max_steps = 240
+        tunnel_max_steps = 600
     if tunnel_blocks > 0 and bool(result.get("success")):
         try:
             tunnel = env.dig_forward_blocks(
@@ -1239,6 +1249,14 @@ def new_agent_do(
                 mining_initial_deeper_seen = set(
                     _deeper_ores_seen(mining_initial_status, mining_target_ore)
                 ) if mining_direction_active else set()
+                # Track Y of first encounter with the *target* ore for this
+                # subgoal. When pillar-up triggers we want to lift the agent
+                # back to that Y rather than the band's mid-y, because we
+                # already know that height has at least one target-ore
+                # cluster within reach. Initialised lazily — set to None
+                # until a target-ore inventory delta is observed.
+                first_target_ore_y: float | None = None
+                mining_activity_at_start = mining_activity
                 # Cooldown lowered from the original 240 default to 120 ticks
                 # (~6s) so the trigger can fire again sooner after the agent
                 # finishes a pillar-up + brief dig-forward burst, in case it
@@ -1352,6 +1370,29 @@ def new_agent_do(
                             if ore not in mining_initial_deeper_seen
                         ]
                         if current_activity > mining_activity:
+                            # Target-ore count just increased -> the agent
+                            # successfully encountered a target-ore block at
+                            # *this* Y. If we haven't yet recorded a
+                            # first-target-ore Y for this subgoal, do so now.
+                            # That Y becomes the destination for any
+                            # subsequent pillar-up trigger ("回到我们第一次
+                            # 挖到这个矿的高度重新探索").
+                            if first_target_ore_y is None:
+                                try:
+                                    loc_now = env_status_now.get("location_stats") or {}
+                                    ypos_now = loc_now.get("ypos", None)
+                                    if ypos_now is not None:
+                                        first_target_ore_y = float(
+                                            np.asarray(ypos_now).reshape(-1)[0]
+                                        )
+                                        logger.info(
+                                            f"[overshoot_relevel] recording first-target-ore Y for "
+                                            f"{mining_target_ore}: y={first_target_ore_y:.1f}, "
+                                            f"activity={current_activity}, "
+                                            f"timestep={env.num_steps}"
+                                        )
+                                except Exception:
+                                    first_target_ore_y = None
                             mining_activity = current_activity
                             mining_last_activity_step = env.num_steps
                             step_waypoint_obtained = env.num_steps
@@ -1427,16 +1468,16 @@ def new_agent_do(
                         )
                         if can_switch and should_pillar_up:
                             # Before flipping STEVE-1 to "dig forward", first
-                            # pillar up to the target ore's mid-band Y so the
-                            # subsequent horizontal mine actually intersects
-                            # the target ore. This is the user-requested
-                            # "环境感知 + 抬升 + 横向挖掘" flow: as soon as the
-                            # agent is below the target band (either because
-                            # it overshot or because deeper ores are already
-                            # in possession), re-level and mine forward
-                            # rather than continuing to dig down.
+                            # pillar up to the Y where we first encountered
+                            # the target ore for this sub-goal (or fall back
+                            # to the band midpoint if we never saw it). This
+                            # is the user-requested "回到第一次挖到这个矿
+                            # 的高度重新探索" flow: as soon as the agent is
+                            # below where it should be, re-level and mine
+                            # forward rather than continuing to dig down.
                             _maybe_relevel_for_overshoot(
-                                env, mining_target_ore, overshot_seen, logger
+                                env, mining_target_ore, overshot_seen, logger,
+                                target_y=first_target_ore_y,
                             )
                             current_sg_prompt = mining_forward_prompt
                             mining_mode = "dig_forward"
