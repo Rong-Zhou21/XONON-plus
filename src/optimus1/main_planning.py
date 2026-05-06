@@ -1067,7 +1067,9 @@ def _maybe_relevel_for_overshoot(
         3. If the agent is below the destination by at least
            ``XENON_OVERSHOOT_RELEVEL_MIN_DY`` blocks (default 2) AND
            there is at least one placeable block in the inventory,
-           calls ``raise_to_height(dest_y)``.
+           calls ``raise_to_height(dest_y)``. Near the bedrock floor, a
+           smaller one-block correction is allowed so the agent does not
+           keep digging down when it is just below the first target-ore Y.
         4. Logs perception + result; never raises.
 
     Returns the ``raise_to_height`` result dict, or ``None`` when the
@@ -1111,13 +1113,35 @@ def _maybe_relevel_for_overshoot(
         min_dy = float(os.environ.get("XENON_OVERSHOOT_RELEVEL_MIN_DY", "2"))
     except ValueError:
         min_dy = 2.0
-    if needed_dy < min_dy:
+    if needed_dy <= 0:
         logger.info(
             "[overshoot_relevel] skip: ore=%s cur_y=%.1f dest_y=%.1f (%s) "
-            "needed_dy=%.1f < min_dy=%.1f (already in or above destination)",
-            wrapper_ore, cur_y, dest_y, dest_source, needed_dy, min_dy,
+            "needed_dy=%.1f <= 0.0 (already in or above destination)",
+            wrapper_ore, cur_y, dest_y, dest_source, needed_dy,
         )
         return None
+    if needed_dy < min_dy:
+        try:
+            low_y_floor = float(os.environ.get("XENON_BEDROCK_FLOOR_Y", "8.0"))
+        except ValueError:
+            low_y_floor = 8.0
+        try:
+            low_y_min_dy = float(os.environ.get("XENON_OVERSHOOT_LOW_Y_MIN_DY", "1.0"))
+        except ValueError:
+            low_y_min_dy = 1.0
+        allow_low_y_micro_lift = cur_y <= low_y_floor and needed_dy >= low_y_min_dy
+        if not allow_low_y_micro_lift:
+            logger.info(
+                "[overshoot_relevel] skip: ore=%s cur_y=%.1f dest_y=%.1f (%s) "
+                "needed_dy=%.1f < min_dy=%.1f (already close enough to destination)",
+                wrapper_ore, cur_y, dest_y, dest_source, needed_dy, min_dy,
+            )
+            return None
+        logger.info(
+            "[overshoot_relevel] allowing low-Y micro-lift: ore=%s cur_y=%.1f "
+            "dest_y=%.1f needed_dy=%.1f min_dy=%.1f floor=%.1f",
+            wrapper_ore, cur_y, dest_y, needed_dy, min_dy, low_y_floor,
+        )
     if int(ctx.get("placeable_total", 0)) <= 0:
         logger.info(
             "[overshoot_relevel] skip: ore=%s no placeable block in inventory; "
@@ -1472,6 +1496,9 @@ def new_agent_do(
                 mining_required = _ore_required_count(current_sg_target)
                 mining_initial_status = env.get_status()
                 mining_activity = _ore_activity_count(mining_initial_status, mining_target_ore) if mining_direction_active else 0
+                mining_available_at_start = _ore_available_count(
+                    mining_initial_status, mining_target_ore
+                ) if mining_direction_active else 0
                 mining_last_activity_step = env.num_steps
                 mining_mode = "dig_down"
                 mining_forward_prompt = _forward_mining_prompt(mining_target_ore) if mining_direction_active else ""
@@ -1604,6 +1631,7 @@ def new_agent_do(
                             break
                         current_activity = _ore_activity_count(env_status_now, mining_target_ore)
                         current_available = _ore_available_count(env_status_now, mining_target_ore)
+                        current_available_delta = current_available - mining_available_at_start
                         deeper_seen = _deeper_ores_seen(env_status_now, mining_target_ore)
                         new_deeper_seen = [
                             ore for ore in deeper_seen
@@ -1636,7 +1664,7 @@ def new_agent_do(
                             mining_activity = current_activity
                             mining_last_activity_step = env.num_steps
                             step_waypoint_obtained = env.num_steps
-                        target_incomplete = current_available < mining_required
+                        target_incomplete = current_available_delta < mining_required
                         # Trigger 1 (deeper ore in possession): the user's
                         # explicit ask — "as soon as you've collected an ore
                         # deeper than your current target, you've overshot,
@@ -1749,7 +1777,8 @@ def new_agent_do(
                                 f"mode_before={'dig_forward' if can_relevel_forward else 'dig_down'}, "
                                 f"reason={'+'.join(trigger_reason) or 'unknown'}, "
                                 f"target={mining_target_ore} (planner_target={_planner_target}), "
-                                f"current={current_available}, required={mining_required}, "
+                                f"current={current_available}, start={mining_available_at_start}, "
+                                f"gained={current_available_delta}, required_delta={mining_required}, "
                                 f"timestep={env.num_steps}."
                             )
                         elif mining_mode == "dig_forward" and not target_incomplete:
