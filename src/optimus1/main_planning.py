@@ -1538,12 +1538,18 @@ def new_agent_do(
                             bedrock_stuck = False
 
                         should_pillar_up = overshot_layer or y_overshoot or bedrock_stuck
+                        switch_ready = env.num_steps - mining_last_switch_step >= mining_switch_cooldown_ticks
                         can_switch = (
                             mining_mode == "dig_down"
                             and current_sg_prompt == temp_sg_prompt
-                            and env.num_steps - mining_last_switch_step >= mining_switch_cooldown_ticks
+                            and switch_ready
                         )
-                        if can_switch and should_pillar_up:
+                        can_relevel_forward = (
+                            mining_mode == "dig_forward"
+                            and switch_ready
+                            and (y_overshoot or bedrock_stuck)
+                        )
+                        if (can_switch or can_relevel_forward) and should_pillar_up:
                             # Before flipping STEVE-1 to "dig forward", first
                             # pillar up to the Y where we first encountered
                             # the target ore for this sub-goal (or fall back
@@ -1577,6 +1583,7 @@ def new_agent_do(
                             logger.info(
                                 "Mining direction adjustment: switching STEVE-1 prompt to "
                                 f"{current_sg_prompt} for waypoint {waypoint}; "
+                                f"mode_before={'dig_forward' if can_relevel_forward else 'dig_down'}, "
                                 f"reason={'+'.join(trigger_reason) or 'unknown'}, "
                                 f"target={mining_target_ore} (planner_target={_planner_target}), "
                                 f"current={current_available}, required={mining_required}, "
