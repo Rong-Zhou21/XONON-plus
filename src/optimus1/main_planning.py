@@ -236,6 +236,23 @@ def _inventory_count_for_waypoint(inventory: Dict[str, Any], waypoint: str) -> i
     return total
 
 
+def _can_skip_satisfied_waypoint(waypoint: str) -> bool:
+    waypoint_name = _normalise_waypoint_name(waypoint)
+    if waypoint_name in {"crafting_table", "furnace", "shield"}:
+        return True
+    return waypoint_name.endswith((
+        "_pickaxe",
+        "_axe",
+        "_shovel",
+        "_hoe",
+        "_sword",
+        "_helmet",
+        "_chestplate",
+        "_leggings",
+        "_boots",
+    ))
+
+
 def _select_next_planning_waypoint(
     wp_list_str: str,
     logger: logging.Logger,
@@ -246,7 +263,10 @@ def _select_next_planning_waypoint(
         raise ValueError(f"Cannot parse waypoint summary: {wp_list_str}")
     if inventory:
         for waypoint, required, line in parsed:
-            if _inventory_count_for_waypoint(inventory, waypoint) >= required:
+            if (
+                _can_skip_satisfied_waypoint(waypoint)
+                and _inventory_count_for_waypoint(inventory, waypoint) >= required
+            ):
                 logger.info(
                     "Skipping already-satisfied planner waypoint: "
                     f"{line}, inventory={inventory}"
@@ -1146,7 +1166,7 @@ def new_agent_do(
                 try:
                     waypoint_num_now = _ore_required_count((subgoal or {}).get("goal"))
                     env_status_now = env.get_status()
-                    if env._check_goal_inventory_state(
+                    if _can_skip_satisfied_waypoint(str(waypoint)) and env._check_goal_inventory_state(
                         env_status_now.get("inventory", {}),
                         str(waypoint),
                         waypoint_num_now,
