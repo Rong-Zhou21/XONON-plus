@@ -1818,6 +1818,25 @@ class CustomEnvWrapper(gym.Wrapper):
         max_steps: int = 400,
         prefer_blocks: tuple[str, ...] | None = None,
     ) -> Dict[str, Any]:
+        previous_can_change_hotbar = self.can_change_hotbar
+        self.can_change_hotbar = True
+        try:
+            return self._pillar_up_impl(
+                target_dy=target_dy,
+                max_blocks=max_blocks,
+                max_steps=max_steps,
+                prefer_blocks=prefer_blocks,
+            )
+        finally:
+            self.can_change_hotbar = previous_can_change_hotbar
+
+    def _pillar_up_impl(
+        self,
+        target_dy: int = 20,
+        max_blocks: int = 32,
+        max_steps: int = 400,
+        prefer_blocks: tuple[str, ...] | None = None,
+    ) -> Dict[str, Any]:
         """Scripted pillar-up. Place blocks under the agent to rise vertically.
 
         Bypasses STEVE-1 entirely (uses raw_step). Trace logged to
@@ -1876,6 +1895,23 @@ class CustomEnvWrapper(gym.Wrapper):
             if cp < target_pitch:
                 a["camera"] = np.array([min(target_pitch - cp, max_step), 0])
 
+        def _confirm_placeable_selected(slot_index: int, expected_block: str, ticks: int = 4) -> bool:
+            """Select the placeable hotbar slot and verify status_mod saw it."""
+            nonlocal steps_used
+            confirmed = False
+            for _ in range(max(1, ticks)):
+                a = self.env.noop_action()
+                for i in range(9):
+                    a[f"hotbar.{i + 1}"] = np.array(0)
+                a[f"hotbar.{slot_index + 1}"] = np.array(1)
+                _hold_pitch_down(a)
+                self.raw_step(a)
+                steps_used += 1
+                held = self._plain_item_type(self.status_mod.equipment)
+                if held == expected_block:
+                    confirmed = True
+            return confirmed
+
         # Phase 1: orient pitch fully downward. Need a strong commitment to
         # ~88-90° before the first placement; otherwise `use` lands the block
         # on the side of the floor instead of its top face. We push pitch
@@ -1911,12 +1947,25 @@ class CustomEnvWrapper(gym.Wrapper):
             }
             self._record_recovery("pillar_up", res)
             return res
-        for _ in range(2):
-            a = self.env.noop_action()
-            a[f"hotbar.{slot + 1}"] = np.array(1)
-            _hold_pitch_down(a)
-            self.raw_step(a)
-            steps_used += 1
+        if not _confirm_placeable_selected(slot, block_name, ticks=4):
+            res = {
+                "success": False,
+                "blocks_used": 0,
+                "dy": 0.0,
+                "start_y": start_y,
+                "end_y": start_y,
+                "steps_used": steps_used,
+                "reason": f"placeable_hotbar_not_selected:{block_name}:slot_{slot}",
+                "trajectory": traj,
+            }
+            self._record_recovery("pillar_up", res)
+            if self.logger:
+                self.logger.warning(
+                    f"[pillar_up] aborted before jump: expected held block "
+                    f"{block_name} in hotbar.{slot + 1}, got "
+                    f"{self._plain_item_type(self.status_mod.equipment)}"
+                )
+            return res
 
         # Phase 2: pillar cycle (per-block placement). Each cycle is now
         # 8+ ticks with a wider `use` window, so even if the agent's jump
@@ -1942,6 +1991,15 @@ class CustomEnvWrapper(gym.Wrapper):
 
             slot, block_name = self._find_placeable_block_slot(prefer)
             if slot is None:
+                break
+            if not _confirm_placeable_selected(slot, block_name, ticks=2):
+                stuck_count = max_stuck_per_cycle
+                if self.logger:
+                    self.logger.warning(
+                        f"[pillar_up] stopping: failed to select "
+                        f"{block_name} in hotbar.{slot + 1} before jump; "
+                        f"held={self._plain_item_type(self.status_mod.equipment)}"
+                    )
                 break
 
             # t0 – jump (no use)
