@@ -214,17 +214,46 @@ def _parse_waypoint_summary(wp_list_str: str) -> list[tuple[str, int, str]]:
     return parsed
 
 
+def _inventory_count_for_waypoint(inventory: Dict[str, Any], waypoint: str) -> int:
+    waypoint_name = _normalise_waypoint_name(waypoint)
+    total = 0
+    for item, quantity in (inventory or {}).items():
+        try:
+            count = int(quantity or 0)
+        except Exception:
+            continue
+        item_name = _normalise_waypoint_name(item)
+        if waypoint_name == "logs":
+            if item_name == "logs" or item_name.endswith("_log"):
+                total += count
+            continue
+        if waypoint_name == "planks":
+            if item_name == "planks" or item_name.endswith("_planks"):
+                total += count
+            continue
+        if item_name == waypoint_name:
+            total += count
+    return total
+
+
 def _select_next_planning_waypoint(
     wp_list_str: str,
     logger: logging.Logger,
+    inventory: Dict[str, Any] | None = None,
 ) -> tuple[str, int]:
     parsed = _parse_waypoint_summary(wp_list_str)
     if not parsed:
         raise ValueError(f"Cannot parse waypoint summary: {wp_list_str}")
-    # OracleGraph already subtracts the current inventory before emitting
-    # "need N"; N is the remaining requirement, not the total target count.
-    # Do not skip entries here using ledger/current inventory, because consumed
-    # materials from past waypoints would otherwise be treated as still usable.
+    if inventory:
+        for waypoint, required, line in parsed:
+            if _inventory_count_for_waypoint(inventory, waypoint) >= required:
+                logger.info(
+                    "Skipping already-satisfied planner waypoint: "
+                    f"{line}, inventory={inventory}"
+                )
+                continue
+            logger.info(f"Selected first unsatisfied planner waypoint: {line}")
+            return waypoint, required
     logger.info(f"Selected first remaining planner waypoint: {parsed[0][2]}")
     return parsed[0][0], parsed[0][1]
 
@@ -248,7 +277,7 @@ def make_plan(
     wp_list_str = retrieve_waypoints(waypoint_generator, original_final_goal, 1, inventory)
     logger.info(f"In make_plan")
     logger.info(f"wp_list_str: {wp_list_str}")
-    wp, wp_num = _select_next_planning_waypoint(wp_list_str, logger)
+    wp, wp_num = _select_next_planning_waypoint(wp_list_str, logger, inventory)
 
     state_snapshot = action_memory.create_state_snapshot(env_status, obs, cfg)
     case_decision = action_memory.select_case_decision(
