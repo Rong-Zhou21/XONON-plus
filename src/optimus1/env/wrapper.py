@@ -1884,8 +1884,8 @@ class CustomEnvWrapper(gym.Wrapper):
 
         # Tunables exposed via env vars so we can iterate without code changes.
         max_stuck_per_cycle = int(os.environ.get("XENON_PILLAR_MAX_STUCK", "8"))
-        place_use_ticks = int(os.environ.get("XENON_PILLAR_USE_TICKS", "3"))
-        post_jump_settle = int(os.environ.get("XENON_PILLAR_SETTLE_TICKS", "4"))
+        jump_place_ticks = int(os.environ.get("XENON_PILLAR_JUMP_PLACE_TICKS", "8"))
+        post_jump_settle = int(os.environ.get("XENON_PILLAR_SETTLE_TICKS", "8"))
 
         def _hold_pitch_down(a, target_pitch=88.0, max_step=6.0):
             try:
@@ -1971,9 +1971,10 @@ class CustomEnvWrapper(gym.Wrapper):
         # 8+ ticks with a wider `use` window, so even if the agent's jump
         # apex is offset by a tick the placement still lands.
         #
-        #   t0: hotbar + jump  (leave the floor block)
-        #   t1: hotbar         (rising)
-        #   t2..t2+(N-1): hotbar + use   (extended placement window)
+        #   pre: select placeable hotbar slot, then stop pressing hotbar
+        #        (the client keeps the selection; mixing hotbar+use in the
+        #        same tick can consume the right-click window)
+        #   t0..tN: jump + use (continuous placement window while rising)
         #   t_settle..t_settle+M: noop   (land + settle on the new block)
         #
         # Cycle ends with a Y check; if the agent gained < 0.5 we mark
@@ -2002,28 +2003,13 @@ class CustomEnvWrapper(gym.Wrapper):
                     )
                 break
 
-            # t0 – jump (no use)
-            a0 = self.env.noop_action()
-            a0[f"hotbar.{slot + 1}"] = np.array(1)
-            a0["jump"] = np.array(1)
-            _hold_pitch_down(a0)
-            self.raw_step(a0)
-            steps_used += 1
-
-            # t1 – rising; keep slot selected, no use yet
-            a1 = self.env.noop_action()
-            a1[f"hotbar.{slot + 1}"] = np.array(1)
-            _hold_pitch_down(a1)
-            self.raw_step(a1)
-            steps_used += 1
-
-            # t2..t2+(N-1) – broad placement window (default 3 ticks).
-            # In MineRL the jump apex / descent overlaps a few-tick band
-            # rather than a single instant, so holding `use` across that
-            # whole band reliably places the block on the floor's top face.
-            for _ in range(max(1, place_use_ticks)):
+            # Keep use pressed throughout the jump. This mirrors manual
+            # pillar-jumping more closely than a delayed one-tick use:
+            # as soon as the feet leave enough space above the previous
+            # block, Minecraft can place the selected block under the agent.
+            for _ in range(max(1, jump_place_ticks)):
                 a_use = self.env.noop_action()
-                a_use[f"hotbar.{slot + 1}"] = np.array(1)
+                a_use["jump"] = np.array(1)
                 a_use["use"] = np.array(1)
                 _hold_pitch_down(a_use)
                 self.raw_step(a_use)
