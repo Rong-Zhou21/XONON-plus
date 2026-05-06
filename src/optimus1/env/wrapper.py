@@ -1806,7 +1806,7 @@ class CustomEnvWrapper(gym.Wrapper):
                     continue
                 if self._plain_item_type(item.get("type", "")) != block_name:
                     continue
-                if int(item.get("quantity", 0) or 0) <= 0:
+                if self._plain_item_quantity(item.get("quantity", 0)) <= 0:
                     continue
                 return slot_int, block_name
         return None, None
@@ -1817,6 +1817,8 @@ class CustomEnvWrapper(gym.Wrapper):
         max_blocks: int = 32,
         max_steps: int = 400,
         prefer_blocks: tuple[str, ...] | None = None,
+        prepared_slot: int | None = None,
+        prepared_block: str | None = None,
     ) -> Dict[str, Any]:
         previous_can_change_hotbar = self.can_change_hotbar
         self.can_change_hotbar = True
@@ -1826,6 +1828,8 @@ class CustomEnvWrapper(gym.Wrapper):
                 max_blocks=max_blocks,
                 max_steps=max_steps,
                 prefer_blocks=prefer_blocks,
+                prepared_slot=prepared_slot,
+                prepared_block=prepared_block,
             )
         finally:
             self.can_change_hotbar = previous_can_change_hotbar
@@ -1836,6 +1840,8 @@ class CustomEnvWrapper(gym.Wrapper):
         max_blocks: int = 32,
         max_steps: int = 400,
         prefer_blocks: tuple[str, ...] | None = None,
+        prepared_slot: int | None = None,
+        prepared_block: str | None = None,
     ) -> Dict[str, Any]:
         """Scripted pillar-up. Place blocks under the agent to rise vertically.
 
@@ -1855,8 +1861,27 @@ class CustomEnvWrapper(gym.Wrapper):
             start_y = 64.0
         target_y = start_y + float(target_dy)
         traj = [start_y]
+        prep_actions: List[str] = []
 
-        slot, block_name = self._find_placeable_block_slot(prefer)
+        def _resolve_placeable_slot(
+            allow_inventory_refill: bool = True,
+        ) -> tuple[int | None, str | None]:
+            slot, block = self._find_placeable_block_slot(prefer)
+            if slot is not None:
+                return slot, block
+            if allow_inventory_refill:
+                slot, block, prep_action = self._ensure_placeable_block_in_hotbar(
+                    prefer=prefer, dest_hotbar_slot=2
+                )
+                if prep_action not in ("hotbar_ready", "none_available"):
+                    prep_actions.append(prep_action)
+                if slot is not None and block is not None:
+                    return slot, block
+            if prepared_slot is not None and prepared_block:
+                return int(prepared_slot), str(prepared_block)
+            return None, None
+
+        slot, block_name = _resolve_placeable_slot()
         if slot is None:
             res = {
                 "success": False,
@@ -1867,6 +1892,7 @@ class CustomEnvWrapper(gym.Wrapper):
                 "steps_used": 0,
                 "reason": "no_placeable_block_in_hotbar",
                 "trajectory": traj,
+                "prep_actions": prep_actions,
             }
             self._record_recovery("pillar_up", res)
             return res
@@ -1933,7 +1959,7 @@ class CustomEnvWrapper(gym.Wrapper):
         # for a couple ticks BEFORE jumping so the held item is definitely
         # the placeable block when `use` fires. Skipping this caused
         # blocks_used=1 dy=0 stuck_no_progress in the V5 armor run.
-        slot, block_name = self._find_placeable_block_slot(prefer)
+        slot, block_name = _resolve_placeable_slot()
         if slot is None:
             res = {
                 "success": False,
@@ -1944,6 +1970,7 @@ class CustomEnvWrapper(gym.Wrapper):
                 "steps_used": steps_used,
                 "reason": "no_placeable_block_during_pillar",
                 "trajectory": traj,
+                "prep_actions": prep_actions,
             }
             self._record_recovery("pillar_up", res)
             return res
@@ -1957,6 +1984,7 @@ class CustomEnvWrapper(gym.Wrapper):
                 "steps_used": steps_used,
                 "reason": f"placeable_hotbar_not_selected:{block_name}:slot_{slot}",
                 "trajectory": traj,
+                "prep_actions": prep_actions,
             }
             self._record_recovery("pillar_up", res)
             if self.logger:
@@ -1982,6 +2010,7 @@ class CustomEnvWrapper(gym.Wrapper):
         # consecutive stucks (default 8) before breaking out — the
         # original 4 was too easy to hit on the first cycle when the
         # hotbar swap was still settling.
+        break_reason: str | None = None
         while blocks_used < max_blocks and steps_used < max_steps:
             try:
                 cur_y = float(self.cache["info"]["location_stats"].get("ypos", last_y))
@@ -1990,10 +2019,14 @@ class CustomEnvWrapper(gym.Wrapper):
             if cur_y >= target_y:
                 break
 
-            slot, block_name = self._find_placeable_block_slot(prefer)
+            slot, block_name = _resolve_placeable_slot()
             if slot is None:
+                break_reason = "no_placeable_block_available"
                 break
             if not _confirm_placeable_selected(slot, block_name, ticks=2):
+                break_reason = (
+                    f"placeable_hotbar_not_selected:{block_name}:slot_{slot}"
+                )
                 stuck_count = max_stuck_per_cycle
                 if self.logger:
                     self.logger.warning(
@@ -2056,10 +2089,14 @@ class CustomEnvWrapper(gym.Wrapper):
         except Exception:
             end_y = last_y
         success = (end_y - start_y) >= 1.0
-        if blocks_used == 0:
+        if blocks_used == 0 and break_reason:
+            reason = break_reason
+        elif blocks_used == 0:
             reason = "no_placement_succeeded"
         elif end_y >= target_y - 0.5:
             reason = "reached_target"
+        elif break_reason:
+            reason = break_reason
         elif stuck_count >= max_stuck_per_cycle:
             reason = "stuck_no_progress"
         elif steps_used >= max_steps:
@@ -2076,6 +2113,7 @@ class CustomEnvWrapper(gym.Wrapper):
             "steps_used": steps_used,
             "reason": reason,
             "trajectory": traj,
+            "prep_actions": prep_actions,
         }
         self._record_recovery("pillar_up", result)
         if self.logger:
@@ -2502,6 +2540,8 @@ class CustomEnvWrapper(gym.Wrapper):
             max_blocks=max_blocks,
             max_steps=max_steps,
             prefer_blocks=prefer_blocks,
+            prepared_slot=slot,
+            prepared_block=block_name,
         )
         result = dict(result)
         result["prep_action"] = prep_action
