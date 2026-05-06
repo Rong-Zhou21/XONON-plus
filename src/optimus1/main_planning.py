@@ -1462,10 +1462,11 @@ def new_agent_do(
 
                     if mining_direction_active:
                         env_status_now = env.get_status()
-                        if not _has_capable_pickaxe_for_target(env_status_now, mining_target_ore):
+                        if not _has_capable_pickaxe_for_target(env_status_now, _planner_target):
                             logger.warning(
                                 "Mining subgoal needs a better pickaxe; forcing replanning: "
-                                f"target={mining_target_ore}, inventory={env_status_now.get('inventory', {})}, "
+                                f"target={_planner_target}, effective_ore={mining_target_ore}, "
+                                f"inventory={env_status_now.get('inventory', {})}, "
                                 f"timestep={env.num_steps}"
                             )
                             subgoal = None
