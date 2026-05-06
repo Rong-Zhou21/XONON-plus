@@ -278,6 +278,31 @@ def _select_next_planning_waypoint(
     return parsed[0][0], parsed[0][1]
 
 
+def _forced_pickaxe_prereq_for_mining(
+    env_status: Dict[str, Any],
+    waypoint: str,
+) -> tuple[str, int] | None:
+    waypoint_name = _normalise_waypoint_name(waypoint)
+    required_tier = ORE_REQUIRED_PICKAXE_TIER.get(waypoint_name, 1)
+    if required_tier < 3 or _has_capable_pickaxe_for_target(env_status, waypoint_name):
+        return None
+
+    counts = _normalised_inventory_counts(env_status)
+    if counts.get("stick", 0) < 2:
+        return "stick", max(1, 2 - counts.get("stick", 0))
+    if counts.get("crafting_table", 0) < 1:
+        return "crafting_table", 1
+    if counts.get("iron_ingot", 0) >= 3:
+        return "iron_pickaxe", 1
+    if counts.get("iron_ore", 0) >= 3 and counts.get("furnace", 0) >= 1:
+        return "iron_ingot", 3
+    if counts.get("furnace", 0) < 1 and counts.get("cobblestone", 0) >= 8:
+        return "furnace", 1
+    if counts.get("stone_pickaxe", 0) < 1:
+        return "stone_pickaxe", 1
+    return "iron_ore", 3
+
+
 def make_plan(
     original_final_goal: str,
     env_status: dict,
@@ -298,6 +323,15 @@ def make_plan(
     logger.info(f"In make_plan")
     logger.info(f"wp_list_str: {wp_list_str}")
     wp, wp_num = _select_next_planning_waypoint(wp_list_str, logger, inventory)
+    forced_pickaxe_prereq = _forced_pickaxe_prereq_for_mining(env_status, wp)
+    if forced_pickaxe_prereq is not None:
+        forced_wp, forced_num = forced_pickaxe_prereq
+        logger.warning(
+            "Planner selected mining waypoint without a capable pickaxe; "
+            f"forcing prerequisite waypoint {forced_wp}:{forced_num} before {wp}. "
+            f"inventory={inventory}"
+        )
+        wp, wp_num = forced_wp, forced_num
 
     state_snapshot = action_memory.create_state_snapshot(env_status, obs, cfg)
     case_decision = action_memory.select_case_decision(
