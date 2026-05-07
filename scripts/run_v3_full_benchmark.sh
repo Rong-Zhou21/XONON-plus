@@ -68,6 +68,8 @@ SERVER_PORT="${SERVER_PORT:-9100}"
 SEED="${SEED:-0}"
 TASK_COOLDOWN_SEC="${TASK_COOLDOWN_SEC:-3}"    # 每任务结束后清进程的等待秒数（10→3，节省 67×7s≈8min）
 SKIP_DONE="${SKIP_DONE:-1}"                    # 1=跳过 exp_results/v4 已有的 exp_num
+START_APP_SERVER="${START_APP_SERVER:-1}"      # 1=自动确保 app.py agent server 已在 SERVER_PORT 监听
+APP_START_TIMEOUT_SEC="${APP_START_TIMEOUT_SEC:-120}"
 
 # ===== Perception-Action Suite（这一轮新增的"环境感知 + 行动"统一开关）=====
 # 1 = 全量启用（推荐，作为本轮创新点的实验默认）
@@ -101,6 +103,7 @@ RESULTS_DIR="${RESULTS_DIR:-exp_results/v4}"
 mkdir -p "$VIDEO_DIR" "$RESULTS_DIR"
 
 SUMMARY_FILE="${SUMMARY_FILE:-/tmp/xenon_v3_${RUN_LABEL}_$(date +%Y%m%d_%H%M%S)_summary.log}"
+APP_SERVER_LOG="${APP_SERVER_LOG:-/tmp/xenon_v3_${RUN_LABEL}_app_$(date +%Y%m%d_%H%M%S).log}"
 
 # 67 个任务的 (benchmark, task_id, max_minutes, exp_offset_base)
 # exp_offset_base 用于让每个 benchmark 的 exp_num 段不冲突
@@ -181,6 +184,44 @@ cleanup() {
   pkill -9 -f "launchClient" 2>/dev/null || true
 }
 
+server_ready() {
+  python3 - "$SERVER_PORT" <<'PY' >/dev/null 2>&1
+import sys
+import urllib.request
+
+port = sys.argv[1]
+urllib.request.urlopen(f"http://127.0.0.1:{port}/docs", timeout=2).read(64)
+PY
+}
+
+ensure_app_server() {
+  if [ "$START_APP_SERVER" != "1" ]; then
+    return 0
+  fi
+
+  if server_ready; then
+    printf " app_server             : existing server on port %s\n" "$SERVER_PORT" | tee -a "$SUMMARY_FILE"
+    return 0
+  fi
+
+  printf " app_server             : starting app.py on port %s log=%s\n" "$SERVER_PORT" "$APP_SERVER_LOG" | tee -a "$SUMMARY_FILE"
+  nohup python -u app.py --port "$SERVER_PORT" > "$APP_SERVER_LOG" 2>&1 < /dev/null &
+  APP_SERVER_PID=$!
+  printf " app_server_pid         : %s\n" "$APP_SERVER_PID" | tee -a "$SUMMARY_FILE"
+
+  for _ in $(seq 1 "$APP_START_TIMEOUT_SEC"); do
+    if server_ready; then
+      printf " app_server_ready       : yes\n" | tee -a "$SUMMARY_FILE"
+      return 0
+    fi
+    sleep 1
+  done
+
+  printf " app_server_ready       : no (timeout after %ss)\n" "$APP_START_TIMEOUT_SEC" | tee -a "$SUMMARY_FILE"
+  tail -80 "$APP_SERVER_LOG" 2>/dev/null | tee -a "$SUMMARY_FILE" || true
+  return 1
+}
+
 if [ "$DECISIONER_ENABLED" = "1" ]; then
   DECISIONER_OVERRIDES=(
     "memory.case_memory.decisioner.enabled=true"
@@ -204,6 +245,8 @@ cat <<INFO | tee "$SUMMARY_FILE"
  video_dir              : $VIDEO_DIR
  results_dir            : $RESULTS_DIR
  summary                : $SUMMARY_FILE
+ app_server_log         : $APP_SERVER_LOG
+ start_app_server       : $START_APP_SERVER
  skip_done              : $SKIP_DONE
  start_time             : $(date)
 ============================================================
@@ -211,6 +254,7 @@ INFO
 
 cleanup
 sleep 3
+ensure_app_server || exit 1
 
 DONE=0
 SKIPPED=0

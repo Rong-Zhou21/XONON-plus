@@ -5,6 +5,7 @@ import time
 import argparse
 import base64
 import random
+import traceback
 import numpy as np
 import torch
 import transformers
@@ -12,7 +13,7 @@ import transformers
 # Ensure files created in Docker are world-readable/writable
 os.umask(0o000)
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import uvicorn
 
 from optimus1.server.agent import AgentFactory
@@ -23,6 +24,27 @@ import time
 
 app = FastAPI()
 agent = None
+
+
+def _agent_call_with_retries(label: str, func, max_retries: int | None = None, sleep_s: float | None = None):
+    attempts = max(1, max_retries or int(os.getenv("XENON_APP_MAX_RETRIES", "3")))
+    delay = float(os.getenv("XENON_APP_RETRY_SLEEP", "1.0")) if sleep_s is None else sleep_s
+    last_exc = None
+    for attempt in range(1, attempts + 1):
+        try:
+            return func()
+        except Exception as exc:
+            last_exc = exc
+            print(
+                f"[app.py] {label} failed attempt {attempt}/{attempts}: "
+                f"{type(exc).__name__}: {exc}",
+                flush=True,
+            )
+            print(traceback.format_exc(limit=4), flush=True)
+            if attempt < attempts and delay > 0:
+                time.sleep(delay)
+    detail = f"{label} failed after {attempts} attempts: {type(last_exc).__name__}: {last_exc}"
+    raise HTTPException(status_code=502, detail=detail)
 
 
 def _img2base64(img_path: str):
@@ -93,78 +115,59 @@ def chat(req: MCRequest) -> MCResponse:
     # print(f"HERE req.type: {req.type}")
     match req.type:
         case "decomposed_plan":
-            retry = 0
-            while True:
-                try:
-                    plans, prompt = agent.decomposed_plan(
+            plans, prompt = _agent_call_with_retries(
+                "decomposed_plan",
+                lambda: agent.decomposed_plan(
                         req.waypoint,
                         rgb_obs[-1],
                         req.similar_wp_sg_dict,
                         req.failed_sg_list_for_wp,
-                    )
-                    response = MCResponse(response=plans, message=prompt)
-                    break
-                except:
-                    retry += 1
-                    print("connection error, retry: ", retry)
+                ),
+            )
+            response = MCResponse(response=plans, message=prompt)
         case "context_aware_reasoning":
-            retry = 0
-            while True:
-                try:
-                    reasoning, visual_description = agent.context_aware_reasoning(
+            reasoning, visual_description = _agent_call_with_retries(
+                "context_aware_reasoning",
+                lambda: agent.context_aware_reasoning(
                         req.task_or_instruction,
                         req.goal,
                         rgb_obs[-1],
-                    )
-                    response = MCResponse(response=reasoning, message=visual_description)
-                    break
-                except:
-                    retry += 1
-                    print("connection error, retry: ", retry)
+                ),
+            )
+            response = MCResponse(response=reasoning, message=visual_description)
         case "retrieval":
-            retry = 0
-            while True:
-                try:
-                    plans_retrieval = agent.retrieve(
+            plans_retrieval = _agent_call_with_retries(
+                "retrieval",
+                lambda: agent.retrieve(
                         req.task_or_instruction,
                         rgb_obs[-1],
-                    )
-                    response = MCResponse(response=plans_retrieval)
-                    break
-                except:
-                    retry += 1
-                    print("connection error while retrieval, retry: ", retry)
+                ),
+            )
+            response = MCResponse(response=plans_retrieval)
         case "plan":
-            retry = 0
-            while True:
-                try:
-                    plans = agent.plan(
+            plans = _agent_call_with_retries(
+                "plan",
+                lambda: agent.plan(
                         req.task_or_instruction,
                         rgb_obs[-1],
                         req.example,
                         req.visual_info,
                         req.graph,
-                    )
-                    response = MCResponse(response=plans)
-                    break
-                except:
-                    retry += 1
-                    print("connection error, retry: ", retry)
+                ),
+            )
+            response = MCResponse(response=plans)
         case "fixjson":
-            retry = 0
             # print(f"HERE!!!@#!%$@%!")
             # print(f"HERE!!! req.errorneous_planning: {req.errorneous_planning}")
             # print(f"rgb_obs[-1]: {rgb_obs[-1]}")
-            while retry < 10:
-                try:
-                    fixed_json = agent.fix_json_format(
+            fixed_json = _agent_call_with_retries(
+                "fixjson",
+                lambda: agent.fix_json_format(
                         req.errorneous_planning, rgb_obs[-1]
-                    )
-                    response = MCResponse(response=fixed_json)
-                    break
-                except:
-                    retry += 1
-                    print("connection error, retry: ", retry)
+                ),
+                max_retries=int(os.getenv("XENON_APP_FIXJSON_MAX_RETRIES", "10")),
+            )
+            response = MCResponse(response=fixed_json)
 
         case "action":
 
@@ -178,8 +181,6 @@ def chat(req: MCRequest) -> MCResponse:
             # old_obs: path of the obs when the current task is given
             old_obs = _filter_task_obs(req.task_or_instruction, image_root)
             print(f"old_obs {old_obs} current step {req.current_step}")
-            retry = 0
-
             done_imgs, cont_imgs, replan_imgs = (
                 req.done_imgs,
                 req.cont_imgs, # str data (bytes) of the images
@@ -190,44 +191,35 @@ def chat(req: MCRequest) -> MCResponse:
                 base64lst2img_path(cont_imgs, image_root),
                 base64lst2img_path(replan_imgs, image_root),
             )
-            while retry < 10:
-                try:
-                    # NOTE: Can VLM determine the progress only using 2 images (current obs, old obs)?
-                    reflection = agent.reflection(
+            # NOTE: Can VLM determine the progress only using 2 images (current obs, old obs)?
+            reflection = _agent_call_with_retries(
+                "reflection",
+                lambda: agent.reflection(
                         req.task_or_instruction,
                         old_obs, # obs when the current task is given
                         rgb_obs[-1], # current obs
                         done_img_path=done,
                         cont_img_path=cont,
                         replan_img_path=replan,
-                    )
-                    print(f"{old_obs} <-> {rgb_obs[-1]}: {reflection}")
-                    response = MCResponse(
-                        response=reflection, appendix=_img2base64(old_obs)
-                    )
-                    break
-                except:
-                    retry += 1
-                    time.sleep(1)
-                    print("connection error while reflection, retry: ", retry)
+                ),
+                max_retries=int(os.getenv("XENON_APP_REFLECTION_MAX_RETRIES", "10")),
+            )
+            print(f"{old_obs} <-> {rgb_obs[-1]}: {reflection}")
+            response = MCResponse(response=reflection, appendix=_img2base64(old_obs))
         case "replan":
-            retry = 0
-            while retry < 10:
-                try:
-                    replan = agent.replan(
+            replan = _agent_call_with_retries(
+                "replan",
+                lambda: agent.replan(
                         req.task_or_instruction,
                         rgb_obs[-1],
                         req.error_info,
                         req.example,
                         req.graph,
-                    )
-                    response = MCResponse(response=replan)
-                    print(replan)
-                    break
-                except Exception as e:
-                    retry += 1
-                    time.sleep(1)
-                    print(f"connection error while replan {e}, retry: {retry}")
+                ),
+                max_retries=int(os.getenv("XENON_APP_REPLAN_MAX_RETRIES", "10")),
+            )
+            response = MCResponse(response=replan)
+            print(replan)
         case _:
             response = MCResponse(message=f"{req.type} not support...", status_code=400)
     return response
