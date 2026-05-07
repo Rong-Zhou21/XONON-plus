@@ -33,6 +33,8 @@ SERVER_PORT="${SERVER_PORT:-9100}"
 SEED="${SEED:-0}"
 TASK_COOLDOWN_SEC="${TASK_COOLDOWN_SEC:-3}"
 SKIP_DONE="${SKIP_DONE:-1}"
+MAX_RETRIES_ON_CRASH="${MAX_RETRIES_ON_CRASH:-10}"
+CRASH_RETRY_COOLDOWN_SEC="${CRASH_RETRY_COOLDOWN_SEC:-15}"
 
 PERCEPTION_ACTION_SUITE="${PERCEPTION_ACTION_SUITE:-1}"
 
@@ -81,6 +83,34 @@ cleanup() {
   pkill -9 -f "launchClient" 2>/dev/null || true
 }
 
+is_abnormal_status() {
+  case "$1" in
+    env_step_timeout|crash_*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+delete_abnormal_artifacts() {
+  local result_file="$1"
+  local video_file=""
+  if [ -n "$result_file" ] && [ -f "$result_file" ]; then
+    video_file=$(python3 - "$result_file" <<'PY' 2>/dev/null
+import json, sys
+
+try:
+    d = json.load(open(sys.argv[1]))
+except Exception:
+    d = {}
+print(d.get("video_file") or "")
+PY
+)
+    rm -f "$result_file"
+  fi
+  if [ -n "$video_file" ] && [ -f "$video_file" ]; then
+    rm -f "$video_file"
+  fi
+}
+
 if [ "$DECISIONER_ENABLED" = "1" ]; then
   DECISIONER_OVERRIDES=(
     "memory.case_memory.decisioner.enabled=true"
@@ -104,6 +134,7 @@ cat <<INFO | tee "$SUMMARY_FILE"
  video_dir              : $VIDEO_DIR
  results_dir            : $RESULTS_DIR
  summary                : $SUMMARY_FILE
+ max_abnormal_retries   : $MAX_RETRIES_ON_CRASH
  skip_done              : $SKIP_DONE
  start_time             : $(date)
 ============================================================
@@ -141,17 +172,13 @@ for JOB in "${JOBS[@]}"; do
     continue
   fi
 
-  MAX_RETRIES_ON_CRASH="${MAX_RETRIES_ON_CRASH:-2}"
-  CRASH_RETRY_STEP_THRESHOLD="${CRASH_RETRY_STEP_THRESHOLD:-1000}"
-  CRASH_RETRY_COOLDOWN_SEC="${CRASH_RETRY_COOLDOWN_SEC:-15}"
-
   attempt=0
   STATUS=""
   T_START=$(date +%s)
 
   while : ; do
     if [ "$attempt" -gt 0 ]; then
-      printf "       retry %d/%d (env crash detected, last status=%s)\n" \
+      printf "       retry %d/%d (abnormal exit, last status=%s)\n" \
         "$attempt" "$MAX_RETRIES_ON_CRASH" "$STATUS" | tee -a "$SUMMARY_FILE"
       cleanup
       sleep "$CRASH_RETRY_COOLDOWN_SEC"
@@ -196,41 +223,33 @@ PY
     fi
 
     should_retry=0
-    if [ "$attempt" -lt "$MAX_RETRIES_ON_CRASH" ]; then
-      if [ -z "$RESULT_FILE" ]; then
-        should_retry=1
-      else
-        STATUS_DETAILED=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
+    abnormal_exit=0
+    if [ -z "$RESULT_FILE" ]; then
+      abnormal_exit=1
+    else
+      STATUS_DETAILED=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
 import json, sys
 d = json.load(open(sys.argv[1]))
 print(d.get("status_detailed", ""))
 PY
 )
-        STATUS_STEPS=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
-import json, sys
-d = json.load(open(sys.argv[1]))
-print(int(d.get("steps", 0) or 0))
-PY
-)
-        IS_SUCCESS=$(echo "$STATUS" | grep -c "^SUCCESS")
-        if [ "$IS_SUCCESS" -eq 0 ]; then
-          if [ "$STATUS_DETAILED" = "env_step_timeout" ] && [ "$STATUS_STEPS" -lt "$CRASH_RETRY_STEP_THRESHOLD" ]; then
-            should_retry=1
-          elif echo "$STATUS_DETAILED" | grep -qE "^crash_" && [ "$STATUS_STEPS" -lt "$CRASH_RETRY_STEP_THRESHOLD" ]; then
-            should_retry=1
-          fi
-        fi
+      IS_SUCCESS=$(echo "$STATUS" | grep -c "^SUCCESS")
+      if [ "$IS_SUCCESS" -eq 0 ] && is_abnormal_status "$STATUS_DETAILED"; then
+        abnormal_exit=1
+      fi
+    fi
+
+    if [ "$abnormal_exit" -eq 1 ]; then
+      delete_abnormal_artifacts "$RESULT_FILE"
+      RESULT_FILE=""
+      if [ "$attempt" -lt "$MAX_RETRIES_ON_CRASH" ]; then
+        should_retry=1
+      else
+        STATUS="NO_RESULT_ABNORMAL_RETRIES_EXHAUSTED last=$STATUS"
       fi
     fi
 
     if [ "$should_retry" -eq 1 ]; then
-      if [ -n "$RESULT_FILE" ]; then
-        RETRY_DIR="$RESULTS_DIR/retry_failures"
-        mkdir -p "$RETRY_DIR"
-        RETRY_KEEP="$RETRY_DIR/retry${attempt}_$(basename "$RESULT_FILE")"
-        mv "$RESULT_FILE" "$RETRY_KEEP"
-        printf "       preserved retry failure result=%s\n" "$RETRY_KEEP" | tee -a "$SUMMARY_FILE"
-      fi
       attempt=$((attempt + 1))
       continue
     fi

@@ -70,6 +70,8 @@ TASK_COOLDOWN_SEC="${TASK_COOLDOWN_SEC:-3}"    # 每任务结束后清进程的�
 SKIP_DONE="${SKIP_DONE:-1}"                    # 1=跳过 exp_results/v4 已有的 exp_num
 START_APP_SERVER="${START_APP_SERVER:-1}"      # 1=自动确保 app.py agent server 已在 SERVER_PORT 监听
 APP_START_TIMEOUT_SEC="${APP_START_TIMEOUT_SEC:-120}"
+MAX_RETRIES_ON_CRASH="${MAX_RETRIES_ON_CRASH:-10}"
+CRASH_RETRY_COOLDOWN_SEC="${CRASH_RETRY_COOLDOWN_SEC:-15}"
 
 # ===== Perception-Action Suite（这一轮新增的"环境感知 + 行动"统一开关）=====
 # 1 = 全量启用（推荐，作为本轮创新点的实验默认）
@@ -184,6 +186,34 @@ cleanup() {
   pkill -9 -f "launchClient" 2>/dev/null || true
 }
 
+is_abnormal_status() {
+  case "$1" in
+    env_step_timeout|crash_*) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+delete_abnormal_artifacts() {
+  local result_file="$1"
+  local video_file=""
+  if [ -n "$result_file" ] && [ -f "$result_file" ]; then
+    video_file=$(python3 - "$result_file" <<'PY' 2>/dev/null
+import json, sys
+
+try:
+    d = json.load(open(sys.argv[1]))
+except Exception:
+    d = {}
+print(d.get("video_file") or "")
+PY
+)
+    rm -f "$result_file"
+  fi
+  if [ -n "$video_file" ] && [ -f "$video_file" ]; then
+    rm -f "$video_file"
+  fi
+}
+
 server_ready() {
   python3 - "$SERVER_PORT" <<'PY' >/dev/null 2>&1
 import sys
@@ -247,6 +277,7 @@ cat <<INFO | tee "$SUMMARY_FILE"
  summary                : $SUMMARY_FILE
  app_server_log         : $APP_SERVER_LOG
  start_app_server       : $START_APP_SERVER
+ max_abnormal_retries   : $MAX_RETRIES_ON_CRASH
  skip_done              : $SKIP_DONE
  start_time             : $(date)
 ============================================================
@@ -280,21 +311,17 @@ for JOB in "${JOBS[@]}"; do
     continue
   fi
 
-  # 任务级重试机制 ---------------------------------------------
-  # MineRL/Malmo 偶尔在 Java 客户端启动后 ~8 秒内超时（"TimeoutError:
-  # timed out" / "Connection timed out!"），导致 status_detailed=
-  # env_step_timeout 且 steps 极少（~100-200）。这是环境 race，重试
-  # 一次通常就能成功。同样 crash_TypeError / crash_RuntimeError 在前
-  # 1000 步内的早期崩溃也常因 Java 启动状态没跑稳。
+  # 任务级异常重跑机制 -----------------------------------------
+  # 只把正常完成的结果作为最终结果保留：
+  #   * success
+  #   * 正常任务失败（如 timeout_non_programmatic / cannot generate plan）
   #
-  # 重试条件（任一即可）：
-  #   * status_detailed == env_step_timeout 且 steps < CRASH_RETRY_STEP_THRESHOLD
-  #   * status_detailed 以 "crash_" 开头 且 steps < CRASH_RETRY_STEP_THRESHOLD
+  # 中途异常退出不保留结果或视频，直接删除当次产物并重跑：
+  #   * 没写出 result json
+  #   * status_detailed == env_step_timeout
+  #   * status_detailed 以 crash_ 开头
   #
-  # 上限由 MAX_RETRIES_ON_CRASH 控制（默认 2），关闭重试设为 0。
-  MAX_RETRIES_ON_CRASH="${MAX_RETRIES_ON_CRASH:-2}"
-  CRASH_RETRY_STEP_THRESHOLD="${CRASH_RETRY_STEP_THRESHOLD:-1000}"
-  CRASH_RETRY_COOLDOWN_SEC="${CRASH_RETRY_COOLDOWN_SEC:-15}"
+  # 上限由 MAX_RETRIES_ON_CRASH 控制（默认 10），防止同一任务无限占住整轮实验。
 
   attempt=0
   STATUS=""
@@ -302,7 +329,7 @@ for JOB in "${JOBS[@]}"; do
 
   while : ; do
     if [ "$attempt" -gt 0 ]; then
-      printf "       retry %d/%d (env crash detected, last status=%s)\n" \
+      printf "       retry %d/%d (abnormal exit, last status=%s)\n" \
         "$attempt" "$MAX_RETRIES_ON_CRASH" "$STATUS" | tee -a "$SUMMARY_FILE"
       cleanup
       sleep "$CRASH_RETRY_COOLDOWN_SEC"
@@ -348,41 +375,36 @@ PY
 
     # 是否需要重试？
     should_retry=0
-    if [ "$attempt" -lt "$MAX_RETRIES_ON_CRASH" ]; then
-      if [ -z "$RESULT_FILE" ]; then
-        # 完全没结果文件 — 进程崩溃太早，连 results.json 都没写出来
-        should_retry=1
-      else
-        # 有结果文件，看 status_detailed + steps
-        STATUS_DETAILED=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
+    abnormal_exit=0
+    if [ -z "$RESULT_FILE" ]; then
+      # 完全没结果文件 — 进程崩溃太早，连 results.json 都没写出来
+      abnormal_exit=1
+    else
+      # 有结果文件，看 status_detailed。异常不再按 steps 过滤，中途异常也必须重跑。
+      STATUS_DETAILED=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
 import json, sys
 d = json.load(open(sys.argv[1]))
 print(d.get("status_detailed", ""))
 PY
 )
-        STATUS_STEPS=$(python3 - "$RESULT_FILE" <<'PY' 2>/dev/null
-import json, sys
-d = json.load(open(sys.argv[1]))
-print(int(d.get("steps", 0) or 0))
-PY
-)
-        # 已经成功 → 永远不重试
-        IS_SUCCESS=$(echo "$STATUS" | grep -c "^SUCCESS")
-        if [ "$IS_SUCCESS" -eq 0 ]; then
-          # env_step_timeout + 早期 → 重试
-          if [ "$STATUS_DETAILED" = "env_step_timeout" ] && [ "$STATUS_STEPS" -lt "$CRASH_RETRY_STEP_THRESHOLD" ]; then
-            should_retry=1
-          # crash_*Error + 早期 → 重试
-          elif echo "$STATUS_DETAILED" | grep -qE "^crash_" && [ "$STATUS_STEPS" -lt "$CRASH_RETRY_STEP_THRESHOLD" ]; then
-            should_retry=1
-          fi
-        fi
+      # 已经成功 → 永远不重试。正常失败也不重试。
+      IS_SUCCESS=$(echo "$STATUS" | grep -c "^SUCCESS")
+      if [ "$IS_SUCCESS" -eq 0 ] && is_abnormal_status "$STATUS_DETAILED"; then
+        abnormal_exit=1
+      fi
+    fi
+
+    if [ "$abnormal_exit" -eq 1 ]; then
+      delete_abnormal_artifacts "$RESULT_FILE"
+      RESULT_FILE=""
+      if [ "$attempt" -lt "$MAX_RETRIES_ON_CRASH" ]; then
+        should_retry=1
+      else
+        STATUS="NO_RESULT_ABNORMAL_RETRIES_EXHAUSTED last=$STATUS"
       fi
     fi
 
     if [ "$should_retry" -eq 1 ]; then
-      # 删除当次失败的结果，避免下次尝试时被 SKIP 逻辑误判已完成
-      [ -n "$RESULT_FILE" ] && rm -f "$RESULT_FILE"
       attempt=$((attempt + 1))
       continue
     fi
