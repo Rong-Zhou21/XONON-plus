@@ -292,3 +292,25 @@ SUMMARY_FILE=/tmp/xenon_v7_v7_bedrock600_fan30_seed1_20260509_020331_summary.log
 - `bedrock_stuck` 的日志仍可能出现 `no_activity_ticks≈1000`，因为实际触发还受采到 deeper ore、switch cooldown 和最近活动时间影响；但默认阈值已经在 summary 中确认是 `600`。
 
 当前判断：第四次修正没有破坏 fan30 机制；地下循环仍按“目标高度/底层卡住 -> 横移一格 -> 再向下挖”执行。当前瓶颈主要是 gold 资源稀疏和长时间采矿导致的工具耐久压力，暂时不再增加新硬逻辑。
+
+## 2026-05-09 02:20 seed1 第一轮结果
+
+`v7_bedrock600_fan30_seed1` 第一轮：
+
+- exp: `381200`
+- task: Armor task 12 `golden_chestplate`
+- seed/world_seed: `1`
+- result: `FAIL`
+- status: `timeout_non_programmatic`
+- steps: `24492`
+- minutes: `20.41`
+- 最终主要卡点：`gold_ore=6/8`
+
+观察：
+
+- 相比前一版 seed1 的 `gold_ore=3/8` 后铁镐耗尽，这次推进到 `gold_ore=6/8`，说明更早的 bedrock-stuck 触发有一定收益。
+- 日志中出现 `no_activity_ticks=668` 的 bedrock-stuck relocation，比之前常见的 1200+ 更早。
+- 仍然有大量竖井采样没有命中 gold，说明当前机制虽然可行，但采样覆盖效率仍不足。
+- 当前没有发现“未完成 1 格水平位移就恢复 dig down”的回归；失败主要是资源覆盖率/时间预算问题。
+
+下一步观察重点：第二轮 seed2 是否能在 gold 阶段更稳定地超过 6/8；如果仍反复卡在 5-6 个 gold，需要考虑提高水平换位间隔或引入更轻量的目标高度局部扫描，而不是继续只靠相邻竖井抽样。
