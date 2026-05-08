@@ -262,3 +262,33 @@ min_forward_delta      : 1.0
 
 - 仍然只在 deeper ore / bedrock-stuck 这类允许触发条件下抬升。
 - 但底层卡住会更快被识别，减少在 y=2-5 附近的空耗和铁镐磨损。
+
+## 2026-05-09 02:03 seed1 重启监控
+
+`v7_bedrock600_fan30` 第一轮 seed0 在地表阶段卡在 `oak_log=7/8`，未进入地下机制验证。为避免把时间耗在与本次目标无关的地表砍树随机失败上，停止该运行、清空 `exp_results/v7` 和 `videos/v7`，并用 `SEED_BASE=1` 重启：
+
+```text
+RUN_LABEL=v7_bedrock600_fan30_seed1
+EXP_NUM_BASE=380000
+SEED_BASE=1
+SKIP_DONE=0
+SUMMARY_FILE=/tmp/xenon_v7_v7_bedrock600_fan30_seed1_20260509_020331_summary.log
+```
+
+运行状态：
+
+- runner pid: `993915`
+- current first task: Armor task 12 `golden_chestplate`
+- current first exp: `381200`
+- current first seed: `1`
+- current first log: `/tmp/xenon_v7_v7_bedrock600_fan30_seed1_armor_t12_rep0_exp381200_20260509_020334.log`
+
+已观察到的地下行为：
+
+- 02:07 左右已进入 `gold_ore` 阶段，并持有 `iron_pickaxe`。
+- 已获得 `gold_ore=5`、`diamond=2`、`iron_ore=8`，说明地下竖井采样正在推进。
+- 多次 `Mining shaft relocation` 满足 `horizontal_delta >= 1.0` 后恢复 `dig down`。
+- 一次横移虽然 `horizontal_delta=1.0005`，但 `height_drop=True`，上层没有恢复 `dig down`，随后继续重试；这说明防止“掉回下方竖井”的保护仍有效，但后续如果它导致明显低效，可以考虑把 `XENON_LATERAL_MAX_Y_DROP` 从 `0.75` 放宽到 `1.25`。
+- `bedrock_stuck` 的日志仍可能出现 `no_activity_ticks≈1000`，因为实际触发还受采到 deeper ore、switch cooldown 和最近活动时间影响；但默认阈值已经在 summary 中确认是 `600`。
+
+当前判断：第四次修正没有破坏 fan30 机制；地下循环仍按“目标高度/底层卡住 -> 横移一格 -> 再向下挖”执行。当前瓶颈主要是 gold 资源稀疏和长时间采矿导致的工具耐久压力，暂时不再增加新硬逻辑。
