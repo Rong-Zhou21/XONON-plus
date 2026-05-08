@@ -186,3 +186,51 @@ block_cell_changed=True
 
 - `scripts/run_v7_armor_targeted.sh`
   - 同步默认值，并在 summary 中打印 `yaw_offsets`。
+
+修复已提交并推送：
+
+- commit: `db50c5d Add fan yaw corridor relocation`
+- remote: `origin/main`
+
+## 2026-05-09 01:05 fan30 重启与在线验证
+
+旧的 v7 运行进程已停止，随后清理并重启当前 fan30 版本：
+
+```text
+RUN_LABEL=v7_fan30_corridor
+EXP_NUM_BASE=376000
+SKIP_DONE=0
+SUMMARY_FILE=/tmp/xenon_v7_v7_fan30_corridor_20260509_010545_summary.log
+```
+
+运行状态：
+
+- runner pid: `942968`
+- current first task: Armor task 12 `golden_chestplate`
+- current first exp: `377200`
+- current first log: `/tmp/xenon_v7_v7_fan30_corridor_armor_t12_rep0_exp377200_20260509_010548.log`
+
+summary 确认当前配置：
+
+```text
+yaw_mode               : fan30
+yaw_offsets            : 0,30,-30
+blocked_front_pitch    : 0.0
+blocked_up_budget      : 0
+blocked_feet_pitch     : 55.0
+min_forward_delta      : 1.0
+```
+
+已验证的关键事件：
+
+- 01:09-01:11，连续多次地下 relocation 先触发 `yaw_offset_+0 has not moved one block`，随后执行 `clearing horizontal front then diagonal-down blockers`，最后 `horizontal_delta >= 1.00` 后才恢复 `dig down`。
+- 01:13，出现 0 度方向无法打通的场景；第 3 次重试使用 `yaw_offset_+30` 成功，`horizontal_delta=1.72`，随后上层打印 `Mining shaft relocation: horizontal displacement succeeded`。
+- 01:15，出现一次失败横移 `horizontal_delta=0.07`，没有恢复 `dig down`；下一次达到 `horizontal_delta=1.05` 后才恢复。这验证了“至少移动 1 个方块距离”是硬前置条件。
+- 01:14 起已采到 `iron_ore: 1`，说明换位后能够继续在新竖井采样；当前瓶颈是 iron 资源覆盖率，还不是“未换位就继续下挖”的逻辑错误。
+
+当前判断：
+
+- fan30 分支有效，`+30` 分支已经在真实地下堵塞中被触发并成功。
+- 水平前方 -> 斜下方的两格高通道清理顺序有效。
+- 恢复 `dig down` 前的 1 格水平位移门槛有效。
+- 需要继续观察第一轮是否能凑够 iron 并进入 gold；如果长时间只在 `iron_ore=1` 附近循环，后续要评估“首次目标矿高度过低时是否需要回退到矿层中点”的策略，但这会改变当前用户要求保留的 first-target-ore-height 逻辑。
