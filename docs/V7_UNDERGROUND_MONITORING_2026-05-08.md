@@ -118,3 +118,27 @@ EXP_NUM = EXP_NUM_BASE + TASK_ID * 100 + REP
   - `success = provisional_success or (not height_drop and meaningful_final_move)`
   - 当最终坐标已换格或达到阈值时，即使 `blocks_dug=0`，也返回 `success=True`。
   - 将这种情况的 `reason` 统一为 `moved_continue_dig_down`。
+
+修复已提交并推送：
+
+- commit: `b44a463 Treat physical lateral relocation as success`
+
+旧的 `v7_blockcell_lateral` 进程已停止，保留 `373200` 日志作为二次修正依据。
+
+## 23:45 再次重启实验
+
+新实验使用最终 success 语义后台启动：
+
+```text
+RUN_LABEL=v7_physical_lateral
+EXP_NUM_BASE=374000
+SKIP_DONE=0
+SUMMARY_FILE=/tmp/xenon_v7_v7_physical_lateral_20260508_234531_summary.log
+```
+
+运行状态：
+
+- runner pid: `812318`
+- current first task: Armor task 12 `golden_chestplate`
+- current first exp: `375200`
+- current first log: `/tmp/xenon_v7_v7_physical_lateral_armor_t12_rep0_exp375200_20260508_234534.log`
