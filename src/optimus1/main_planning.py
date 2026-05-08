@@ -749,8 +749,53 @@ def _deeper_ores_seen(env_status: Dict[str, Any], target_ore: str) -> list[str]:
     return sorted(seen, key=lambda ore: ORE_LAYER_ORDER[ore])
 
 
+def _deeper_ore_available_counts(env_status: Dict[str, Any], target_ore: str) -> Dict[str, int]:
+    target_rank = ORE_LAYER_ORDER.get(target_ore)
+    if target_rank is None:
+        return {}
+    counts: Dict[str, int] = {}
+    for ore, rank in ORE_LAYER_ORDER.items():
+        if rank > target_rank:
+            count = _ore_available_count(env_status, ore)
+            if count > 0:
+                counts[ore] = count
+    return counts
+
+
 def _forward_mining_prompt(target_ore: str) -> str:
     return f"dig forward and mine {target_ore.replace('_', ' ')}"
+
+
+def _env_int(name: str, default: int) -> int:
+    try:
+        return int(os.environ.get(name, str(default)))
+    except (TypeError, ValueError):
+        return int(default)
+
+
+def _env_float(name: str, default: float) -> float:
+    try:
+        return float(os.environ.get(name, str(default)))
+    except (TypeError, ValueError):
+        return float(default)
+
+
+def _lateral_shift_succeeded(result: Dict[str, Any] | None) -> bool:
+    if not isinstance(result, dict):
+        return False
+    lateral = result.get("lateral_shift")
+    if not isinstance(lateral, dict):
+        return False
+    required_delta = _env_float("XENON_CORRIDOR_MIN_MOVE_DELTA", 0.20)
+    try:
+        horizontal_delta = float(lateral.get("horizontal_delta", 0.0))
+    except (TypeError, ValueError):
+        horizontal_delta = 0.0
+    return (
+        bool(lateral.get("success"))
+        and horizontal_delta >= required_delta
+        and not bool(lateral.get("height_drop"))
+    )
 
 
 PICKAXE_PRIORITY = ("diamond_pickaxe", "iron_pickaxe", "stone_pickaxe", "wooden_pickaxe")
@@ -1097,10 +1142,12 @@ def _maybe_relevel_for_overshoot(
     cur_y = float(ctx.get("current_y", 64.0))
 
     # Destination Y: prefer the first-encounter Y from the caller; fall
-    # back to band midpoint when unknown. Either way we still want it
-    # ABOVE the current Y for there to be anything to pillar up to.
+    # back to band midpoint when unknown. If the agent is already at or
+    # above that destination, the "return to height" part is a no-op but
+    # the v7 shaft-relocation loop should still perform the short
+    # horizontal offset before resuming dig-down.
     band_mid = _ore_band_midpoint(wrapper_ore)
-    if target_y is not None and float(target_y) > cur_y:
+    if target_y is not None:
         dest_y = float(target_y)
         dest_source = "first_target_ore_y"
     elif band_mid is not None:
@@ -1109,6 +1156,97 @@ def _maybe_relevel_for_overshoot(
     else:
         return None
     needed_dy = dest_y - cur_y
+
+    def _apply_lateral_shift(result: Dict[str, Any]) -> Dict[str, Any]:
+        # After re-levelling, do not hand control to open-ended
+        # horizontal mining. Script only a short lateral offset so the
+        # agent leaves the old vertical shaft, then let the original
+        # "dig down" prompt resume.
+        #
+        # This implements the new loop:
+        #   dig down -> overshoot -> pillar/no-op back to target Y ->
+        #   move horizontally until x/z changes -> dig down again at a new x/z.
+        #
+        # Keep the old XENON_OVERSHOOT_TUNNEL_* env vars as a fallback for
+        # existing runner scripts, but the default is now one successful
+        # displacement; repeated overshoot triggers provide additional shifts.
+        lateral_blocks = _env_int(
+            "XENON_OVERSHOOT_LATERAL_BLOCKS",
+            _env_int("XENON_OVERSHOOT_TUNNEL_BLOCKS", 1),
+        )
+        lateral_max_steps = _env_int(
+            "XENON_OVERSHOOT_LATERAL_MAX_STEPS",
+            _env_int("XENON_OVERSHOOT_TUNNEL_MAX_STEPS", 240),
+        )
+        lateral_attempts = max(1, _env_int("XENON_OVERSHOOT_LATERAL_RETRIES", 3))
+        if lateral_blocks > 0 and bool(result.get("success")):
+            for attempt in range(lateral_attempts):
+                if attempt > 0:
+                    try:
+                        logger.info(
+                            "[overshoot_relevel] lateral retry %d/%d: relevel to %.1f before retry",
+                            attempt + 1,
+                            lateral_attempts,
+                            dest_y,
+                        )
+                        env.raise_to_height(
+                            dest_y,
+                            max_blocks=_env_int("XENON_OVERSHOOT_RELEVEL_MAX_BLOCKS", 64),
+                            max_steps=_env_int("XENON_OVERSHOOT_RELEVEL_MAX_STEPS", 600),
+                        )
+                    except Exception as exc:
+                        logger.warning(
+                            f"[overshoot_relevel] retry raise_to_height({dest_y:.1f}) failed: {exc!s}"
+                        )
+                try:
+                    lateral_shift = env.dig_forward_blocks(
+                        n_blocks=lateral_blocks,
+                        max_steps=lateral_max_steps,
+                    )
+                except Exception as exc:
+                    logger.warning(
+                        f"[overshoot_relevel] lateral dig_forward_blocks failed: {exc!s}"
+                    )
+                    continue
+                horizontal_delta = (
+                    (float(lateral_shift.get("end_x", 0.0)) - float(lateral_shift.get("start_x", 0.0))) ** 2
+                    + (float(lateral_shift.get("end_z", 0.0)) - float(lateral_shift.get("start_z", 0.0))) ** 2
+                ) ** 0.5
+                lateral_shift["horizontal_delta"] = horizontal_delta
+                lateral_shift["attempt"] = attempt + 1
+                logger.info(
+                    "[overshoot_relevel] lateral_shift: attempt=%d/%d blocks_dug=%s/%d "
+                    "steps=%s reason=%s horizontal_delta=%.2f "
+                    "start=(%.1f,%.1f,%.1f) end=(%.1f,%.1f,%.1f)",
+                    attempt + 1,
+                    lateral_attempts,
+                    lateral_shift.get("blocks_dug"),
+                    lateral_blocks,
+                    lateral_shift.get("steps_used"),
+                    lateral_shift.get("reason"),
+                    horizontal_delta,
+                    float(lateral_shift.get("start_x", 0.0)),
+                    float(lateral_shift.get("start_y", 0.0)),
+                    float(lateral_shift.get("start_z", 0.0)),
+                    float(lateral_shift.get("end_x", 0.0)),
+                    float(lateral_shift.get("end_y", 0.0)),
+                    float(lateral_shift.get("end_z", 0.0)),
+                )
+                result["lateral_shift"] = lateral_shift
+                # Backward-compatible alias for older summary scripts that
+                # still look for the previous post-pillar tunnel payload.
+                result["tunnel"] = lateral_shift
+                if _lateral_shift_succeeded(result):
+                    break
+        elif lateral_blocks > 0:
+            logger.info(
+                "[overshoot_relevel] lateral_shift skipped: pillar-up was unsuccessful"
+            )
+        result["lateral_success"] = (
+            lateral_blocks <= 0 or _lateral_shift_succeeded(result)
+        )
+        return result
+
     try:
         min_dy = float(os.environ.get("XENON_OVERSHOOT_RELEVEL_MIN_DY", "2"))
     except ValueError:
@@ -1119,7 +1257,20 @@ def _maybe_relevel_for_overshoot(
             "needed_dy=%.1f <= 0.0 (already in or above destination)",
             wrapper_ore, cur_y, dest_y, dest_source, needed_dy,
         )
-        return None
+        return _apply_lateral_shift(
+            {
+                "success": True,
+                "skipped": True,
+                "start_y": cur_y,
+                "end_y": cur_y,
+                "dy": 0.0,
+                "blocks_used": 0,
+                "steps_used": 0,
+                "reason": "already_in_or_above_destination",
+                "prep_action": "noop",
+                "target_y": dest_y,
+            }
+        )
     if needed_dy < min_dy:
         try:
             low_y_floor = float(os.environ.get("XENON_BEDROCK_FLOOR_Y", "8.0"))
@@ -1136,7 +1287,20 @@ def _maybe_relevel_for_overshoot(
                 "needed_dy=%.1f < min_dy=%.1f (already close enough to destination)",
                 wrapper_ore, cur_y, dest_y, dest_source, needed_dy, min_dy,
             )
-            return None
+            return _apply_lateral_shift(
+                {
+                    "success": True,
+                    "skipped": True,
+                    "start_y": cur_y,
+                    "end_y": cur_y,
+                    "dy": 0.0,
+                    "blocks_used": 0,
+                    "steps_used": 0,
+                    "reason": "close_enough_to_destination",
+                    "prep_action": "noop",
+                    "target_y": dest_y,
+                }
+            )
         logger.info(
             "[overshoot_relevel] allowing low-Y micro-lift: ore=%s cur_y=%.1f "
             "dest_y=%.1f needed_dy=%.1f min_dy=%.1f floor=%.1f",
@@ -1192,51 +1356,7 @@ def _maybe_relevel_for_overshoot(
         result.get("prep_action"),
     )
 
-    # Safety net: right after pillar-up, hard-script a forward 2-block-tall
-    # corridor (head + feet at every step) into the target ore band, so the
-    # subsequent STEVE-1 "dig forward and mine X" prompt has cleared room
-    # to walk into. The new dig_forward_blocks alternates pitch between
-    # head and feet level and inserts forward-only walk ticks after each
-    # break, so the agent physically advances. We carve 8 blocks by
-    # default (was 3) — enough to leave the dirt column the pillar-up
-    # placed and reach actual target-band terrain. Disable with
-    # XENON_OVERSHOOT_TUNNEL_BLOCKS=0.
-    try:
-        tunnel_blocks = int(os.environ.get("XENON_OVERSHOOT_TUNNEL_BLOCKS", "8"))
-    except ValueError:
-        tunnel_blocks = 8
-    try:
-        tunnel_max_steps = int(os.environ.get("XENON_OVERSHOOT_TUNNEL_MAX_STEPS", "600"))
-    except ValueError:
-        tunnel_max_steps = 600
-    if tunnel_blocks > 0 and bool(result.get("success")):
-        try:
-            tunnel = env.dig_forward_blocks(
-                n_blocks=tunnel_blocks,
-                max_steps=tunnel_max_steps,
-            )
-        except Exception as exc:
-            logger.warning(
-                f"[overshoot_relevel] dig_forward_blocks failed: {exc!s}"
-            )
-        else:
-            logger.info(
-                "[overshoot_relevel] tunnel: blocks_dug=%s/%d steps=%s "
-                "reason=%s end=(%.1f,%.1f,%.1f)",
-                tunnel.get("blocks_dug"),
-                tunnel_blocks,
-                tunnel.get("steps_used"),
-                tunnel.get("reason"),
-                float(tunnel.get("end_x", 0.0)),
-                float(tunnel.get("end_y", 0.0)),
-                float(tunnel.get("end_z", 0.0)),
-            )
-            result["tunnel"] = tunnel
-    elif tunnel_blocks > 0:
-        logger.info(
-            "[overshoot_relevel] tunnel skipped: pillar-up was unsuccessful"
-        )
-    return result
+    return _apply_lateral_shift(result)
 
 
 def new_agent_do(
@@ -1502,9 +1622,11 @@ def new_agent_do(
                 mining_last_activity_step = env.num_steps
                 mining_mode = "dig_down"
                 mining_forward_prompt = _forward_mining_prompt(mining_target_ore) if mining_direction_active else ""
-                mining_initial_deeper_seen = set(
-                    _deeper_ores_seen(mining_initial_status, mining_target_ore)
-                ) if mining_direction_active else set()
+                mining_deeper_counts = (
+                    _deeper_ore_available_counts(mining_initial_status, mining_target_ore)
+                    if mining_direction_active else {}
+                )
+                mining_pending_deeper_overshot: set[str] = set()
                 # Track Y of first encounter with the *target* ore for this
                 # subgoal. When pillar-up triggers we want to lift the agent
                 # back to that Y rather than the band's mid-y, because we
@@ -1519,6 +1641,7 @@ def new_agent_do(
                 # has already overshot the band again.
                 mining_switch_cooldown_ticks = int(os.environ.get("XENON_MINING_DIRECTION_SWITCH_COOLDOWN_TICKS", "120"))
                 mining_last_switch_step = -1000000
+                mining_failed_lateral_origin_xz: tuple[float, float] | None = None
 
                 while True:
                     env._only_once = True
@@ -1632,11 +1755,15 @@ def new_agent_do(
                         current_activity = _ore_activity_count(env_status_now, mining_target_ore)
                         current_available = _ore_available_count(env_status_now, mining_target_ore)
                         current_available_delta = current_available - mining_available_at_start
-                        deeper_seen = _deeper_ores_seen(env_status_now, mining_target_ore)
+                        deeper_counts = _deeper_ore_available_counts(env_status_now, mining_target_ore)
                         new_deeper_seen = [
-                            ore for ore in deeper_seen
-                            if ore not in mining_initial_deeper_seen
+                            ore
+                            for ore, count in deeper_counts.items()
+                            if count > mining_deeper_counts.get(ore, 0)
                         ]
+                        if new_deeper_seen:
+                            mining_pending_deeper_overshot.update(new_deeper_seen)
+                        mining_deeper_counts = deeper_counts
                         if current_activity > mining_activity:
                             # Target-ore count just increased -> the agent
                             # successfully encountered a target-ore block at
@@ -1665,39 +1792,41 @@ def new_agent_do(
                             mining_last_activity_step = env.num_steps
                             step_waypoint_obtained = env.num_steps
                         target_incomplete = current_available_delta < mining_required
-                        # Trigger 1 (deeper ore in possession): the user's
-                        # explicit ask — "as soon as you've collected an ore
-                        # deeper than your current target, you've overshot,
-                        # lift back up". We deliberately use *deeper_seen*
-                        # rather than *new_deeper_seen*: ores accumulated in
-                        # earlier sub-goals are *still* evidence that the
-                        # agent is below the target band right now, and the
-                        # cooldown gate inside `can_switch` already prevents
-                        # repeated firing on the same overshoot. Set
-                        # XENON_OVERSHOOT_REQUIRE_NEW_DEEPER=1 to restore the
-                        # stricter "only ores acquired during this sub-goal
-                        # count" semantics for an A/B test.
-                        require_new = os.environ.get("XENON_OVERSHOOT_REQUIRE_NEW_DEEPER", "0") == "1"
-                        overshot_seen = new_deeper_seen if require_new else list(deeper_seen)
+                        # Trigger 1 (new deeper ore acquisition): only the
+                        # moment a deeper ore count increases should request
+                        # a lift. A deeper ore already seen earlier is not a
+                        # persistent lower-bound restriction.
+                        overshot_seen = sorted(
+                            mining_pending_deeper_overshot,
+                            key=lambda ore: ORE_LAYER_ORDER.get(ore, 999),
+                        )
                         overshot_layer = len(overshot_seen) > 0
 
-                        # Trigger 2 (current Y below target band): independent
-                        # of seen-deeper-ores, fires when the agent has dug
-                        # below the target ore band by at least
-                        # XENON_OVERSHOOT_Y_MARGIN blocks. Catches the case
-                        # where the agent dug deep but happens to be
-                        # surrounded by dirt/stone/granite (no deeper ore
-                        # picked up yet) — the user's "挖到最底层" scenario.
+                        # Trigger 2 (optional Y-band guard): disabled by
+                        # default because it treats low Y as a bottom limit
+                        # even when no new deeper ore was mined. Enable only
+                        # for ablations with XENON_OVERSHOOT_ENABLE_Y_TRIGGER=1.
                         y_overshoot = False
                         cur_y_value = None
+                        cur_x_value = None
+                        cur_z_value = None
                         target_band_min = None
                         try:
                             loc = env_status_now.get("location_stats") or {}
+                            xpos_raw = loc.get("xpos", None)
                             ypos_raw = loc.get("ypos", None)
+                            zpos_raw = loc.get("zpos", None)
+                            if xpos_raw is not None:
+                                cur_x_value = float(np.asarray(xpos_raw).reshape(-1)[0])
                             if ypos_raw is not None:
                                 cur_y_value = float(np.asarray(ypos_raw).reshape(-1)[0])
+                            if zpos_raw is not None:
+                                cur_z_value = float(np.asarray(zpos_raw).reshape(-1)[0])
+                            enable_y_trigger = os.environ.get(
+                                "XENON_OVERSHOOT_ENABLE_Y_TRIGGER", "0"
+                            ) == "1"
                             wrapper_ore = _PILLAR_PLANNER_TO_WRAPPER_ORE.get(mining_target_ore)
-                            if wrapper_ore is not None:
+                            if enable_y_trigger and wrapper_ore is not None:
                                 band = CustomEnvWrapper.ORE_HEIGHT_BANDS.get(wrapper_ore)
                                 if band is not None and cur_y_value is not None:
                                     target_band_min = int(band[0])
@@ -1730,6 +1859,20 @@ def new_agent_do(
 
                         should_pillar_up = overshot_layer or y_overshoot or bedrock_stuck
                         switch_ready = env.num_steps - mining_last_switch_step >= mining_switch_cooldown_ticks
+                        forward_shift_ready = True
+                        forward_shift_delta = None
+                        if mining_mode == "dig_forward" and mining_failed_lateral_origin_xz is not None:
+                            forward_shift_ready = False
+                            if cur_x_value is not None and cur_z_value is not None:
+                                dx = cur_x_value - mining_failed_lateral_origin_xz[0]
+                                dz = cur_z_value - mining_failed_lateral_origin_xz[1]
+                                forward_shift_delta = (dx * dx + dz * dz) ** 0.5
+                                forward_shift_ready = (
+                                    forward_shift_delta >= _env_float(
+                                        "XENON_CORRIDOR_MIN_MOVE_DELTA",
+                                        0.20,
+                                    )
+                                )
                         can_switch = (
                             mining_mode == "dig_down"
                             and current_sg_prompt == temp_sg_prompt
@@ -1738,25 +1881,17 @@ def new_agent_do(
                         can_relevel_forward = (
                             mining_mode == "dig_forward"
                             and switch_ready
-                            and (y_overshoot or bedrock_stuck)
+                            and (overshot_layer or y_overshoot or bedrock_stuck)
+                            and forward_shift_ready
                         )
                         if (can_switch or can_relevel_forward) and should_pillar_up:
-                            # Before flipping STEVE-1 to "dig forward", first
-                            # pillar up to the Y where we first encountered
-                            # the target ore for this sub-goal (or fall back
-                            # to the band midpoint if we never saw it). This
-                            # is the user-requested "回到第一次挖到这个矿
-                            # 的高度重新探索" flow: as soon as the agent is
-                            # below where it should be, re-level and mine
-                            # forward rather than continuing to dig down.
-                            _maybe_relevel_for_overshoot(
+                            # Pillar up to the Y where we first encountered
+                            # the target ore, then require a real horizontal
+                            # displacement before STEVE-1 may resume dig-down.
+                            relevel_result = _maybe_relevel_for_overshoot(
                                 env, mining_target_ore, overshot_seen, logger,
                                 target_y=first_target_ore_y,
                             )
-                            current_sg_prompt = mining_forward_prompt
-                            mining_mode = "dig_forward"
-                            mining_last_switch_step = env.num_steps
-                            step_waypoint_obtained = env.num_steps
                             trigger_reason = []
                             if overshot_layer:
                                 trigger_reason.append(f"deeper_ores={overshot_seen}")
@@ -1771,16 +1906,68 @@ def new_agent_do(
                                     f"bedrock_stuck(cur_y={cur_y_value:.1f}, "
                                     f"no_activity_ticks={env.num_steps - mining_last_activity_step})"
                                 )
-                            logger.info(
-                                "Mining direction adjustment: switching STEVE-1 prompt to "
-                                f"{current_sg_prompt} for waypoint {waypoint}; "
-                                f"mode_before={'dig_forward' if can_relevel_forward else 'dig_down'}, "
-                                f"reason={'+'.join(trigger_reason) or 'unknown'}, "
-                                f"target={mining_target_ore} (planner_target={_planner_target}), "
-                                f"current={current_available}, start={mining_available_at_start}, "
-                                f"gained={current_available_delta}, required_delta={mining_required}, "
-                                f"timestep={env.num_steps}."
-                            )
+                            lateral_summary = None
+                            if isinstance(relevel_result, dict):
+                                lateral_summary = relevel_result.get("lateral_shift")
+                            lateral_ok = _lateral_shift_succeeded(relevel_result)
+                            if lateral_ok:
+                                current_sg_prompt = copy.deepcopy(temp_sg_prompt)
+                                mining_mode = "dig_down"
+                                mining_last_switch_step = env.num_steps
+                                mining_last_activity_step = env.num_steps
+                                step_waypoint_obtained = env.num_steps
+                                mining_failed_lateral_origin_xz = None
+                                logger.info(
+                                    "Mining shaft relocation: horizontal displacement succeeded; "
+                                    "restoring STEVE-1 prompt as "
+                                    f"{current_sg_prompt} for waypoint {waypoint}; "
+                                    f"mode_before={'dig_forward' if can_relevel_forward else 'dig_down'}, "
+                                    f"reason={'+'.join(trigger_reason) or 'unknown'}, "
+                                    f"target={mining_target_ore} (planner_target={_planner_target}), "
+                                    f"current={current_available}, start={mining_available_at_start}, "
+                                    f"gained={current_available_delta}, required_delta={mining_required}, "
+                                    f"relevel_success={relevel_result.get('success') if isinstance(relevel_result, dict) else None}, "
+                                    f"lateral_shift={lateral_summary}, "
+                                    f"timestep={env.num_steps}."
+                                )
+                            else:
+                                # Do not resume dig-down at the old x/z. If the
+                                # scripted relocation failed, hand STEVE-1 only
+                                # a horizontal mining prompt. Another relevel
+                                # attempt is allowed only after the agent has
+                                # actually changed x/z from this failure point.
+                                current_sg_prompt = mining_forward_prompt or copy.deepcopy(temp_sg_prompt)
+                                mining_mode = "dig_forward" if mining_forward_prompt else "dig_down"
+                                mining_last_switch_step = env.num_steps
+                                if isinstance(lateral_summary, dict):
+                                    try:
+                                        mining_failed_lateral_origin_xz = (
+                                            float(lateral_summary.get("end_x")),
+                                            float(lateral_summary.get("end_z")),
+                                        )
+                                    except (TypeError, ValueError):
+                                        mining_failed_lateral_origin_xz = None
+                                elif cur_x_value is not None and cur_z_value is not None:
+                                    mining_failed_lateral_origin_xz = (cur_x_value, cur_z_value)
+                                else:
+                                    mining_failed_lateral_origin_xz = None
+                                logger.info(
+                                    "Mining shaft relocation: horizontal displacement failed; "
+                                    "NOT restoring dig-down prompt yet. "
+                                    f"next_prompt={current_sg_prompt}, "
+                                    f"mode_before={'dig_forward' if can_relevel_forward else 'dig_down'}, "
+                                    f"reason={'+'.join(trigger_reason) or 'unknown'}, "
+                                    f"target={mining_target_ore} (planner_target={_planner_target}), "
+                                    f"current={current_available}, start={mining_available_at_start}, "
+                                    f"gained={current_available_delta}, required_delta={mining_required}, "
+                                    f"relevel_success={relevel_result.get('success') if isinstance(relevel_result, dict) else None}, "
+                                    f"lateral_shift={lateral_summary}, "
+                                    f"forward_retry_origin={mining_failed_lateral_origin_xz}, "
+                                    f"forward_shift_delta={forward_shift_delta}, "
+                                    f"timestep={env.num_steps}."
+                                )
+                            if overshot_layer:
+                                mining_pending_deeper_overshot.difference_update(overshot_seen)
                         elif mining_mode == "dig_forward" and not target_incomplete:
                             current_sg_prompt = copy.deepcopy(temp_sg_prompt)
                             mining_mode = "dig_down"

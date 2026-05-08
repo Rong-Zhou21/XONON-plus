@@ -144,7 +144,14 @@ class CaseBasedMemory:
         with open(self.case_file_path, "r") as fp:
             fcntl.flock(fp, fcntl.LOCK_SH)
             try:
-                data = json.load(fp)
+                try:
+                    data = json.load(fp)
+                except json.JSONDecodeError as exc:
+                    if self.logger:
+                        self.logger.warning(
+                            f"skip loading corrupted case memory {self.case_file_path}: {exc}"
+                        )
+                    return []
             finally:
                 fcntl.flock(fp, fcntl.LOCK_UN)
         return data.get("cases", []) if isinstance(data, dict) else []
@@ -1033,24 +1040,30 @@ class CaseBasedMemory:
 
         if self.logger:
             self.logger.info(f"[hot_pink]store plan of {task} to {memory_file}[/hot_pink]")
-        with self._lock:
-            if os.path.exists(memory_file):
-                with open(memory_file, "r") as fp:
-                    memory = json.load(fp)
-            else:
-                memory = {"plan": []}
+        try:
+            with self._lock:
+                if os.path.exists(memory_file):
+                    with open(memory_file, "r") as fp:
+                        memory = json.load(fp)
+                else:
+                    memory = {"plan": []}
 
-        with self._lock, open(memory_file, "w") as fp:
-            memory["plan"].append(
-                {
-                    "id": run_uuid,
-                    "environment": environment,
-                    "visual_info": visual_info,
-                    "goal": goal,
-                    "video": video_path,
-                    "planning": planning,
-                    "status": status,
-                    "steps": steps,
-                }
-            )
-            json.dump(memory, fp, indent=2)
+            with self._lock, open(memory_file, "w") as fp:
+                memory["plan"].append(
+                    {
+                        "id": run_uuid,
+                        "environment": environment,
+                        "visual_info": visual_info,
+                        "goal": goal,
+                        "video": video_path,
+                        "planning": planning,
+                        "status": status,
+                        "steps": steps,
+                    }
+                )
+                json.dump(memory, fp, indent=2)
+        except OSError as exc:
+            if self.logger:
+                self.logger.warning(
+                    f"skip storing decomposed plan to {memory_file}: {exc}"
+                )
