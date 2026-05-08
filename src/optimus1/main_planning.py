@@ -786,14 +786,28 @@ def _lateral_shift_succeeded(result: Dict[str, Any] | None) -> bool:
     lateral = result.get("lateral_shift")
     if not isinstance(lateral, dict):
         return False
-    required_delta = _env_float("XENON_CORRIDOR_MIN_MOVE_DELTA", 0.20)
+    required_delta = _env_float("XENON_CORRIDOR_MIN_MOVE_DELTA", 0.75)
     try:
         horizontal_delta = float(lateral.get("horizontal_delta", 0.0))
     except (TypeError, ValueError):
         horizontal_delta = 0.0
+    block_cell_changed = bool(lateral.get("block_cell_changed", False))
+    if not block_cell_changed:
+        try:
+            start_cell = (
+                int(np.floor(float(lateral.get("start_x", 0.0)))),
+                int(np.floor(float(lateral.get("start_z", 0.0)))),
+            )
+            end_cell = (
+                int(np.floor(float(lateral.get("end_x", 0.0)))),
+                int(np.floor(float(lateral.get("end_z", 0.0)))),
+            )
+            block_cell_changed = start_cell != end_cell
+        except Exception:
+            block_cell_changed = False
     return (
         bool(lateral.get("success"))
-        and horizontal_delta >= required_delta
+        and (block_cell_changed or horizontal_delta >= required_delta)
         and not bool(lateral.get("height_drop"))
     )
 

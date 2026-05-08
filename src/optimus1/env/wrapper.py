@@ -2811,7 +2811,7 @@ class CustomEnvWrapper(gym.Wrapper):
         walk_ticks_per_block = int(os.environ.get("XENON_CORRIDOR_WALK_TICKS", "6"))
         attack_forward = os.environ.get("XENON_CORRIDOR_ATTACK_FORWARD", "0") == "1"
         max_y_drop = float(os.environ.get("XENON_LATERAL_MAX_Y_DROP", "0.75"))
-        min_move_delta = float(os.environ.get("XENON_CORRIDOR_MIN_MOVE_DELTA", "0.20"))
+        min_move_delta = float(os.environ.get("XENON_CORRIDOR_MIN_MOVE_DELTA", "0.75"))
         max_unstuck_passes = int(os.environ.get("XENON_CORRIDOR_UNSTUCK_PASSES", "2"))
         blocked_head_budget = int(os.environ.get("XENON_CORRIDOR_BLOCKED_HEAD_BUDGET", "24"))
         blocked_feet_budget = int(os.environ.get("XENON_CORRIDOR_BLOCKED_FEET_BUDGET", "36"))
@@ -2864,6 +2864,18 @@ class CustomEnvWrapper(gym.Wrapper):
 
         def _horizontal_delta(x0: float, z0: float, x1: float, z1: float) -> float:
             return ((x1 - x0) ** 2 + (z1 - z0) ** 2) ** 0.5
+
+        def _block_cell(x: float, z: float) -> Tuple[int, int]:
+            return int(np.floor(float(x))), int(np.floor(float(z)))
+
+        def _block_cell_changed(x0: float, z0: float, x1: float, z1: float) -> bool:
+            return _block_cell(x0, z0) != _block_cell(x1, z1)
+
+        def _meaningful_lateral_move(x0: float, z0: float, x1: float, z1: float) -> bool:
+            return (
+                _block_cell_changed(x0, z0, x1, z1)
+                or _horizontal_delta(x0, z0, x1, z1) >= min_move_delta
+            )
 
         def _angle_delta(target: float, current: float) -> float:
             return (float(target) - float(current) + 180.0) % 360.0 - 180.0
@@ -2983,7 +2995,7 @@ class CustomEnvWrapper(gym.Wrapper):
                 steps_used += 1
                 if stop_on_move:
                     now_x, now_z = _current_xz(phase_start_x, phase_start_z)
-                    if _horizontal_delta(phase_start_x, phase_start_z, now_x, now_z) >= min_move_delta:
+                    if _meaningful_lateral_move(phase_start_x, phase_start_z, now_x, now_z):
                         break
             phase_end_x, phase_end_z = _current_xz(phase_start_x, phase_start_z)
             return (
@@ -3176,7 +3188,14 @@ class CustomEnvWrapper(gym.Wrapper):
                 return 0.0
 
         end_x, end_y, end_z = _end_scalar("xpos"), _end_scalar("ypos"), _end_scalar("zpos")
+        horizontal_delta = _horizontal_delta(start_x, start_z, end_x, end_z)
+        block_cell_changed = _block_cell_changed(start_x, start_z, end_x, end_z)
         success = provisional_success
+        if success and not (
+            block_cell_changed or horizontal_delta >= min_move_delta
+        ):
+            success = False
+            reason = "no_block_cell_change"
         if success and reason == "ok":
             reason = "moved_continue_dig_down"
         elif steps_used >= int(max_steps):
@@ -3204,6 +3223,10 @@ class CustomEnvWrapper(gym.Wrapper):
             "yaw_mode": yaw_mode,
             "aligned_yaw": aligned_yaw if axis_lock else None,
             "min_move_delta": min_move_delta,
+            "horizontal_delta": horizontal_delta,
+            "start_block_cell": _block_cell(start_x, start_z),
+            "end_block_cell": _block_cell(end_x, end_z),
+            "block_cell_changed": block_cell_changed,
             "blocked_front_pitch": blocked_front_pitch_target,
             "blocked_up_pitch": up_pitch_target,
             "blocked_up_budget": blocked_up_budget,
