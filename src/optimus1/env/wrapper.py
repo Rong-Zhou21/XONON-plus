@@ -2811,22 +2811,39 @@ class CustomEnvWrapper(gym.Wrapper):
         walk_ticks_per_block = int(os.environ.get("XENON_CORRIDOR_WALK_TICKS", "6"))
         attack_forward = os.environ.get("XENON_CORRIDOR_ATTACK_FORWARD", "0") == "1"
         max_y_drop = float(os.environ.get("XENON_LATERAL_MAX_Y_DROP", "0.75"))
-        min_move_delta = float(os.environ.get("XENON_CORRIDOR_MIN_MOVE_DELTA", "0.75"))
+        min_move_delta = float(os.environ.get("XENON_CORRIDOR_MIN_MOVE_DELTA", "1.0"))
         max_unstuck_passes = int(os.environ.get("XENON_CORRIDOR_UNSTUCK_PASSES", "2"))
         blocked_head_budget = int(os.environ.get("XENON_CORRIDOR_BLOCKED_HEAD_BUDGET", "24"))
         blocked_feet_budget = int(os.environ.get("XENON_CORRIDOR_BLOCKED_FEET_BUDGET", "36"))
-        blocked_up_budget = int(os.environ.get("XENON_CORRIDOR_BLOCKED_UP_BUDGET", "10"))
+        blocked_up_budget = int(os.environ.get("XENON_CORRIDOR_BLOCKED_UP_BUDGET", "0"))
         axis_lock = os.environ.get("XENON_CORRIDOR_AXIS_LOCK", "1") == "1"
-        yaw_mode = os.environ.get("XENON_CORRIDOR_YAW_MODE", "hold").strip().lower()
+        yaw_mode = os.environ.get("XENON_CORRIDOR_YAW_MODE", "fan30").strip().lower()
         if yaw_mode == "snap90":
             aligned_yaw = round(start_yaw / 90.0) * 90.0
+        elif yaw_mode == "fan30":
+            aligned_yaw = start_yaw
         else:
             # Default: preserve the direction STEVE-1 was already facing.
-            # This is not a left/right/back search; it only stabilizes the
-            # current mining direction so the agent mines a straight column
-            # toward the visible ore/block.
             aligned_yaw = start_yaw
             yaw_mode = "hold"
+        raw_yaw_offsets = os.environ.get(
+            "XENON_CORRIDOR_YAW_OFFSETS",
+            "0,30,-30" if yaw_mode == "fan30" else "0",
+        )
+
+        def _parse_yaw_offsets(raw: str) -> List[float]:
+            offsets: List[float] = []
+            for part in str(raw).split(","):
+                part = part.strip()
+                if not part:
+                    continue
+                try:
+                    offsets.append(float(part))
+                except ValueError:
+                    continue
+            return offsets or [0.0]
+
+        yaw_offsets = _parse_yaw_offsets(raw_yaw_offsets)
         move_attack_ticks = int(
             os.environ.get(
                 "XENON_CORRIDOR_MOVE_ATTACK_TICKS",
@@ -2872,10 +2889,11 @@ class CustomEnvWrapper(gym.Wrapper):
             return _block_cell(x0, z0) != _block_cell(x1, z1)
 
         def _meaningful_lateral_move(x0: float, z0: float, x1: float, z1: float) -> bool:
-            return (
-                _block_cell_changed(x0, z0, x1, z1)
-                or _horizontal_delta(x0, z0, x1, z1) >= min_move_delta
-            )
+            return _horizontal_delta(x0, z0, x1, z1) >= min_move_delta
+
+        def _total_horizontal_delta() -> float:
+            now_x, now_z = _current_xz(start_x, start_z)
+            return _horizontal_delta(start_x, start_z, now_x, now_z)
 
         def _angle_delta(target: float, current: float) -> float:
             return (float(target) - float(current) + 180.0) % 360.0 - 180.0
@@ -3007,9 +3025,9 @@ class CustomEnvWrapper(gym.Wrapper):
             """Clear no-displacement blockers in physical body order.
 
             The agent is two blocks tall. A successful lateral relocation
-            may require clearing both the block directly in front and the
-            lower-front block. We always try front first; only if x/z still
-            does not change do we switch to the downward lower-front pass.
+            may require clearing a two-block-high forward channel. We always
+            attack the horizontal front block first, then the diagonal
+            lower-front block. Optional upward clearing is disabled by default.
             """
             before = self._mined_block_count()
             moved_head, _ = _phase_move_attack(
@@ -3034,7 +3052,7 @@ class CustomEnvWrapper(gym.Wrapper):
             moved_feet, _ = _phase_move_attack(
                 blocked_feet_pitch_target,
                 max(blocked_feet_budget, 1),
-                "blocked_feet",
+                "blocked_diagonal_down",
                 target_yaw=target_yaw,
             )
             if moved_feet >= min_move_delta or _height_dropped() or steps_used >= int(max_steps):
@@ -3042,7 +3060,7 @@ class CustomEnvWrapper(gym.Wrapper):
             if not _height_dropped() and steps_used < int(max_steps):
                 _phase_attack(
                     blocked_feet_pitch_target,
-                    "blocked_feet_finish",
+                    "blocked_diagonal_down_finish",
                     max(blocked_feet_budget // 3, 1),
                     force_forward=True,
                     sprint=True,
@@ -3069,45 +3087,63 @@ class CustomEnvWrapper(gym.Wrapper):
         walk_deltas: List[float] = []
         alignment_attempts: List[Dict[str, Any]] = []
         success_direction = ""
-        target_yaw = aligned_yaw if axis_lock else None
+        yaw_candidates: List[Tuple[str, float | None, float]] = []
+        if axis_lock:
+            for offset in yaw_offsets:
+                yaw_candidates.append(
+                    (
+                        f"yaw_offset_{offset:+.0f}",
+                        aligned_yaw + offset,
+                        offset,
+                    )
+                )
+        else:
+            yaw_candidates.append(("unlocked", None, 0.0))
+
         while blocks_dug < int(n_blocks) and steps_used < int(max_steps):
-            moved = 0.0
-            mined_delta = 0
             if _height_dropped():
                 reason = "height_drop"
                 height_drop = True
                 break
             if steps_used >= int(max_steps):
                 break
-            if target_yaw is not None:
-                _face_axis(head_pitch_target, target_yaw)
-            moved, mined_delta = _phase_move_attack(
-                head_pitch_target,
-                max(move_attack_ticks, 1),
-                "move_probe_aligned_forward",
-                target_yaw=target_yaw,
-            )
-            walk_deltas.append(moved)
-            attempt: Dict[str, Any] = {
-                "direction": "aligned_forward",
-                "target_yaw": target_yaw,
-                "yaw_mode": yaw_mode,
-                "probe_delta": moved,
-                "mined_delta": mined_delta,
-                "unstuck_passes": [],
-            }
-            if _height_dropped():
-                alignment_attempts.append(attempt)
-                reason = "height_drop"
-                height_drop = True
-                break
-            if moved >= min_move_delta:
-                alignment_attempts.append(attempt)
-                success_direction = "aligned_forward"
-            else:
+            relocated = False
+            for direction, target_yaw, yaw_offset in yaw_candidates:
+                moved = 0.0
+                mined_delta = 0
+                if target_yaw is not None:
+                    _face_axis(head_pitch_target, target_yaw)
+                moved, mined_delta = _phase_move_attack(
+                    head_pitch_target,
+                    max(move_attack_ticks, 1),
+                    f"move_probe_{direction}",
+                    target_yaw=target_yaw,
+                )
+                walk_deltas.append(moved)
+                total_delta = _total_horizontal_delta()
+                attempt: Dict[str, Any] = {
+                    "direction": direction,
+                    "target_yaw": target_yaw,
+                    "yaw_offset": yaw_offset,
+                    "yaw_mode": yaw_mode,
+                    "probe_delta": moved,
+                    "total_delta": total_delta,
+                    "mined_delta": mined_delta,
+                    "unstuck_passes": [],
+                }
+                if _height_dropped():
+                    alignment_attempts.append(attempt)
+                    reason = "height_drop"
+                    height_drop = True
+                    break
+                if total_delta >= min_move_delta:
+                    alignment_attempts.append(attempt)
+                    success_direction = direction
+                    relocated = True
+                    break
                 unstuck_pass = 0
                 while (
-                    moved < min_move_delta
+                    _total_horizontal_delta() < min_move_delta
                     and unstuck_pass < max_unstuck_passes
                     and steps_used < int(max_steps)
                     and not _height_dropped()
@@ -3116,56 +3152,69 @@ class CustomEnvWrapper(gym.Wrapper):
                     stuck_clears += 1
                     if self.logger:
                         self.logger.info(
-                            "[dig_forward_blocks] aligned forward had no x/z displacement "
-                            "(delta=%.3f mined_delta=%d); clearing front/up/lower-front "
-                            "blockers pass=%d/%d yaw=%s front_pitch=%.1f "
-                            "up_pitch=%.1f lower_front_pitch=%.1f",
+                            "[dig_forward_blocks] %s has not moved one block "
+                            "(phase_delta=%.3f total_delta=%.3f mined_delta=%d); "
+                            "clearing horizontal front then diagonal-down blockers "
+                            "pass=%d/%d yaw=%s yaw_offset=%.1f front_pitch=%.1f "
+                            "diagonal_pitch=%.1f",
+                            direction,
                             moved,
+                            _total_horizontal_delta(),
                             mined_delta,
                             unstuck_pass + 1,
                             max_unstuck_passes,
                             f"{target_yaw:.1f}" if target_yaw is not None else "unlocked",
+                            yaw_offset,
                             blocked_front_pitch_target,
-                            up_pitch_target,
                             blocked_feet_pitch_target,
                         )
                     cleared, clear_moved = _clear_forward_blocker(target_yaw)
+                    total_delta = _total_horizontal_delta()
                     pass_record = {
                         "pass": unstuck_pass + 1,
                         "cleared": cleared,
                         "clear_delta": clear_moved,
+                        "total_delta_after_clear": total_delta,
                     }
                     if _height_dropped() or steps_used >= int(max_steps):
                         attempt["unstuck_passes"].append(pass_record)
                         break
-                    if clear_moved >= min_move_delta:
-                        moved = clear_moved
+                    if total_delta >= min_move_delta:
+                        moved = max(moved, clear_moved)
                         walk_deltas.append(clear_moved)
                         pass_record["retry_delta"] = clear_moved
                         attempt["unstuck_passes"].append(pass_record)
+                        relocated = True
                         break
                     moved, mined_delta = _phase_move_attack(
                         head_pitch_target,
                         max(move_attack_ticks, 1),
-                        "move_retry_aligned_forward",
+                        f"move_retry_{direction}",
                         target_yaw=target_yaw,
                     )
                     walk_deltas.append(moved)
+                    total_delta = _total_horizontal_delta()
                     pass_record["retry_delta"] = moved
                     pass_record["retry_mined_delta"] = mined_delta
+                    pass_record["total_delta_after_retry"] = total_delta
                     attempt["unstuck_passes"].append(pass_record)
-                    if not cleared and moved < min_move_delta:
+                    if total_delta >= min_move_delta:
+                        relocated = True
+                        break
+                    if not cleared and total_delta < min_move_delta:
                         reason = "stuck_no_block_break"
                     unstuck_pass += 1
                 attempt["final_delta"] = moved
+                attempt["final_total_delta"] = _total_horizontal_delta()
                 alignment_attempts.append(attempt)
-                if moved >= min_move_delta:
-                    success_direction = "aligned_forward"
+                if relocated:
+                    success_direction = direction
+                    break
             if _height_dropped():
                 reason = "height_drop"
                 height_drop = True
                 break
-            if moved < min_move_delta:
+            if not relocated:
                 reason = "stuck_no_forward_displacement"
                 break
             blocks_dug += 1
@@ -3190,7 +3239,7 @@ class CustomEnvWrapper(gym.Wrapper):
         end_x, end_y, end_z = _end_scalar("xpos"), _end_scalar("ypos"), _end_scalar("zpos")
         horizontal_delta = _horizontal_delta(start_x, start_z, end_x, end_z)
         block_cell_changed = _block_cell_changed(start_x, start_z, end_x, end_z)
-        meaningful_final_move = block_cell_changed or horizontal_delta >= min_move_delta
+        meaningful_final_move = horizontal_delta >= min_move_delta
         # The blocker-clearing phases can physically push the agent into a new
         # block cell even when the per-probe `moved` value did not get promoted
         # into `blocks_dug`. For the v7 relocation loop, physical x/z relocation
@@ -3225,6 +3274,7 @@ class CustomEnvWrapper(gym.Wrapper):
             "axis_lock": axis_lock,
             "yaw_mode": yaw_mode,
             "aligned_yaw": aligned_yaw if axis_lock else None,
+            "yaw_offsets": yaw_offsets,
             "min_move_delta": min_move_delta,
             "horizontal_delta": horizontal_delta,
             "start_block_cell": _block_cell(start_x, start_z),

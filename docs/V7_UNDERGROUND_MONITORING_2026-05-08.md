@@ -161,3 +161,28 @@ block_cell_changed=True
 - 修正后的 success 语义生效。
 - 即使 `blocks_dug=0`，只要清障阶段已经把智能体推入新的水平 block cell，上层就会恢复 `dig down`。
 - 这符合当前地下探索目标：先实现水平位置变化，再继续向下挖。
+
+## 2026-05-09 用户反馈后的第三次修正
+
+用户观察到：智能体并没有真正正对方块挖掘，当前单一 yaw 方向约束仍不够好。新的要求：
+
+- 到达目标高度后，先挖一个前向两格高通道。
+- 视角先水平向前挖，再斜下方挖。
+- 如果按住前进不能移动，朝斜下方持续攻击。
+- 同时尝试当前方向、左 30 度、右 30 度，避免单一朝向卡死。
+- 恢复 `dig down` 的硬前置条件改为：水平移动至少 1 个方块距离。
+
+代码修改：
+
+- `src/optimus1/env/wrapper.py`
+  - 默认 `XENON_CORRIDOR_YAW_MODE=fan30`。
+  - 新增 `XENON_CORRIDOR_YAW_OFFSETS=0,30,-30`，按当前方向、左/右 30 度依次尝试。
+  - 默认 `XENON_CORRIDOR_MIN_MOVE_DELTA=1.0`。
+  - `meaningful_lateral_move` 不再用“换到相邻 block cell”兜底，必须达到水平距离阈值。
+  - 默认 `XENON_CORRIDOR_BLOCKED_UP_BUDGET=0`，清障顺序变为水平前方 -> 斜下方。
+
+- `src/optimus1/main_planning.py`
+  - `_lateral_shift_succeeded()` 同步要求 `horizontal_delta >= 1.0`。
+
+- `scripts/run_v7_armor_targeted.sh`
+  - 同步默认值，并在 summary 中打印 `yaw_offsets`。
