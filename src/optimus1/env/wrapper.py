@@ -3190,13 +3190,16 @@ class CustomEnvWrapper(gym.Wrapper):
         end_x, end_y, end_z = _end_scalar("xpos"), _end_scalar("ypos"), _end_scalar("zpos")
         horizontal_delta = _horizontal_delta(start_x, start_z, end_x, end_z)
         block_cell_changed = _block_cell_changed(start_x, start_z, end_x, end_z)
-        success = provisional_success
-        if success and not (
-            block_cell_changed or horizontal_delta >= min_move_delta
-        ):
+        meaningful_final_move = block_cell_changed or horizontal_delta >= min_move_delta
+        # The blocker-clearing phases can physically push the agent into a new
+        # block cell even when the per-probe `moved` value did not get promoted
+        # into `blocks_dug`. For the v7 relocation loop, physical x/z relocation
+        # is the success criterion.
+        success = provisional_success or (not height_drop and meaningful_final_move)
+        if success and not meaningful_final_move:
             success = False
             reason = "no_block_cell_change"
-        if success and reason == "ok":
+        if success and reason in ("ok", "stuck_no_forward_displacement"):
             reason = "moved_continue_dig_down"
         elif steps_used >= int(max_steps):
             reason = "step_budget_exhausted"

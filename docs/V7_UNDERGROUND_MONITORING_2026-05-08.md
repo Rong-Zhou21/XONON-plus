@@ -95,3 +95,26 @@ EXP_NUM = EXP_NUM_BASE + TASK_ID * 100 + REP
 ```
 
 所以 `EXP_NUM_BASE=372000` 对 Armor task 12 rep0 生成 `373200`。
+
+## 23:42 二次监控发现
+
+新实验进入地下后，`XENON_CORRIDOR_MIN_MOVE_DELTA=0.75` 已生效，但日志暴露出另一个判定问题：
+
+- `dig_forward_blocks()` 的清障阶段实际把智能体水平推开了约 2 格：
+  - 示例：`start=(-686.7,22.0,-186.3)` -> `end=(-686.7,22.0,-184.3)`
+  - `horizontal_delta=2.00`
+- 但函数仍返回：
+  - `blocks_dug=0/1`
+  - `reason=stuck_no_forward_displacement`
+  - `success=False`
+- 上层因此打印：
+  - `horizontal displacement failed; NOT restoring dig-down prompt yet`
+
+判断：这次已经不是“移动不足”，而是 success 语义仍绑在 `blocks_dug` 上。对 v7 目标来说，只要最终 x/z 已经换到新的水平方块格，就应视为 relocation 成功，允许恢复原始 `dig down`。
+
+修正：
+
+- `src/optimus1/env/wrapper.py`
+  - `success = provisional_success or (not height_drop and meaningful_final_move)`
+  - 当最终坐标已换格或达到阈值时，即使 `blocks_dug=0`，也返回 `success=True`。
+  - 将这种情况的 `reason` 统一为 `moved_continue_dig_down`。
