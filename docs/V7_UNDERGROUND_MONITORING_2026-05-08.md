@@ -62,3 +62,36 @@
   - 默认 `XENON_CORRIDOR_MIN_MOVE_DELTA=0.75`。
 
 预期效果：智能体不能再因为 0.2 格左右的同格滑动就继续向下挖；必须真正离开当前竖井水平格，地下采矿才会进入“换位置再 dig down”的循环。
+
+## 23:36 重启实验
+
+修复已提交并推送：
+
+- commit: `068be48 Tighten v7 lateral relocation success`
+- remote: `origin/main`
+
+旧的 `v7_pillar_lateral` 进程已停止，保留已有 `3712xx` 结果作为旧逻辑对照。
+
+新实验使用 `setsid` 后台启动：
+
+```text
+RUN_LABEL=v7_blockcell_lateral
+EXP_NUM_BASE=372000
+SKIP_DONE=0
+SUMMARY_FILE=/tmp/xenon_v7_v7_blockcell_lateral_20260508_233643_summary.log
+```
+
+运行状态：
+
+- runner pid: `811352`
+- current first task: Armor task 12 `golden_chestplate`
+- current first exp: `373200`
+- current first log: `/tmp/xenon_v7_v7_blockcell_lateral_armor_t12_rep0_exp373200_20260508_233646.log`
+
+注意：脚本里的实际 exp 号计算方式是：
+
+```text
+EXP_NUM = EXP_NUM_BASE + TASK_ID * 100 + REP
+```
+
+所以 `EXP_NUM_BASE=372000` 对 Armor task 12 rep0 生成 `373200`。
