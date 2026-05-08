@@ -1861,7 +1861,7 @@ def new_agent_do(
                         bedrock_stuck = False
                         try:
                             absolute_floor_y = float(os.environ.get("XENON_BEDROCK_FLOOR_Y", "8.0"))
-                            no_activity_required = int(os.environ.get("XENON_BEDROCK_STAGNANT_TICKS", "1200"))
+                            no_activity_required = int(os.environ.get("XENON_BEDROCK_STAGNANT_TICKS", "600"))
                             if (
                                 cur_y_value is not None
                                 and cur_y_value <= absolute_floor_y

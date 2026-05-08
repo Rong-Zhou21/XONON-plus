@@ -234,3 +234,31 @@ min_forward_delta      : 1.0
 - 水平前方 -> 斜下方的两格高通道清理顺序有效。
 - 恢复 `dig down` 前的 1 格水平位移门槛有效。
 - 需要继续观察第一轮是否能凑够 iron 并进入 gold；如果长时间只在 `iron_ore=1` 附近循环，后续要评估“首次目标矿高度过低时是否需要回退到矿层中点”的策略，但这会改变当前用户要求保留的 first-target-ore-height 逻辑。
+
+## 2026-05-09 01:41 第四次修正：提前底层卡住判定
+
+在线监控前两轮结果：
+
+| exp | result | status | 关键现象 |
+|---:|---|---|---|
+| 377200 | fail | `timeout_non_programmatic` | iron 阶段通过多次 fan30 relocation 推进到 `iron_ore=3`，但进入 gold 太晚；gold relevel 因 `no_placement_succeeded` 失败后没有恢复 `dig down`，这是安全行为。 |
+| 377201 | fail | `timeout_non_programmatic` | 早期表现更好，`iron_ore` 在 y=30 附近快速完成，gold 阶段记录 `first-target-ore Y=20` 并获得 `gold_ore=3`；随后多次向下挖到 redstone/diamond 层和 bedrock，铁镐耗尽，被迫回到 `stone_pickaxe -> iron_ore -> iron_pickaxe` 链条。 |
+
+判断：
+
+- fan30 横移逻辑本身稳定，日志中多次 `horizontal_delta >= 1.0` 后才恢复 `dig down`。
+- 当前主要损耗来自 `bedrock_stuck` 判定太慢：默认 `XENON_BEDROCK_STAGNANT_TICKS=1200`，每个竖井会在低层等待很久才抬升，增加时间和工具耐久消耗。
+- 这次不恢复 `XENON_OVERSHOOT_ENABLE_Y_TRIGGER`，也不加入“低于目标高度就抬升”的纯高度触发，避免回到用户指出的旧问题。
+
+修正：
+
+- `src/optimus1/main_planning.py`
+  - `XENON_BEDROCK_STAGNANT_TICKS` 默认值从 `1200` 降到 `600`。
+- `scripts/run_v7_armor_targeted.sh`
+  - 显式导出 `XENON_BEDROCK_STAGNANT_TICKS=600`。
+  - summary 打印 `bedrock_stagnant_ticks`，便于后续日志核对。
+
+预期效果：
+
+- 仍然只在 deeper ore / bedrock-stuck 这类允许触发条件下抬升。
+- 但底层卡住会更快被识别，减少在 y=2-5 附近的空耗和铁镐磨损。
