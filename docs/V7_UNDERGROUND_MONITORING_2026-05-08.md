@@ -142,3 +142,22 @@ SUMMARY_FILE=/tmp/xenon_v7_v7_physical_lateral_20260508_234531_summary.log
 - current first task: Armor task 12 `golden_chestplate`
 - current first exp: `375200`
 - current first log: `/tmp/xenon_v7_v7_physical_lateral_armor_t12_rep0_exp375200_20260508_234534.log`
+
+## 23:48 验证第一轮地下 relocation
+
+`v7_physical_lateral` 的第一条 run 已触发地下 relocation，关键日志：
+
+```text
+done: blocks_dug=0/1 steps_used=144 reason=moved_continue_dig_down
+lateral_shift: attempt=1/3 ... horizontal_delta=2.00
+Mining shaft relocation: horizontal displacement succeeded; restoring STEVE-1 prompt as dig down and mine gold_ore
+start_block_cell=(-669, -189)
+end_block_cell=(-669, -187)
+block_cell_changed=True
+```
+
+判断：
+
+- 修正后的 success 语义生效。
+- 即使 `blocks_dug=0`，只要清障阶段已经把智能体推入新的水平 block cell，上层就会恢复 `dig down`。
+- 这符合当前地下探索目标：先实现水平位置变化，再继续向下挖。
