@@ -126,6 +126,267 @@
       ],
       "status": "success",
       "steps": 3044
+    },
+    {
+      "id": "VDecj6BoRug2JpYHCNwsaV",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smoker",
+      "video": "videos/v4/Stone_Craft_a_smoker/plains/success/2026_05_04_09_39_20_craft_smoker_VDecj6BoRug2JpYHCNwsaV.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            13
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft smoker",
+          "goal": [
+            "smoker",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5680
+    },
+    {
+      "id": "KzkpGzjcXm8KGRoiKVyDGm",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smoker",
+      "video": "videos/v4/Stone_Craft_a_smoker/plains/success/2026_05_04_12_28_06_craft_smoker_KzkpGzjcXm8KGRoiKVyDGm.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            11
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft smoker",
+          "goal": [
+            "smoker",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3187
+    },
+    {
+      "id": "gogSsYJRGMGasguKM8skby",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smoker",
+      "video": "videos/v4/Stone_Craft_a_smoker/plains/success/2026_05_05_05_11_01_craft_smoker_gogSsYJRGMGasguKM8skby.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            13
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft smoker",
+          "goal": [
+            "smoker",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3948
+    },
+    {
+      "id": "4NMnM6j3ehWjsuaw4MCw4q",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smoker",
+      "video": "videos/v6/Stone_Craft_a_smoker/plains/success/2026_05_07_13_04_07_craft_smoker_4NMnM6j3ehWjsuaw4MCw4q.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            13
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft smoker",
+          "goal": [
+            "smoker",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4042
     }
   ]
 }

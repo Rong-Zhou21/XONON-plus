@@ -196,6 +196,115 @@
       ],
       "status": "success",
       "steps": 8003
+    },
+    {
+      "id": "4XCwee8kGKL2y5Mz7KjChz",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "piston",
+      "video": "videos/v4/Redstone_Craft_a_piston/forest/success/2026_05_05_11_08_04_craft_piston_4XCwee8kGKL2y5Mz7KjChz.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            28
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            3
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            15
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            4
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            4
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine redstone",
+          "goal": [
+            "redstone",
+            1
+          ]
+        },
+        {
+          "task": "craft piston",
+          "goal": [
+            "piston",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5718
     }
   ]
 }

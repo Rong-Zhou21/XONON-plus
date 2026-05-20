@@ -137,6 +137,208 @@
       ],
       "status": "success",
       "steps": 1619
+    },
+    {
+      "id": "bU98K3RH46QtkmQJqdHrKH",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_sword",
+      "video": "videos/v4/Wood_Craft_a_wooden_sword/forest/success/2026_05_04_04_46_36_craft_wooden_sword_bU98K3RH46QtkmQJqdHrKH.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            6
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_sword",
+          "goal": [
+            "wooden_sword",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 778
+    },
+    {
+      "id": "jxFcGyrPrLXNjKjc5HsACJ",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_sword",
+      "video": "videos/v4/Wood_Craft_a_wooden_sword/forest/success/2026_05_04_11_39_21_craft_wooden_sword_jxFcGyrPrLXNjKjc5HsACJ.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_sword",
+          "goal": [
+            "wooden_sword",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1481
+    },
+    {
+      "id": "ad7sgWDKJNoTLwWz85UVcj",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_sword",
+      "video": "videos/v4/Wood_Craft_a_wooden_sword/forest/success/2026_05_04_17_38_45_craft_wooden_sword_ad7sgWDKJNoTLwWz85UVcj.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_sword",
+          "goal": [
+            "wooden_sword",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 914
+    },
+    {
+      "id": "PmsJJ3jQbjogew9wWZ6KHv",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_sword",
+      "video": "videos/v4/Wood_Craft_a_wooden_sword/forest/success/2026_05_05_04_23_26_craft_wooden_sword_PmsJJ3jQbjogew9wWZ6KHv.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_sword",
+          "goal": [
+            "wooden_sword",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1492
+    },
+    {
+      "id": "5Y9GLZL8sSMdyQBwo9kJBp",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_sword",
+      "video": "videos/v6/Wood_Craft_a_wooden_sword/forest/success/2026_05_07_08_57_19_craft_wooden_sword_5Y9GLZL8sSMdyQBwo9kJBp.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            6
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_sword",
+          "goal": [
+            "wooden_sword",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1149
     }
   ]
 }

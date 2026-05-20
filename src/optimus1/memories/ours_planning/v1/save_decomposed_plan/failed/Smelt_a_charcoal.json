@@ -133,6 +133,24 @@
       ],
       "status": "failed",
       "steps": 7138
+    },
+    {
+      "id": "dKqhPe5f285WrsANB35XyA",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "charcoal",
+      "video": "videos/v4/Stone_Smelt_a_charcoal/plains/failed/2026_05_04_18_36_45_chop_a_tree_dKqhPe5f285WrsANB35XyA.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 141
     }
   ]
 }

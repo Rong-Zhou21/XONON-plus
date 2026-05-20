@@ -94,6 +94,8 @@ commands:
   - /gamerule keepInventory true # Keep inventory after death
   - /effect give @a night_vision 99999 250 true # Permanent night vision
   - /gamerule doDaylightCycle false # Always daytime
+  - /gamerule doMobSpawning false # Disable natural mob spawning
+  - /difficulty peaceful # Remove hostile mobs that can kill the agent
   - /time set 0 # Set time to 0
   - /gamerule doImmediateRespawn true # Instant respawn after death
   - /spawnpoint # Set spawn point to initial point

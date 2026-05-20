@@ -172,6 +172,22 @@
       ],
       "status": "failed",
       "steps": 35911
+    },
+    {
+      "id": "LCM24hzsyPXAAd8ejKoy9o",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "activator_rail",
+      "video": "videos/v4/Redstone_Craft_an_activator_rail/forest/failed/2026_05_05_11_24_08_Craft_an_activator_rail_LCM24hzsyPXAAd8ejKoy9o.mp4",
+      "planning": [
+        {
+          "task": "Craft an activator rail",
+          "goal": "activator_rail",
+          "error": "'iron_ore'"
+        }
+      ],
+      "status": "failed",
+      "steps": 8682
     }
   ]
 }

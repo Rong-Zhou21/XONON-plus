@@ -1,0 +1,244 @@
+{
+  "plan": [
+    {
+      "id": "LKhTUSksptAHGSTK6zSeQm",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_boots",
+      "video": "videos/v5/Armor_Craft_iron_boots/forest/failed/2026_05_06_03_04_32_chop_a_tree_LKhTUSksptAHGSTK6zSeQm.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 153
+    },
+    {
+      "id": "6pLc7ZU96RvpmQe4q4sPGe",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_boots",
+      "video": "videos/v5/Armor_Craft_iron_boots/forest/failed/2026_05_06_03_27_43_dig_down_and_mine_iron_ore_6pLc7ZU96RvpmQe4q4sPGe.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            4
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35830
+    },
+    {
+      "id": "W3GHfgHhmjgcLMC8mgrpTz",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_boots",
+      "video": "videos/v5/Armor_Craft_iron_boots/forest/failed/2026_05_06_13_54_02_chop_a_tree_W3GHfgHhmjgcLMC8mgrpTz.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 159
+    },
+    {
+      "id": "WWLjmtenCFcdhoE2p7EpZu",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_boots",
+      "video": "/home/yzb/zhourong/XENON-plus/videos/v7/Armor_Craft_iron_boots/forest/failed/2026_05_08_01_40_02_dig_down_and_mine_iron_ore_WWLjmtenCFcdhoE2p7EpZu.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 24841
+    }
+  ]
+}

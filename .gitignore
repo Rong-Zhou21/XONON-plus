@@ -7,6 +7,9 @@ wheels/
 *.egg-info
 .codex
 
+# local notes / secrets
+常用指令*.txt
+
 # jupyter
 .ipynb_checkpoints/
 .virtual_documents/
@@ -36,6 +39,10 @@ imgs
 exp_results/
 results/
 runs/
+
+# case memory recovery/corrupt snapshots
+src/optimus1/memories/**/case_memory/*.broken.json
+src/optimus1/memories/**/case_memory/*.corrupt_*
 
 
 slurm_experiments/

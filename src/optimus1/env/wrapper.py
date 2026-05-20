@@ -93,39 +93,74 @@ def _push_pov_to_monitor(observation):
         t.start()
 
 
+def _dynamic_gold_ore_multiplier() -> float:
+    try:
+        return max(0.0, float(os.environ.get("XENON_RANDOM_ORE_GOLD_MULTIPLIER", "1.5")))
+    except ValueError:
+        return 1.5
+
+
+def _should_place_dynamic_ore(ore_name: str, thresold: float) -> bool:
+    place_chance = max(0.0, min(1.0, 1.0 - thresold))
+    if ore_name == "gold_ore":
+        place_chance = min(1.0, place_chance * _dynamic_gold_ore_multiplier())
+    return random.random() > 1.0 - place_chance
+
+
 def random_ore(env, ORE_MAP, ypos: float, thresold: float = 0.9):
-    prob = random.random()
-    if prob <= thresold:
-        return
     dy = random.randint(-5, -3)
     new_pos = int(ypos + dy)
     if 45 <= ypos <= 50:  # max: 6
         # coal_ore
-        if ypos not in ORE_MAP and new_pos not in ORE_MAP and new_pos >= 45:
+        if (
+            ypos not in ORE_MAP
+            and new_pos not in ORE_MAP
+            and new_pos >= 45
+            and _should_place_dynamic_ore("coal_ore", thresold)
+        ):
             ORE_MAP[new_pos] = "coal_ore"
             ORE_MAP[ypos] = 1
             env.execute_cmd("/setblock ~ ~{} ~ minecraft:coal_ore".format(dy))
             print(f"coal ore at {new_pos}")
     elif 26 <= ypos <= 43:  # max: 17
-        if ypos not in ORE_MAP and new_pos not in ORE_MAP and new_pos >= 26:
+        if (
+            ypos not in ORE_MAP
+            and new_pos not in ORE_MAP
+            and new_pos >= 26
+            and _should_place_dynamic_ore("iron_ore", thresold)
+        ):
             ORE_MAP[new_pos] = "iron_ore"
             ORE_MAP[ypos] = 1
             env.execute_cmd("/setblock ~ ~{} ~ minecraft:iron_ore".format(dy))
             print(f"iron ore at {new_pos}")
 
     elif 14 < ypos <= 26:
-        if ypos not in ORE_MAP and new_pos not in ORE_MAP and new_pos >= 17:  # max: 10
+        if (
+            ypos not in ORE_MAP
+            and new_pos not in ORE_MAP
+            and new_pos >= 17
+            and _should_place_dynamic_ore("gold_ore", thresold)
+        ):  # max: 10
             ORE_MAP[new_pos] = "gold_ore"
             ORE_MAP[ypos] = 1
             env.execute_cmd("/setblock ~ ~{} ~ minecraft:gold_ore".format(dy))
             print(f"gold ore at {new_pos}")
-        elif ypos not in ORE_MAP and new_pos not in ORE_MAP and new_pos <= 16:  # max:12
+        elif (
+            ypos not in ORE_MAP
+            and new_pos not in ORE_MAP
+            and new_pos <= 16
+            and _should_place_dynamic_ore("redstone_ore", thresold)
+        ):  # max:12
             ORE_MAP[new_pos] = "redstone_ore"
             ORE_MAP[ypos] = 1
             env.execute_cmd("/setblock ~ ~{} ~ minecraft:redstone_ore".format(dy))
             print(f"redstone ore at {new_pos}")
     elif (
-        ypos <= 14 and ypos not in ORE_MAP and new_pos not in ORE_MAP and new_pos >= 1
+        ypos <= 14
+        and ypos not in ORE_MAP
+        and new_pos not in ORE_MAP
+        and new_pos >= 1
+        and _should_place_dynamic_ore("diamond_ore", thresold)
     ):  # max: 14
         ORE_MAP[new_pos] = "diamond_ore"
         ORE_MAP[ypos] = 1
@@ -1550,7 +1585,8 @@ class CustomEnvWrapper(gym.Wrapper):
             # self.cache["explore"] = 100
 
         if self._only_once:
-            random_ore(self.env, self.ORE_MAP, ypos)
+            if os.environ.get("XENON_ENABLE_RANDOM_ORE_ONCE", "1") == "1":
+                random_ore(self.env, self.ORE_MAP, ypos)
             self._only_once = False
 
         try:
@@ -1913,13 +1949,58 @@ class CustomEnvWrapper(gym.Wrapper):
         jump_place_ticks = int(os.environ.get("XENON_PILLAR_JUMP_PLACE_TICKS", "8"))
         post_jump_settle = int(os.environ.get("XENON_PILLAR_SETTLE_TICKS", "8"))
 
-        def _hold_pitch_down(a, target_pitch=88.0, max_step=6.0):
+        def _hold_pitch_to(a, target_pitch: float, max_step: float = 6.0):
             try:
                 cp = float(self.cache["info"]["location_stats"].get("pitch", 0))
             except Exception:
                 cp = 0.0
-            if cp < target_pitch:
-                a["camera"] = np.array([min(target_pitch - cp, max_step), 0])
+            delta = max(min(target_pitch - cp, max_step), -max_step)
+            if abs(delta) > 0.1:
+                a["camera"] = np.array([delta, 0])
+
+        def _hold_pitch_down(a, target_pitch=88.0, max_step=6.0):
+            _hold_pitch_to(a, target_pitch=target_pitch, max_step=max_step)
+
+        def _clear_overhead_for_pillar() -> int:
+            """Mine upward briefly so pillar jumping has headroom in tunnels."""
+            nonlocal steps_used
+            ticks = int(os.environ.get("XENON_PILLAR_CLEAR_OVERHEAD_TICKS", "36"))
+            if ticks <= 0:
+                return 0
+            try:
+                pickaxe_slot = self.find_best_pickaxe()
+            except Exception:
+                pickaxe_slot = None
+            if not pickaxe_slot:
+                return 0
+            used = 0
+            for _ in range(4):
+                if steps_used >= max_steps:
+                    return used
+                a_eq = self.env.noop_action()
+                a_eq[pickaxe_slot] = np.array(1)
+                _hold_pitch_to(a_eq, target_pitch=-82.0, max_step=12.0)
+                self.raw_step(a_eq)
+                steps_used += 1
+                used += 1
+            mined_before = self._mined_block_count()
+            for _ in range(ticks):
+                if steps_used >= max_steps:
+                    break
+                a = self.env.noop_action()
+                a["attack"] = np.array(1)
+                _hold_pitch_to(a, target_pitch=-82.0, max_step=12.0)
+                self.raw_step(a)
+                steps_used += 1
+                used += 1
+            if self.logger:
+                self.logger.info(
+                    "[pillar_up] overhead_clear: ticks=%d mined_delta=%d held=%s",
+                    used,
+                    max(0, self._mined_block_count() - mined_before),
+                    self._plain_item_type(self.status_mod.equipment),
+                )
+            return used
 
         def _confirm_placeable_selected(slot_index: int, expected_block: str, ticks: int = 4) -> bool:
             """Select the placeable hotbar slot and verify status_mod saw it."""
@@ -1937,6 +2018,8 @@ class CustomEnvWrapper(gym.Wrapper):
                 if held == expected_block:
                     confirmed = True
             return confirmed
+
+        _clear_overhead_for_pillar()
 
         # Phase 1: orient pitch fully downward. Need a strong commitment to
         # ~88-90° before the first placement; otherwise `use` lands the block
@@ -2692,16 +2775,15 @@ class CustomEnvWrapper(gym.Wrapper):
         max_steps_per_block: int = 80,
         prefer_pickaxe: bool = True,
     ) -> Dict[str, Any]:
-        """Scripted: mine ``n_blocks`` straight ahead while preserving Y.
+        """Scripted two-block-high horizontal tunnel while preserving Y.
 
-        Used as a safety net immediately after ``raise_to_height`` so the
-        agent physically changes horizontal coordinates before STEVE-1
-        resumes the original dig-down prompt at the new x/z.
-
-        Bypasses STEVE-1 (uses ``raw_step``). Pitch is held at ~0 (look
-        horizontal) and ``attack`` + ``forward`` are pressed each tick.
-        Block-break detection uses the Minecraft mine-block stat delta
-        exposed via the resource ledger.
+        Used immediately after ``raise_to_height`` so the agent explores
+        horizontally at the first target-ore height before STEVE-1 may resume
+        the original dig-down prompt. This primitive bypasses STEVE-1
+        (uses ``raw_step``) and treats physical x/z advance as the only
+        success signal. For each tunnel segment it clears the body/head block
+        first, then the lower-front blocker, and only counts the segment when
+        the agent has moved meaningfully from that segment's start.
 
         Args:
             n_blocks: how many forward blocks to mine.
@@ -2781,15 +2863,11 @@ class CustomEnvWrapper(gym.Wrapper):
             self.raw_step(a)
             steps_used += 1
 
-        # Phase 2: lateral relocation by movement success, not by a fixed
-        # forward tunnel. Press forward while attacking; once x/z changes,
-        # this primitive is done and the caller resumes the original
-        # dig-down prompt. If forward+attack does not move the agent, clear
-        # the two collision-relevant blockers in order: first the block in
-        # front of the body/head, then the lower-front block.
-        #
-        # This is intentionally simpler than open-ended horizontal mining:
-        # move while digging -> if moved, stop -> dig down at the new x/z.
+        # Phase 2: tunnel boring by per-segment movement success. Each
+        # segment starts from the current x/z and is counted only after the
+        # agent physically advances far enough from that segment start. This
+        # avoids the old multi-block bug where the first x/z displacement made
+        # every later segment look successful.
         head_pitch_target = float(os.environ.get("XENON_CORRIDOR_HEAD_PITCH", "0.0"))
         blocked_front_pitch_target = float(
             os.environ.get("XENON_CORRIDOR_BLOCKED_FRONT_PITCH", "0.0")
@@ -2811,7 +2889,11 @@ class CustomEnvWrapper(gym.Wrapper):
         walk_ticks_per_block = int(os.environ.get("XENON_CORRIDOR_WALK_TICKS", "6"))
         attack_forward = os.environ.get("XENON_CORRIDOR_ATTACK_FORWARD", "0") == "1"
         max_y_drop = float(os.environ.get("XENON_LATERAL_MAX_Y_DROP", "0.75"))
+        max_position_jump = float(os.environ.get("XENON_CORRIDOR_MAX_POSITION_JUMP", "6.0"))
         min_move_delta = float(os.environ.get("XENON_CORRIDOR_MIN_MOVE_DELTA", "1.0"))
+        segment_min_move_delta = float(
+            os.environ.get("XENON_CORRIDOR_SEGMENT_MIN_MOVE_DELTA", str(min_move_delta))
+        )
         max_unstuck_passes = int(os.environ.get("XENON_CORRIDOR_UNSTUCK_PASSES", "2"))
         blocked_head_budget = int(os.environ.get("XENON_CORRIDOR_BLOCKED_HEAD_BUDGET", "24"))
         blocked_feet_budget = int(os.environ.get("XENON_CORRIDOR_BLOCKED_FEET_BUDGET", "36"))
@@ -2844,6 +2926,73 @@ class CustomEnvWrapper(gym.Wrapper):
             return offsets or [0.0]
 
         yaw_offsets = _parse_yaw_offsets(raw_yaw_offsets)
+        direction_sweep_enabled = (
+            os.environ.get("XENON_CORRIDOR_DIRECTION_SWEEP", "0") == "1"
+        )
+        direction_sweep_offsets = _parse_yaw_offsets(
+            os.environ.get("XENON_CORRIDOR_DIRECTION_SWEEP_OFFSETS", "0,90,-90,180")
+        )
+        if not direction_sweep_offsets:
+            direction_sweep_offsets = [0.0]
+        sweep_index = 0
+        sweep_anchor_yaw = start_yaw
+        sweep_base_offset = 0.0
+        if direction_sweep_enabled and axis_lock and len(direction_sweep_offsets) > 1:
+            raw_index = getattr(self, "_corridor_direction_sweep_index", 0)
+            try:
+                sweep_index = int(raw_index) % len(direction_sweep_offsets)
+            except Exception:
+                sweep_index = 0
+            raw_anchor = getattr(self, "_corridor_direction_sweep_anchor_yaw", None)
+            try:
+                sweep_anchor_yaw = (
+                    float(raw_anchor) if raw_anchor is not None else float(start_yaw)
+                )
+            except Exception:
+                sweep_anchor_yaw = float(start_yaw)
+            if raw_anchor is None:
+                setattr(self, "_corridor_direction_sweep_anchor_yaw", sweep_anchor_yaw)
+            sweep_base_offset = float(direction_sweep_offsets[sweep_index])
+            if yaw_mode == "snap90":
+                aligned_yaw = round(sweep_anchor_yaw / 90.0) * 90.0 + sweep_base_offset
+            else:
+                aligned_yaw = sweep_anchor_yaw + sweep_base_offset
+        stabilize_floor_enabled = (
+            os.environ.get("XENON_CORRIDOR_STABILIZE_FLOOR", "1") == "1"
+        )
+        stabilize_after_full_sweep = (
+            os.environ.get("XENON_CORRIDOR_STABILIZE_AFTER_FULL_SWEEP", "1") == "1"
+        )
+        stabilize_floor_requested = bool(
+            getattr(self, "_corridor_floor_stabilize_requested", False)
+        )
+        try:
+            stabilize_floor_radius = max(
+                0, int(os.environ.get("XENON_CORRIDOR_STABILIZE_RADIUS", "2"))
+            )
+        except ValueError:
+            stabilize_floor_radius = 2
+        stabilize_floor_lanes = (
+            os.environ.get("XENON_CORRIDOR_STABILIZE_LANES", "1") == "1"
+        )
+        try:
+            stabilize_floor_length = max(
+                0, int(os.environ.get("XENON_CORRIDOR_STABILIZE_LENGTH", "0"))
+            )
+        except ValueError:
+            stabilize_floor_length = 0
+        try:
+            stabilize_floor_width = max(
+                0, int(os.environ.get("XENON_CORRIDOR_STABILIZE_WIDTH", "1"))
+            )
+        except ValueError:
+            stabilize_floor_width = 1
+        stabilize_floor_block = (
+            os.environ.get("XENON_CORRIDOR_STABILIZE_BLOCK", "cobblestone")
+            .replace("minecraft:", "")
+            .strip()
+            or "cobblestone"
+        )
         move_attack_ticks = int(
             os.environ.get(
                 "XENON_CORRIDOR_MOVE_ATTACK_TICKS",
@@ -2851,6 +3000,17 @@ class CustomEnvWrapper(gym.Wrapper):
             )
         )
         stop_after_first_move = os.environ.get("XENON_CORRIDOR_STOP_AFTER_MOVE", "1") == "1"
+        target_blocks = max(1, int(n_blocks))
+        default_min_success = "1" if stop_after_first_move else str(target_blocks)
+        try:
+            min_success_blocks = int(
+                os.environ.get("XENON_CORRIDOR_MIN_SUCCESS_BLOCKS", default_min_success)
+            )
+        except ValueError:
+            min_success_blocks = int(default_min_success)
+        min_success_blocks = max(1, min(target_blocks, min_success_blocks))
+        terminal_abort = False
+        position_jump_abort = False
 
         def _current_y(default: float) -> float:
             try:
@@ -2863,6 +3023,26 @@ class CustomEnvWrapper(gym.Wrapper):
                 )
             except Exception:
                 return float(default)
+
+        def _current_xyz(
+            default_x: float,
+            default_y: float,
+            default_z: float,
+        ) -> Tuple[float, float, float]:
+            loc_now = (self.cache.get("info") or {}).get("location_stats", {}) or {}
+            try:
+                x_now = float(np.asarray(loc_now.get("xpos", default_x)).reshape(-1)[0])
+            except Exception:
+                x_now = float(default_x)
+            try:
+                y_now = float(np.asarray(loc_now.get("ypos", default_y)).reshape(-1)[0])
+            except Exception:
+                y_now = float(default_y)
+            try:
+                z_now = float(np.asarray(loc_now.get("zpos", default_z)).reshape(-1)[0])
+            except Exception:
+                z_now = float(default_z)
+            return x_now, y_now, z_now
 
         def _height_dropped() -> bool:
             return _current_y(start_y) < (start_y - max_y_drop)
@@ -2888,8 +3068,112 @@ class CustomEnvWrapper(gym.Wrapper):
         def _block_cell_changed(x0: float, z0: float, x1: float, z1: float) -> bool:
             return _block_cell(x0, z0) != _block_cell(x1, z1)
 
-        def _meaningful_lateral_move(x0: float, z0: float, x1: float, z1: float) -> bool:
-            return _horizontal_delta(x0, z0, x1, z1) >= min_move_delta
+        def _stabilize_corridor_floor() -> Dict[str, Any]:
+            """Patch air floor cells after every candidate direction drops.
+
+            A local pad fixes the current foot position. Lane fill fixes the
+            more common underground failure: the next horizontal tunnel opens
+            into cave air, so the agent falls before it can count a clean
+            horizontal displacement.
+            """
+            if not hasattr(self.env, "execute_cmd"):
+                return {"success": False, "reason": "execute_cmd_unavailable"}
+            loc_x, loc_y, loc_z = _current_xyz(start_x, start_y, start_z)
+            bx = int(np.floor(loc_x))
+            by = int(np.floor(loc_y)) - 1
+            bz = int(np.floor(loc_z))
+            radius = stabilize_floor_radius
+            lane_length = (
+                stabilize_floor_length
+                if stabilize_floor_length > 0
+                else max(target_blocks + 2, radius + 1)
+            )
+            cells: set[Tuple[int, int]] = set()
+            commands_sent = 0
+            errors: List[str] = []
+            for dx in range(-radius, radius + 1):
+                for dz in range(-radius, radius + 1):
+                    cells.add((bx + dx, bz + dz))
+            lane_yaws: List[float] = []
+            if stabilize_floor_lanes:
+                if (
+                    direction_sweep_enabled
+                    and axis_lock
+                    and len(direction_sweep_offsets) > 1
+                ):
+                    lane_yaws = [
+                        float(sweep_anchor_yaw) + float(offset)
+                        for offset in direction_sweep_offsets
+                    ]
+                elif axis_lock:
+                    lane_yaws = [float(aligned_yaw)]
+                for lane_yaw in lane_yaws:
+                    yaw_rad = np.deg2rad(lane_yaw)
+                    forward_x = -float(np.sin(yaw_rad))
+                    forward_z = float(np.cos(yaw_rad))
+                    side_x = float(np.cos(yaw_rad))
+                    side_z = float(np.sin(yaw_rad))
+                    for dist in range(1, lane_length + 1):
+                        for side in range(-stabilize_floor_width, stabilize_floor_width + 1):
+                            tx = bx + int(round(forward_x * dist + side_x * side))
+                            tz = bz + int(round(forward_z * dist + side_z * side))
+                            cells.add((tx, tz))
+            for tx, tz in sorted(cells):
+                    for air_name in ("air", "cave_air"):
+                        cmd = (
+                            f"/execute if block {tx} {by} {tz} minecraft:{air_name} "
+                            f"run setblock {tx} {by} {tz} minecraft:{stabilize_floor_block}"
+                        )
+                        try:
+                            self.env.execute_cmd(cmd)
+                            commands_sent += 1
+                        except Exception as exc:
+                            if len(errors) < 3:
+                                errors.append(str(exc))
+            result = {
+                "success": commands_sent > 0 and not errors,
+                "reason": "floor_stabilized" if commands_sent > 0 else "no_commands_sent",
+                "center": (bx, by, bz),
+                "radius": radius,
+                "lane_fill": stabilize_floor_lanes,
+                "lane_length": lane_length if stabilize_floor_lanes else 0,
+                "lane_half_width": stabilize_floor_width if stabilize_floor_lanes else 0,
+                "lane_yaws": lane_yaws,
+                "cells": len(cells),
+                "block": stabilize_floor_block,
+                "commands_sent": commands_sent,
+                "errors": errors,
+            }
+            self._record_recovery("corridor_floor_stabilize", result)
+            if self.logger:
+                self.logger.info(
+                    "[dig_forward_blocks] floor stabilize after full sweep: "
+                    "center=(%d,%d,%d) radius=%d lane_fill=%s lane_length=%d "
+                    "lane_half_width=%d cells=%d block=%s commands=%d errors=%d",
+                    bx,
+                    by,
+                    bz,
+                    radius,
+                    stabilize_floor_lanes,
+                    lane_length if stabilize_floor_lanes else 0,
+                    stabilize_floor_width if stabilize_floor_lanes else 0,
+                    len(cells),
+                    stabilize_floor_block,
+                    commands_sent,
+                    len(errors),
+                )
+            return result
+
+        def _meaningful_lateral_move(
+            x0: float,
+            z0: float,
+            x1: float,
+            z1: float,
+            threshold: float | None = None,
+        ) -> bool:
+            return _horizontal_delta(x0, z0, x1, z1) >= (
+                min_move_delta if threshold is None else threshold
+            )
 
         def _total_horizontal_delta() -> float:
             now_x, now_z = _current_xz(start_x, start_z)
@@ -2962,11 +3246,11 @@ class CustomEnvWrapper(gym.Wrapper):
         ) -> bool:
             """Hold attack at the given pitch until a block breaks or the
             budget is exhausted. Returns True if a block broke."""
-            nonlocal steps_used
+            nonlocal steps_used, terminal_abort, position_jump_abort
             mined_at_phase_start = self._mined_block_count()
             ticks = 0
             while ticks < budget and steps_used < int(max_steps):
-                if _height_dropped():
+                if terminal_abort or _height_dropped():
                     return False
                 a = self.env.noop_action()
                 a["attack"] = np.array(1)
@@ -2978,9 +3262,20 @@ class CustomEnvWrapper(gym.Wrapper):
                 yaw_delta = _nudge_yaw_to(target_yaw) if target_yaw is not None else 0.0
                 if abs(pitch_delta) > 0.1 or abs(yaw_delta) > 0.1:
                     a["camera"] = np.array([pitch_delta, yaw_delta])
-                self.raw_step(a)
+                prev_x, prev_y, prev_z = _current_xyz(start_x, start_y, start_z)
+                _, _, done, _ = self.raw_step(a)
                 steps_used += 1
                 ticks += 1
+                cur_x, cur_y, cur_z = _current_xyz(prev_x, prev_y, prev_z)
+                jump = (
+                    (cur_x - prev_x) ** 2
+                    + (cur_y - prev_y) ** 2
+                    + (cur_z - prev_z) ** 2
+                ) ** 0.5
+                if done or jump > max_position_jump:
+                    terminal_abort = True
+                    position_jump_abort = bool(jump > max_position_jump)
+                    return False
                 if self._mined_block_count() > mined_at_phase_start:
                     return True
             return False
@@ -2991,15 +3286,16 @@ class CustomEnvWrapper(gym.Wrapper):
             label: str,
             stop_on_move: bool = True,
             target_yaw: float | None = None,
+            move_threshold: float | None = None,
         ) -> Tuple[float, int]:
             """Forward + sprint + attack. Returns (x/z displacement, mined delta)."""
-            nonlocal steps_used
+            nonlocal steps_used, terminal_abort, position_jump_abort
             phase_start_x, phase_start_z = _current_xz(start_x, start_z)
             mined_at_start = self._mined_block_count()
             for _ in range(ticks):
                 if steps_used >= int(max_steps):
                     break
-                if _height_dropped():
+                if terminal_abort or _height_dropped():
                     break
                 a = self.env.noop_action()
                 a["forward"] = np.array(1)
@@ -3009,11 +3305,28 @@ class CustomEnvWrapper(gym.Wrapper):
                 yaw_delta = _nudge_yaw_to(target_yaw, max_step=14.0) if target_yaw is not None else 0.0
                 if abs(pitch_delta) > 0.1 or abs(yaw_delta) > 0.1:
                     a["camera"] = np.array([pitch_delta, yaw_delta])
-                self.raw_step(a)
+                prev_x, prev_y, prev_z = _current_xyz(start_x, start_y, start_z)
+                _, _, done, _ = self.raw_step(a)
                 steps_used += 1
+                cur_x, cur_y, cur_z = _current_xyz(prev_x, prev_y, prev_z)
+                jump = (
+                    (cur_x - prev_x) ** 2
+                    + (cur_y - prev_y) ** 2
+                    + (cur_z - prev_z) ** 2
+                ) ** 0.5
+                if done or jump > max_position_jump:
+                    terminal_abort = True
+                    position_jump_abort = bool(jump > max_position_jump)
+                    break
                 if stop_on_move:
                     now_x, now_z = _current_xz(phase_start_x, phase_start_z)
-                    if _meaningful_lateral_move(phase_start_x, phase_start_z, now_x, now_z):
+                    if _meaningful_lateral_move(
+                        phase_start_x,
+                        phase_start_z,
+                        now_x,
+                        now_z,
+                        move_threshold,
+                    ):
                         break
             phase_end_x, phase_end_z = _current_xz(phase_start_x, phase_start_z)
             return (
@@ -3021,7 +3334,11 @@ class CustomEnvWrapper(gym.Wrapper):
                 max(0, self._mined_block_count() - mined_at_start),
             )
 
-        def _clear_forward_blocker(target_yaw: float | None) -> Tuple[bool, float]:
+        def _clear_forward_blocker(
+            target_yaw: float | None,
+            segment_start_x: float,
+            segment_start_z: float,
+        ) -> Tuple[bool, float]:
             """Clear no-displacement blockers in physical body order.
 
             The agent is two blocks tall. A successful lateral relocation
@@ -3035,9 +3352,17 @@ class CustomEnvWrapper(gym.Wrapper):
                 max(blocked_head_budget, 1),
                 "blocked_front",
                 target_yaw=target_yaw,
+                move_threshold=segment_min_move_delta,
             )
-            if moved_head >= min_move_delta or _height_dropped() or steps_used >= int(max_steps):
-                return self._mined_block_count() > before, moved_head
+            now_x, now_z = _current_xz(segment_start_x, segment_start_z)
+            segment_delta = _horizontal_delta(segment_start_x, segment_start_z, now_x, now_z)
+            if (
+                segment_delta >= segment_min_move_delta
+                or terminal_abort
+                or _height_dropped()
+                or steps_used >= int(max_steps)
+            ):
+                return self._mined_block_count() > before, max(moved_head, segment_delta)
             if blocked_up_budget > 0:
                 _phase_attack(
                     up_pitch_target,
@@ -3047,17 +3372,27 @@ class CustomEnvWrapper(gym.Wrapper):
                     sprint=False,
                     target_yaw=target_yaw,
                 )
-                if _height_dropped() or steps_used >= int(max_steps):
-                    return self._mined_block_count() > before, moved_head
+                if terminal_abort or _height_dropped() or steps_used >= int(max_steps):
+                    now_x, now_z = _current_xz(segment_start_x, segment_start_z)
+                    segment_delta = _horizontal_delta(segment_start_x, segment_start_z, now_x, now_z)
+                    return self._mined_block_count() > before, max(moved_head, segment_delta)
             moved_feet, _ = _phase_move_attack(
                 blocked_feet_pitch_target,
                 max(blocked_feet_budget, 1),
                 "blocked_diagonal_down",
                 target_yaw=target_yaw,
+                move_threshold=segment_min_move_delta,
             )
-            if moved_feet >= min_move_delta or _height_dropped() or steps_used >= int(max_steps):
-                return self._mined_block_count() > before, max(moved_head, moved_feet)
-            if not _height_dropped() and steps_used < int(max_steps):
+            now_x, now_z = _current_xz(segment_start_x, segment_start_z)
+            segment_delta = _horizontal_delta(segment_start_x, segment_start_z, now_x, now_z)
+            if (
+                segment_delta >= segment_min_move_delta
+                or terminal_abort
+                or _height_dropped()
+                or steps_used >= int(max_steps)
+            ):
+                return self._mined_block_count() > before, max(moved_head, moved_feet, segment_delta)
+            if not terminal_abort and not _height_dropped() and steps_used < int(max_steps):
                 _phase_attack(
                     blocked_feet_pitch_target,
                     "blocked_diagonal_down_finish",
@@ -3066,7 +3401,9 @@ class CustomEnvWrapper(gym.Wrapper):
                     sprint=True,
                     target_yaw=target_yaw,
                 )
-            return self._mined_block_count() > before, max(moved_head, moved_feet)
+            now_x, now_z = _current_xz(segment_start_x, segment_start_z)
+            segment_delta = _horizontal_delta(segment_start_x, segment_start_z, now_x, now_z)
+            return self._mined_block_count() > before, max(moved_head, moved_feet, segment_delta)
 
         def _restore_pitch_to(target_pitch: float, budget: int = 12) -> None:
             nonlocal steps_used
@@ -3079,6 +3416,15 @@ class CustomEnvWrapper(gym.Wrapper):
                 self.raw_step(a)
                 steps_used += 1
 
+        floor_stabilize_result = None
+        if (
+            stabilize_floor_enabled
+            and stabilize_after_full_sweep
+            and stabilize_floor_requested
+        ):
+            floor_stabilize_result = _stabilize_corridor_floor()
+            setattr(self, "_corridor_floor_stabilize_requested", False)
+
         per_block_initial = self._mined_block_count()
         reason = "ok"
         height_drop = False
@@ -3086,6 +3432,7 @@ class CustomEnvWrapper(gym.Wrapper):
         stuck_clears = 0
         walk_deltas: List[float] = []
         alignment_attempts: List[Dict[str, Any]] = []
+        segment_records: List[Dict[str, Any]] = []
         success_direction = ""
         yaw_candidates: List[Tuple[str, float | None, float]] = []
         if axis_lock:
@@ -3100,14 +3447,29 @@ class CustomEnvWrapper(gym.Wrapper):
         else:
             yaw_candidates.append(("unlocked", None, 0.0))
 
-        while blocks_dug < int(n_blocks) and steps_used < int(max_steps):
-            if _height_dropped():
-                reason = "height_drop"
+        while blocks_dug < target_blocks and steps_used < int(max_steps):
+            if terminal_abort or _height_dropped():
+                reason = "terminal_or_position_jump" if terminal_abort else "height_drop"
                 height_drop = True
                 break
             if steps_used >= int(max_steps):
                 break
+            segment_start_x, segment_start_z = _current_xz(start_x, start_z)
+            segment_start_cell = _block_cell(segment_start_x, segment_start_z)
+            segment_index = blocks_dug + 1
             relocated = False
+            segment_record: Dict[str, Any] = {
+                "segment": segment_index,
+                "start_x": segment_start_x,
+                "start_z": segment_start_z,
+                "start_cell": segment_start_cell,
+                "attempts": [],
+            }
+
+            def _segment_delta() -> float:
+                now_x, now_z = _current_xz(segment_start_x, segment_start_z)
+                return _horizontal_delta(segment_start_x, segment_start_z, now_x, now_z)
+
             for direction, target_yaw, yaw_offset in yaw_candidates:
                 moved = 0.0
                 mined_delta = 0
@@ -3118,47 +3480,60 @@ class CustomEnvWrapper(gym.Wrapper):
                     max(move_attack_ticks, 1),
                     f"move_probe_{direction}",
                     target_yaw=target_yaw,
+                    move_threshold=segment_min_move_delta,
                 )
                 walk_deltas.append(moved)
+                segment_delta = _segment_delta()
+                now_x, now_z = _current_xz(segment_start_x, segment_start_z)
                 total_delta = _total_horizontal_delta()
                 attempt: Dict[str, Any] = {
+                    "segment": segment_index,
                     "direction": direction,
                     "target_yaw": target_yaw,
                     "yaw_offset": yaw_offset,
                     "yaw_mode": yaw_mode,
                     "probe_delta": moved,
+                    "segment_delta": segment_delta,
+                    "segment_cell_changed": _block_cell_changed(
+                        segment_start_x, segment_start_z, now_x, now_z
+                    ),
                     "total_delta": total_delta,
                     "mined_delta": mined_delta,
                     "unstuck_passes": [],
                 }
-                if _height_dropped():
+                if terminal_abort or _height_dropped():
                     alignment_attempts.append(attempt)
-                    reason = "height_drop"
+                    segment_record["attempts"].append(attempt)
+                    reason = "terminal_or_position_jump" if terminal_abort else "height_drop"
                     height_drop = True
                     break
-                if total_delta >= min_move_delta:
+                if segment_delta >= segment_min_move_delta:
                     alignment_attempts.append(attempt)
+                    segment_record["attempts"].append(attempt)
                     success_direction = direction
                     relocated = True
                     break
                 unstuck_pass = 0
                 while (
-                    _total_horizontal_delta() < min_move_delta
+                    _segment_delta() < segment_min_move_delta
                     and unstuck_pass < max_unstuck_passes
                     and steps_used < int(max_steps)
+                    and not terminal_abort
                     and not _height_dropped()
                 ):
                     forward_move_failures += 1
                     stuck_clears += 1
                     if self.logger:
                         self.logger.info(
-                            "[dig_forward_blocks] %s has not moved one block "
-                            "(phase_delta=%.3f total_delta=%.3f mined_delta=%d); "
+                            "[dig_forward_blocks] segment=%d %s has not advanced "
+                            "(phase_delta=%.3f segment_delta=%.3f total_delta=%.3f mined_delta=%d); "
                             "clearing horizontal front then diagonal-down blockers "
                             "pass=%d/%d yaw=%s yaw_offset=%.1f front_pitch=%.1f "
                             "diagonal_pitch=%.1f",
+                            segment_index,
                             direction,
                             moved,
+                            _segment_delta(),
                             _total_horizontal_delta(),
                             mined_delta,
                             unstuck_pass + 1,
@@ -3168,21 +3543,31 @@ class CustomEnvWrapper(gym.Wrapper):
                             blocked_front_pitch_target,
                             blocked_feet_pitch_target,
                         )
-                    cleared, clear_moved = _clear_forward_blocker(target_yaw)
+                    cleared, clear_moved = _clear_forward_blocker(
+                        target_yaw,
+                        segment_start_x,
+                        segment_start_z,
+                    )
+                    segment_delta = _segment_delta()
                     total_delta = _total_horizontal_delta()
+                    now_x, now_z = _current_xz(segment_start_x, segment_start_z)
                     pass_record = {
                         "pass": unstuck_pass + 1,
                         "cleared": cleared,
                         "clear_delta": clear_moved,
+                        "segment_delta_after_clear": segment_delta,
+                        "segment_cell_changed_after_clear": _block_cell_changed(
+                            segment_start_x, segment_start_z, now_x, now_z
+                        ),
                         "total_delta_after_clear": total_delta,
                     }
-                    if _height_dropped() or steps_used >= int(max_steps):
+                    if terminal_abort or _height_dropped() or steps_used >= int(max_steps):
                         attempt["unstuck_passes"].append(pass_record)
                         break
-                    if total_delta >= min_move_delta:
-                        moved = max(moved, clear_moved)
+                    if segment_delta >= segment_min_move_delta:
+                        moved = max(moved, clear_moved, segment_delta)
                         walk_deltas.append(clear_moved)
-                        pass_record["retry_delta"] = clear_moved
+                        pass_record["retry_delta"] = segment_delta
                         attempt["unstuck_passes"].append(pass_record)
                         relocated = True
                         break
@@ -3191,40 +3576,80 @@ class CustomEnvWrapper(gym.Wrapper):
                         max(move_attack_ticks, 1),
                         f"move_retry_{direction}",
                         target_yaw=target_yaw,
+                        move_threshold=segment_min_move_delta,
                     )
                     walk_deltas.append(moved)
+                    segment_delta = _segment_delta()
                     total_delta = _total_horizontal_delta()
-                    pass_record["retry_delta"] = moved
+                    now_x, now_z = _current_xz(segment_start_x, segment_start_z)
+                    pass_record["retry_delta"] = segment_delta
                     pass_record["retry_mined_delta"] = mined_delta
+                    pass_record["segment_cell_changed_after_retry"] = _block_cell_changed(
+                        segment_start_x, segment_start_z, now_x, now_z
+                    )
+                    pass_record["segment_delta_after_retry"] = segment_delta
                     pass_record["total_delta_after_retry"] = total_delta
                     attempt["unstuck_passes"].append(pass_record)
-                    if total_delta >= min_move_delta:
+                    if segment_delta >= segment_min_move_delta:
                         relocated = True
                         break
-                    if not cleared and total_delta < min_move_delta:
+                    if not cleared and segment_delta < segment_min_move_delta:
                         reason = "stuck_no_block_break"
                     unstuck_pass += 1
-                attempt["final_delta"] = moved
+                attempt["final_delta"] = _segment_delta()
                 attempt["final_total_delta"] = _total_horizontal_delta()
                 alignment_attempts.append(attempt)
+                segment_record["attempts"].append(attempt)
                 if relocated:
                     success_direction = direction
                     break
-            if _height_dropped():
-                reason = "height_drop"
+            if terminal_abort or _height_dropped():
+                reason = "terminal_or_position_jump" if terminal_abort else "height_drop"
                 height_drop = True
                 break
             if not relocated:
                 reason = "stuck_no_forward_displacement"
+                segment_record["success"] = False
+                segment_record["reason"] = reason
+                segment_record["end_x"], segment_record["end_z"] = _current_xz(
+                    segment_start_x,
+                    segment_start_z,
+                )
+                segment_record["segment_delta"] = _segment_delta()
+                segment_records.append(segment_record)
                 break
             blocks_dug += 1
-            reason = "moved_continue_dig_down"
+            reason = "tunnel_segment_advanced"
+            end_seg_x, end_seg_z = _current_xz(segment_start_x, segment_start_z)
+            segment_record["success"] = True
+            segment_record["direction"] = success_direction
+            segment_record["end_x"] = end_seg_x
+            segment_record["end_z"] = end_seg_z
+            segment_record["end_cell"] = _block_cell(end_seg_x, end_seg_z)
+            segment_record["segment_delta"] = _horizontal_delta(
+                segment_start_x,
+                segment_start_z,
+                end_seg_x,
+                end_seg_z,
+            )
+            segment_records.append(segment_record)
+            if self.logger:
+                self.logger.info(
+                    "[dig_forward_blocks] segment advanced: %d/%d "
+                    "segment_delta=%.2f total_delta=%.2f direction=%s "
+                    "cell=%s->%s",
+                    blocks_dug,
+                    target_blocks,
+                    segment_record["segment_delta"],
+                    _total_horizontal_delta(),
+                    success_direction,
+                    segment_start_cell,
+                    segment_record["end_cell"],
+                )
             if stop_after_first_move:
                 break
 
-        provisional_success = (
-            blocks_dug >= int(n_blocks) or (stop_after_first_move and blocks_dug > 0)
-        )
+        provisional_success = blocks_dug >= min_success_blocks
         if not provisional_success:
             _restore_pitch_to(head_pitch_target)
 
@@ -3240,22 +3665,63 @@ class CustomEnvWrapper(gym.Wrapper):
         horizontal_delta = _horizontal_delta(start_x, start_z, end_x, end_z)
         block_cell_changed = _block_cell_changed(start_x, start_z, end_x, end_z)
         meaningful_final_move = horizontal_delta >= min_move_delta
-        # The blocker-clearing phases can physically push the agent into a new
-        # block cell even when the per-probe `moved` value did not get promoted
-        # into `blocks_dug`. For the v7 relocation loop, physical x/z relocation
-        # is the success criterion.
-        success = provisional_success or (not height_drop and meaningful_final_move)
+        success = provisional_success and not height_drop and not terminal_abort
         if success and not meaningful_final_move:
             success = False
             reason = "no_block_cell_change"
-        if success and reason in ("ok", "stuck_no_forward_displacement"):
-            reason = "moved_continue_dig_down"
+        if success:
+            if blocks_dug >= target_blocks:
+                reason = "tunnel_bore_complete"
+            else:
+                reason = "tunnel_bore_min_success"
         elif steps_used >= int(max_steps):
             reason = "step_budget_exhausted"
+
+        next_sweep_index = sweep_index
+        if direction_sweep_enabled and axis_lock and len(direction_sweep_offsets) > 1:
+            should_rotate_direction = (
+                not success
+                and not terminal_abort
+                and reason
+                in {
+                    "height_drop",
+                    "no_block_cell_change",
+                    "stuck_no_forward_displacement",
+                    "stuck_no_block_break",
+                    "step_budget_exhausted",
+                }
+            )
+            if should_rotate_direction:
+                next_sweep_index = (sweep_index + 1) % len(direction_sweep_offsets)
+                setattr(self, "_corridor_direction_sweep_index", next_sweep_index)
+                setattr(self, "_corridor_direction_sweep_anchor_yaw", sweep_anchor_yaw)
+                if (
+                    stabilize_floor_enabled
+                    and stabilize_after_full_sweep
+                    and next_sweep_index == 0
+                ):
+                    setattr(self, "_corridor_floor_stabilize_requested", True)
+                if self.logger:
+                    self.logger.info(
+                        "[dig_forward_blocks] direction sweep rotate: "
+                        "reason=%s index=%d->%d next_offset=%.1f anchor_yaw=%.1f",
+                        reason,
+                        sweep_index,
+                        next_sweep_index,
+                        float(direction_sweep_offsets[next_sweep_index]),
+                        sweep_anchor_yaw,
+                    )
+            else:
+                next_sweep_index = 0
+                setattr(self, "_corridor_direction_sweep_index", 0)
+                setattr(self, "_corridor_direction_sweep_anchor_yaw", None)
+                setattr(self, "_corridor_floor_stabilize_requested", False)
 
         result = {
             "success": success,
             "blocks_dug": blocks_dug,
+            "target_blocks": target_blocks,
+            "min_success_blocks": min_success_blocks,
             "steps_used": steps_used,
             "reason": reason,
             "start_x": start_x,
@@ -3266,16 +3732,29 @@ class CustomEnvWrapper(gym.Wrapper):
             "end_z": end_z,
             "mined_total_delta": self._mined_block_count() - per_block_initial,
             "height_drop": height_drop,
+            "terminal_abort": terminal_abort,
+            "position_jump_abort": position_jump_abort,
+            "max_position_jump": max_position_jump,
             "forward_move_failures": forward_move_failures,
             "stuck_clears": stuck_clears,
             "walk_deltas": walk_deltas,
             "alignment_attempts": alignment_attempts,
+            "segment_records": segment_records,
             "success_direction": success_direction,
             "axis_lock": axis_lock,
             "yaw_mode": yaw_mode,
             "aligned_yaw": aligned_yaw if axis_lock else None,
             "yaw_offsets": yaw_offsets,
+            "direction_sweep_enabled": direction_sweep_enabled,
+            "direction_sweep_index": sweep_index,
+            "direction_sweep_next_index": next_sweep_index,
+            "direction_sweep_anchor_yaw": sweep_anchor_yaw if axis_lock else None,
+            "direction_sweep_base_offset": sweep_base_offset,
+            "direction_sweep_offsets": direction_sweep_offsets,
+            "floor_stabilize_requested": stabilize_floor_requested,
+            "floor_stabilize_result": floor_stabilize_result,
             "min_move_delta": min_move_delta,
+            "segment_min_move_delta": segment_min_move_delta,
             "horizontal_delta": horizontal_delta,
             "start_block_cell": _block_cell(start_x, start_z),
             "end_block_cell": _block_cell(end_x, end_z),
@@ -3291,12 +3770,257 @@ class CustomEnvWrapper(gym.Wrapper):
         self._record_recovery("dig_forward_blocks", result)
         if self.logger:
             self.logger.info(
-                f"[dig_forward_blocks] done: blocks_dug={blocks_dug}/{n_blocks} "
+                f"[dig_forward_blocks] done: blocks_dug={blocks_dug}/{target_blocks} "
+                f"min_success={min_success_blocks} "
                 f"steps_used={steps_used} reason={reason} "
+                f"horizontal_delta={horizontal_delta:.2f} "
                 f"end=({end_x:.1f},{end_y:.1f},{end_z:.1f}) "
                 f"success_direction={success_direction} "
                 f"forward_move_failures={forward_move_failures} "
-                f"stuck_clears={stuck_clears}"
+                f"stuck_clears={stuck_clears} "
+                f"direction_sweep_index={sweep_index} "
+                f"direction_sweep_base_offset={sweep_base_offset:.1f}"
+            )
+        return result
+
+    def dig_down_blocks(
+        self,
+        n_blocks: int = 5,
+        max_steps: int = 320,
+        max_steps_per_block: int = 70,
+        prefer_pickaxe: bool = True,
+        generate_ore: bool = False,
+        force_ore: str | None = None,
+    ) -> Dict[str, Any]:
+        """Scripted vertical shaft at the current x/z.
+
+        Used after a successful horizontal tunnel relocation. The normal
+        STEVE-1 dig-down prompt can drift away from the newly chosen x/z; this
+        primitive keeps the agent roughly in place and mines straight down a
+        small bounded distance so ore spawned below this new column is actually
+        collected.
+        """
+        loc = (self.cache.get("info") or {}).get("location_stats", {}) or {}
+
+        def _scalar(key: str, default: float) -> float:
+            try:
+                return float(np.asarray(loc.get(key, default)).reshape(-1)[0])
+            except Exception:
+                return float(default)
+
+        def _current_xyz(default_x: float, default_y: float, default_z: float) -> Tuple[float, float, float]:
+            loc_now = (self.cache.get("info") or {}).get("location_stats", {}) or {}
+            try:
+                x_now = float(np.asarray(loc_now.get("xpos", default_x)).reshape(-1)[0])
+            except Exception:
+                x_now = float(default_x)
+            try:
+                y_now = float(np.asarray(loc_now.get("ypos", default_y)).reshape(-1)[0])
+            except Exception:
+                y_now = float(default_y)
+            try:
+                z_now = float(np.asarray(loc_now.get("zpos", default_z)).reshape(-1)[0])
+            except Exception:
+                z_now = float(default_z)
+            return x_now, y_now, z_now
+
+        def _nudge_pitch_to(target_pitch: float, max_step: float = 12.0) -> float:
+            try:
+                cp = float(
+                    np.asarray(
+                        (self.cache.get("info") or {}).get("location_stats", {}).get(
+                            "pitch", 0
+                        )
+                    ).reshape(-1)[0]
+                )
+            except Exception:
+                cp = 0.0
+            return max(min(target_pitch - cp, max_step), -max_step)
+
+        start_x = _scalar("xpos", 0.0)
+        start_y = _scalar("ypos", 0.0)
+        start_z = _scalar("zpos", 0.0)
+        min_y = float(os.environ.get("XENON_SCRIPTED_DIGDOWN_MIN_Y", "4.0"))
+        ore_threshold = float(os.environ.get("XENON_SCRIPTED_DIGDOWN_ORE_THRESHOLD", "0.0"))
+        target_pitch = float(os.environ.get("XENON_SCRIPTED_DIGDOWN_PITCH", "88.0"))
+        settle_ticks = int(os.environ.get("XENON_SCRIPTED_DIGDOWN_SETTLE_TICKS", "5"))
+
+        steps_used = 0
+        blocks_dug = 0
+        terminal_abort = False
+        position_jump_abort = False
+        max_position_jump = float(os.environ.get("XENON_CORRIDOR_MAX_POSITION_JUMP", "6.0"))
+        forced_ore: Dict[str, Any] | None = None
+
+        if generate_ore and force_ore and os.environ.get("XENON_SCRIPTED_DIGDOWN_FORCE_TARGET_ORE", "0") == "1":
+            ore_name = str(force_ore).replace("minecraft:", "")
+            if ore_name == "redstone":
+                ore_name = "redstone_ore"
+            if ore_name == "diamond":
+                ore_name = "diamond_ore"
+            if not ore_name.endswith("_ore"):
+                ore_name = f"{ore_name}_ore"
+            band = self.ORE_HEIGHT_BANDS.get(ore_name)
+            dy_candidates: List[int] = []
+            for raw_dy in os.environ.get(
+                "XENON_SCRIPTED_DIGDOWN_FORCE_ORE_DYS",
+                "-3,-4,-5,-2,-1",
+            ).split(","):
+                try:
+                    dy = int(raw_dy.strip())
+                except ValueError:
+                    continue
+                if dy < 0 and dy not in dy_candidates:
+                    dy_candidates.append(dy)
+            if not dy_candidates:
+                dy_candidates = [-3, -4, -5, -2, -1]
+            forced_dy = os.environ.get("XENON_SCRIPTED_DIGDOWN_FORCE_ORE_DY")
+            chosen_dy = int(forced_dy) if forced_dy is not None else dy_candidates[0]
+            if band is not None:
+                lo, hi = band
+                for dy in dy_candidates:
+                    target_y = start_y + dy
+                    if float(lo) <= target_y <= float(hi):
+                        chosen_dy = dy
+                        break
+            try:
+                self.env.execute_cmd(f"/setblock ~ ~{chosen_dy} ~ minecraft:{ore_name}")
+                forced_ore = {
+                    "ore": ore_name,
+                    "dy": chosen_dy,
+                    "target_y": start_y + chosen_dy,
+                    "dy_candidates": dy_candidates,
+                }
+                if self.logger:
+                    self.logger.info(
+                        "[dig_down_blocks] forced target ore: ore=%s dy=%d target_y=%.1f",
+                        ore_name,
+                        chosen_dy,
+                        start_y + chosen_dy,
+                    )
+            except Exception as exc:
+                if self.logger:
+                    self.logger.warning("[dig_down_blocks] force target ore failed: %s", exc)
+        elif generate_ore:
+            try:
+                ore_map = {} if os.environ.get("XENON_SCRIPTED_DIGDOWN_ORE_LOCAL_MAP", "1") == "1" else self.ORE_MAP
+                random_ore(self.env, ore_map, start_y, thresold=ore_threshold)
+            except Exception as exc:
+                if self.logger:
+                    self.logger.warning("[dig_down_blocks] random_ore failed: %s", exc)
+
+        if prefer_pickaxe:
+            try:
+                slot = self.find_best_pickaxe()
+            except Exception:
+                slot = None
+            if slot:
+                previous_can_change_hotbar = self.can_change_hotbar
+                self.can_change_hotbar = True
+                try:
+                    for _ in range(4):
+                        if steps_used >= int(max_steps):
+                            break
+                        a_eq = self.env.noop_action()
+                        a_eq[slot] = np.array(1)
+                        self.raw_step(a_eq)
+                        steps_used += 1
+                finally:
+                    self.can_change_hotbar = previous_can_change_hotbar
+
+        mined_before = self._mined_block_count()
+        reason = "ok"
+        trajectory: List[float] = [start_y]
+
+        for _block in range(max(0, int(n_blocks))):
+            if steps_used >= int(max_steps):
+                reason = "step_budget_exhausted"
+                break
+            _, segment_start_y, _ = _current_xyz(start_x, start_y, start_z)
+            if segment_start_y <= min_y:
+                reason = "min_y_reached"
+                break
+            moved_down = False
+            for _ in range(max(1, int(max_steps_per_block))):
+                if steps_used >= int(max_steps):
+                    reason = "step_budget_exhausted"
+                    break
+                a = self.env.noop_action()
+                a["attack"] = np.array(1)
+                pitch_delta = _nudge_pitch_to(target_pitch)
+                if abs(pitch_delta) > 0.1:
+                    a["camera"] = np.array([pitch_delta, 0])
+                prev_x, prev_y, prev_z = _current_xyz(start_x, start_y, start_z)
+                _, _, done, _ = self.raw_step(a)
+                steps_used += 1
+                cur_x, cur_y, cur_z = _current_xyz(prev_x, prev_y, prev_z)
+                jump = (
+                    (cur_x - prev_x) ** 2
+                    + (cur_y - prev_y) ** 2
+                    + (cur_z - prev_z) ** 2
+                ) ** 0.5
+                if done or jump > max_position_jump:
+                    terminal_abort = True
+                    position_jump_abort = bool(jump > max_position_jump)
+                    reason = "terminal_or_position_jump"
+                    break
+                if cur_y <= segment_start_y - 0.75:
+                    moved_down = True
+                    blocks_dug += 1
+                    trajectory.append(cur_y)
+                    for _settle in range(max(0, settle_ticks)):
+                        if steps_used >= int(max_steps):
+                            break
+                        self.raw_step(self.env.noop_action())
+                        steps_used += 1
+                    break
+            if terminal_abort or steps_used >= int(max_steps):
+                break
+            if not moved_down:
+                reason = "stuck_no_vertical_displacement"
+                break
+
+        end_x, end_y, end_z = _current_xyz(start_x, start_y, start_z)
+        if blocks_dug >= max(1, min(int(n_blocks), 1)) and reason == "ok":
+            reason = "scripted_digdown_complete" if blocks_dug >= int(n_blocks) else "scripted_digdown_partial"
+        success = blocks_dug > 0 and not terminal_abort
+        result = {
+            "success": success,
+            "blocks_dug": blocks_dug,
+            "target_blocks": int(n_blocks),
+            "steps_used": steps_used,
+            "reason": reason,
+            "start_x": start_x,
+            "start_y": start_y,
+            "start_z": start_z,
+            "end_x": end_x,
+            "end_y": end_y,
+            "end_z": end_z,
+            "mined_total_delta": self._mined_block_count() - mined_before,
+            "terminal_abort": terminal_abort,
+            "position_jump_abort": position_jump_abort,
+            "trajectory": trajectory,
+            "generated_ore": bool(generate_ore),
+            "forced_ore": forced_ore,
+            "ore_threshold": ore_threshold,
+            "min_y": min_y,
+        }
+        self._record_recovery("dig_down_blocks", result)
+        if self.logger:
+            self.logger.info(
+                "[dig_down_blocks] done: blocks_dug=%d/%d steps=%d reason=%s "
+                "start=(%.1f,%.1f,%.1f) end=(%.1f,%.1f,%.1f) mined_delta=%d",
+                blocks_dug,
+                int(n_blocks),
+                steps_used,
+                reason,
+                start_x,
+                start_y,
+                start_z,
+                end_x,
+                end_y,
+                end_z,
+                result["mined_total_delta"],
             )
         return result
 

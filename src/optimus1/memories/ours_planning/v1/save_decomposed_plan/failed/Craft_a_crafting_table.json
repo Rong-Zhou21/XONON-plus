@@ -1,0 +1,20 @@
+{
+  "plan": [
+    {
+      "id": "kSdzceQhEaJicttgkcCmfo",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/v4/Wood_Craft_a_crafting_table/forest/failed/2026_05_04_11_35_20_Craft_a_crafting_table_kSdzceQhEaJicttgkcCmfo.mp4",
+      "planning": [
+        {
+          "task": "Craft a crafting table",
+          "goal": "crafting_table",
+          "error": "Attempted to step an environment server with done=True"
+        }
+      ],
+      "status": "failed",
+      "steps": 146
+    }
+  ]
+}

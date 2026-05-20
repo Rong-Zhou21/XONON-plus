@@ -127,6 +127,134 @@
       ],
       "status": "success",
       "steps": 243
+    },
+    {
+      "id": "HXQsYgwQe4CcA6F4JnnxUv",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/v4/Wood_Craft_a_crafting_table/forest/success/2026_05_04_04_43_45_craft_crafting_table_HXQsYgwQe4CcA6F4JnnxUv.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 383
+    },
+    {
+      "id": "UkF3s8M2K6PYA9yCc7Shxa",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/v4/Wood_Craft_a_crafting_table/forest/success/2026_05_04_17_34_01_craft_crafting_table_UkF3s8M2K6PYA9yCc7Shxa.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 254
+    },
+    {
+      "id": "GzZPP5kperuELZ9jMtBLhD",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/v4/Wood_Craft_a_crafting_table/forest/success/2026_05_05_04_20_31_craft_crafting_table_GzZPP5kperuELZ9jMtBLhD.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1393
+    },
+    {
+      "id": "3HP2yzWCXg9CBnCF87EVRF",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/v6/Wood_Craft_a_crafting_table/forest/success/2026_05_07_08_55_38_craft_crafting_table_3HP2yzWCXg9CBnCF87EVRF.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 252
     }
   ]
 }

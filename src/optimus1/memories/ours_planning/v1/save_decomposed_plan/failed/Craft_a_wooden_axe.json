@@ -56,6 +56,24 @@
       ],
       "status": "failed",
       "steps": 647
+    },
+    {
+      "id": "ZLtH3DfnAkVkFGqqszirhB",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_axe",
+      "video": "videos/v4/Wood_Craft_a_wooden_axe/forest/failed/2026_05_04_11_23_37_chop_a_tree_ZLtH3DfnAkVkFGqqszirhB.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 161
     }
   ]
 }

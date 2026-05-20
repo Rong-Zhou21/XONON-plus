@@ -1,0 +1,20 @@
+{
+  "plan": [
+    {
+      "id": "apq8r6UU5anUDJAfuNeT8f",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "stick",
+      "video": "videos/v4/Wood_Craft_a_stick/forest/failed/2026_05_05_04_15_11_Craft_a_stick_apq8r6UU5anUDJAfuNeT8f.mp4",
+      "planning": [
+        {
+          "task": "Craft a stick",
+          "goal": "stick",
+          "error": "Attempted to step an environment server with done=True"
+        }
+      ],
+      "status": "failed",
+      "steps": 180
+    }
+  ]
+}

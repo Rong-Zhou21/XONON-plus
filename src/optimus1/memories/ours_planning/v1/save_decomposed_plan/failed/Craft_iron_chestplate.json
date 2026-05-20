@@ -38,6 +38,40 @@
       ],
       "status": "failed",
       "steps": 1040
+    },
+    {
+      "id": "4eHWEQvtQQZmsQwjJ9tR9T",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_chestplate",
+      "video": "videos/v5/Armor_Craft_iron_chestplate/forest/failed/2026_05_06_13_41_45_chop_a_tree_4eHWEQvtQQZmsQwjJ9tR9T.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 159
+    },
+    {
+      "id": "oKSfvywL62yAsC6BQgVgHN",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_chestplate",
+      "video": "/home/yzb/zhourong/XENON-plus/videos/v7/Armor_Craft_iron_chestplate/forest/failed/2026_05_08_00_40_07_Craft_iron_chestplate_oKSfvywL62yAsC6BQgVgHN.mp4",
+      "planning": [
+        {
+          "task": "Craft iron chestplate",
+          "goal": "iron_chestplate",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 36000
     }
   ]
 }

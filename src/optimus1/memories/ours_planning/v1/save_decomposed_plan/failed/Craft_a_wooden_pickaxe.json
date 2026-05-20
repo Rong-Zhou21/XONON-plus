@@ -17,6 +17,24 @@
       ],
       "status": "failed",
       "steps": 155
+    },
+    {
+      "id": "LTQSgBdWLu8RyMJCEM8nM8",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_pickaxe",
+      "video": "videos/v4/Wood_Craft_a_wooden_pickaxe/forest/failed/2026_05_04_17_13_15_chop_a_tree_LTQSgBdWLu8RyMJCEM8nM8.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 157
     }
   ]
 }

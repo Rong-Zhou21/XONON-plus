@@ -107,6 +107,22 @@
       ],
       "status": "failed",
       "steps": 11997
+    },
+    {
+      "id": "LqLergw9jYNHdE746EKV33",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "rail",
+      "video": "videos/v4/Iron_Craft_a_rail/plains/failed/2026_05_05_06_44_18_Craft_a_rail_LqLergw9jYNHdE746EKV33.mp4",
+      "planning": [
+        {
+          "task": "Craft a rail",
+          "goal": "rail",
+          "error": "not enough arguments for format string"
+        }
+      ],
+      "status": "failed",
+      "steps": 10502
     }
   ]
 }

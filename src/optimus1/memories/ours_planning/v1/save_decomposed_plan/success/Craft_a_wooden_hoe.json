@@ -137,6 +137,236 @@
       ],
       "status": "success",
       "steps": 920
+    },
+    {
+      "id": "P5mqM4r5VHUivrBitniFkK",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_hoe",
+      "video": "videos/v4/Wood_Craft_a_wooden_hoe/forest/success/2026_05_04_04_39_05_craft_wooden_hoe_P5mqM4r5VHUivrBitniFkK.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_hoe",
+          "goal": [
+            "wooden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1460
+    },
+    {
+      "id": "8JSwgz3TswQ8W8V3oPFg3v",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_hoe",
+      "video": "videos/v4/Wood_Craft_a_wooden_hoe/forest/success/2026_05_04_11_27_44_craft_wooden_hoe_8JSwgz3TswQ8W8V3oPFg3v.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_hoe",
+          "goal": [
+            "wooden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1507
+    },
+    {
+      "id": "U8qvecJ9koDciz8EhMiKLH",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_hoe",
+      "video": "videos/v4/Wood_Craft_a_wooden_hoe/forest/success/2026_05_04_17_27_40_craft_wooden_hoe_U8qvecJ9koDciz8EhMiKLH.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_hoe",
+          "goal": [
+            "wooden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 884
+    },
+    {
+      "id": "nXKWLDaciCxhyD66cyymqy",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_hoe",
+      "video": "videos/v4/Wood_Craft_a_wooden_hoe/forest/success/2026_05_05_04_09_04_craft_wooden_hoe_nXKWLDaciCxhyD66cyymqy.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_hoe",
+          "goal": [
+            "wooden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1382
+    },
+    {
+      "id": "Wj3PkJVAfwkJuKvyW9eXcu",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_hoe",
+      "video": "videos/v6/Wood_Craft_a_wooden_hoe/forest/success/2026_05_07_08_53_34_craft_wooden_hoe_Wj3PkJVAfwkJuKvyW9eXcu.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            8
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_hoe",
+          "goal": [
+            "wooden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1186
     }
   ]
 }

@@ -1,0 +1,133 @@
+{
+  "plan": [
+    {
+      "id": "eM5Pb3YpvzqRKqm9DUqEdX",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_helmet",
+      "video": "/home/yzb/zhourong/XENON-plus/videos/v7/Armor_Craft_iron_helmet/forest/failed/2026_05_08_03_32_23_craft_stone_pickaxe_eM5Pb3YpvzqRKqm9DUqEdX.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 6250
+    },
+    {
+      "id": "8KfTqza9DPLgbX5eDgKwaH",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_helmet",
+      "video": "/home/yzb/zhourong/XENON-plus/videos/v7/Armor_Craft_iron_helmet/forest/failed/2026_05_08_03_40_47_Craft_iron_helmet_8KfTqza9DPLgbX5eDgKwaH.mp4",
+      "planning": [
+        {
+          "task": "Craft iron helmet",
+          "goal": "iron_helmet",
+          "error": "Cannot convert np.dtype into a dtype."
+        }
+      ],
+      "status": "failed",
+      "steps": 139
+    },
+    {
+      "id": "QbYsz5Pime3UDVzDefTjX6",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_helmet",
+      "video": "/home/yzb/zhourong/XENON-plus/videos/v7/Armor_Craft_iron_helmet/forest/failed/2026_05_08_03_45_51_Craft_iron_helmet_QbYsz5Pime3UDVzDefTjX6.mp4",
+      "planning": [
+        {
+          "task": "Craft iron helmet",
+          "goal": "iron_helmet",
+          "error": "Cannot convert np.dtype into a dtype."
+        }
+      ],
+      "status": "failed",
+      "steps": 147
+    },
+    {
+      "id": "P4feRrAGYSFewhp8QuFurR",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_helmet",
+      "video": "/home/yzb/zhourong/XENON-plus/videos/v7/Armor_Craft_iron_helmet/forest/failed/2026_05_08_03_58_57_Craft_iron_helmet_P4feRrAGYSFewhp8QuFurR.mp4",
+      "planning": [
+        {
+          "task": "Craft iron helmet",
+          "goal": "iron_helmet",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 36000
+    }
+  ]
+}

@@ -385,6 +385,277 @@
       ],
       "status": "success",
       "steps": 4783
+    },
+    {
+      "id": "cVzd2k3p5NepaCnSPCdKjm",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/v4/Iron_Craft_a_tripwire_hook/plains/success/2026_05_04_14_23_42_craft_tripwire_hook_cVzd2k3p5NepaCnSPCdKjm.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            16
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            3
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft tripwire_hook",
+          "goal": [
+            "tripwire_hook",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5382
+    },
+    {
+      "id": "VkvRoSZt5ddfprfsHSsqG8",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/v4/Iron_Craft_a_tripwire_hook/plains/success/2026_05_05_07_28_40_craft_tripwire_hook_VkvRoSZt5ddfprfsHSsqG8.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            22
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            5
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft tripwire_hook",
+          "goal": [
+            "tripwire_hook",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5335
+    },
+    {
+      "id": "DEfQNN2Ayp8eNd53x8shgM",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/v6/Iron_Craft_a_tripwire_hook/plains/success/2026_05_07_12_42_19_craft_tripwire_hook_DEfQNN2Ayp8eNd53x8shgM.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            16
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            3
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron_ingot",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft tripwire_hook",
+          "goal": [
+            "tripwire_hook",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4719
     }
   ]
 }

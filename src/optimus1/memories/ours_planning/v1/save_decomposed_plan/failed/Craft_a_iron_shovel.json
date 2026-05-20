@@ -1,0 +1,106 @@
+{
+  "plan": [
+    {
+      "id": "cJc5kKnqGRC9DhYU7VEhdv",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_shovel",
+      "video": "videos/v4/Iron_Craft_a_iron_shovel/plains/failed/2026_05_04_10_07_39_Craft_a_iron_shovel_cJc5kKnqGRC9DhYU7VEhdv.mp4",
+      "planning": [
+        {
+          "task": "Craft a iron shovel",
+          "goal": "iron_shovel",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12001
+    },
+    {
+      "id": "GsbGtvAda83aA83tGJGZtZ",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_shovel",
+      "video": "videos/v4/Iron_Craft_a_iron_shovel/plains/failed/2026_05_05_05_32_19_chop_a_tree_GsbGtvAda83aA83tGJGZtZ.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 127
+    },
+    {
+      "id": "ZxFHGEDMBBDRiwRyLaUkAE",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_shovel",
+      "video": "videos/v6/Iron_Craft_a_iron_shovel/plains/failed/2026_05_07_10_13_42_achieve_cobblestone_ZxFHGEDMBBDRiwRyLaUkAE.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        "achieve cobblestone"
+      ],
+      "status": "failed",
+      "steps": 2664
+    }
+  ]
+}

@@ -87,6 +87,22 @@
       ],
       "status": "failed",
       "steps": 5138
+    },
+    {
+      "id": "mk9uMMgf6B889ufZpHHWaa",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_axe",
+      "video": "videos/v4/Gold_Craft_a_golden_axe/forest/failed/2026_05_04_15_42_06_Craft_a_golden_axe_mk9uMMgf6B889ufZpHHWaa.mp4",
+      "planning": [
+        {
+          "task": "Craft a golden axe",
+          "goal": "golden_axe",
+          "error": "not enough arguments for format string"
+        }
+      ],
+      "status": "failed",
+      "steps": 6701
     }
   ]
 }

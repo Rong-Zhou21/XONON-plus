@@ -1,0 +1,76 @@
+{
+  "plan": [
+    {
+      "id": "7eMkfTQvroKdkNu5CAA2Vp",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_hoe",
+      "video": "videos/v3/Stone_Craft_a_stone_hoe/plains/failed/2026_05_01_14_42_39_chop_a_tree_7eMkfTQvroKdkNu5CAA2Vp.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "ExHT248oRZCENrtoJR2jEv",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_hoe",
+      "video": "videos/v4/Stone_Craft_a_stone_hoe/plains/failed/2026_05_04_12_14_58_chop_a_tree_ExHT248oRZCENrtoJR2jEv.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 110
+    },
+    {
+      "id": "5565fqYvtZBnJpAkst74xP",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_hoe",
+      "video": "videos/v4/Stone_Craft_a_stone_hoe/plains/failed/2026_05_05_04_55_30_chop_a_tree_5565fqYvtZBnJpAkst74xP.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 144
+    },
+    {
+      "id": "2tNtxaatc62kXW92odhS4G",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_hoe",
+      "video": "videos/v6/Stone_Craft_a_stone_hoe/plains/failed/2026_05_07_09_22_40_chop_a_tree_2tNtxaatc62kXW92odhS4G.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 106
+    }
+  ]
+}

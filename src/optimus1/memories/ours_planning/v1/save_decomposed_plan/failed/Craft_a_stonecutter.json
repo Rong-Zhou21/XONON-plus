@@ -251,6 +251,105 @@
       ],
       "status": "failed",
       "steps": 12001
+    },
+    {
+      "id": "aHkJNZtAHpREvkfMMXjuSt",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stonecutter",
+      "video": "videos/v4/Iron_Craft_a_stonecutter/plains/failed/2026_05_04_15_14_11_dig_down_and_mine_iron_ore_aHkJNZtAHpREvkfMMXjuSt.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            14
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "smelt stone",
+          "goal": [
+            "stone",
+            3
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11912
+    },
+    {
+      "id": "gUtq6HiKrAKpsPbbCRjdUE",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stonecutter",
+      "video": "videos/v4/Iron_Craft_a_stonecutter/plains/failed/2026_05_05_08_17_45_chop_a_tree_gUtq6HiKrAKpsPbbCRjdUE.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }

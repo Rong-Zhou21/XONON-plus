@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "EWiZZNZFkkE4B4zj8qvbHF",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "ladder",
+      "video": "videos/v4/Wood_Craft_a_ladder/forest/failed/2026_05_04_11_51_34_chop_a_tree_EWiZZNZFkkE4B4zj8qvbHF.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            2
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 151
+    }
+  ]
+}

@@ -87,6 +87,22 @@
       ],
       "status": "failed",
       "steps": 4821
+    },
+    {
+      "id": "XwKHv4e7PGcrm9STiMRrUq",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond",
+      "video": "videos/v6/Diamond_Dig_down_and_mine_a_diamond/forest/failed/2026_05_07_14_42_30_Dig_down_and_mine_a_diamond_XwKHv4e7PGcrm9STiMRrUq.mp4",
+      "planning": [
+        {
+          "task": "Dig down and mine a diamond",
+          "goal": "diamond",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 36000
     }
   ]
 }

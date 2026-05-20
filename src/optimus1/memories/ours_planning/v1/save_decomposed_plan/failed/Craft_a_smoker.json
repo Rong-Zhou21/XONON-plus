@@ -84,6 +84,56 @@
       ],
       "status": "failed",
       "steps": 7197
+    },
+    {
+      "id": "f6YwdXx2Z257dnpdmcrm8o",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smoker",
+      "video": "videos/v4/Stone_Craft_a_smoker/plains/failed/2026_05_04_18_52_26_chop_a_tree_f6YwdXx2Z257dnpdmcrm8o.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 122
+    },
+    {
+      "id": "DAi35gKJNasho9wve6wJpi",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smoker",
+      "video": "videos/v4/Stone_Craft_a_smoker/plains/failed/2026_05_04_19_02_28_Craft_a_smoker_DAi35gKJNasho9wve6wJpi.mp4",
+      "planning": [
+        {
+          "task": "Craft a smoker",
+          "goal": "smoker",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 7201
+    },
+    {
+      "id": "mcNJBXY3zHLFQPCDSdMfMN",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smoker",
+      "video": "videos/v6/Stone_Craft_a_smoker/plains/failed/2026_05_07_09_33_55_Craft_a_smoker_mcNJBXY3zHLFQPCDSdMfMN.mp4",
+      "planning": [
+        {
+          "task": "Craft a smoker",
+          "goal": "smoker",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 7201
     }
   ]
 }

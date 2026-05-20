@@ -77,6 +77,201 @@
       ],
       "status": "success",
       "steps": 1155
+    },
+    {
+      "id": "aC3Bp27A4T7xn6Arcp3oPi",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "chest",
+      "video": "videos/v4/Wood_Craft_a_chest/forest/success/2026_05_04_08_53_33_craft_chest_aC3Bp27A4T7xn6Arcp3oPi.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            12
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 894
+    },
+    {
+      "id": "TiqUgJmM4ui8YUuv7LB4tg",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "chest",
+      "video": "videos/v4/Wood_Craft_a_chest/forest/success/2026_05_04_11_42_32_craft_chest_TiqUgJmM4ui8YUuv7LB4tg.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            12
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 879
+    },
+    {
+      "id": "Yw2nb2bt2njAL34JCsKg3u",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "chest",
+      "video": "videos/v4/Wood_Craft_a_chest/forest/success/2026_05_04_17_42_45_craft_chest_Yw2nb2bt2njAL34JCsKg3u.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            12
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 880
+    },
+    {
+      "id": "dFbJPToPwaFjNkTRVhVJrL",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "chest",
+      "video": "videos/v4/Wood_Craft_a_chest/forest/success/2026_05_05_04_26_06_craft_chest_dFbJPToPwaFjNkTRVhVJrL.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            12
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1560
+    },
+    {
+      "id": "kntK5tKh2XgsZ3Sjp5MWhg",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "chest",
+      "video": "videos/v6/Wood_Craft_a_chest/forest/success/2026_05_07_08_58_37_craft_chest_kntK5tKh2XgsZ3Sjp5MWhg.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            12
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 802
     }
   ]
 }

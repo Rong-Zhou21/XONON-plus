@@ -311,6 +311,22 @@
       ],
       "status": "failed",
       "steps": 11997
+    },
+    {
+      "id": "K2uRtU4CtMP6EXkegnSU4w",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_sword",
+      "video": "videos/v1/Iron_Craft_a_iron_sword/plains/failed/2026_05_03_16_58_18_Craft_a_iron_sword_K2uRtU4CtMP6EXkegnSU4w.mp4",
+      "planning": [
+        {
+          "task": "Craft a iron sword",
+          "goal": "iron_sword",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12001
     }
   ]
 }

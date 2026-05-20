@@ -179,6 +179,246 @@
       ],
       "status": "success",
       "steps": 2247
+    },
+    {
+      "id": "LfCGvRFeu8FjAKiArzE7VE",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_hoe",
+      "video": "videos/v4/Stone_Craft_a_stone_hoe/plains/success/2026_05_04_09_25_42_craft_stone_hoe_LfCGvRFeu8FjAKiArzE7VE.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_hoe",
+          "goal": [
+            "stone_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1876
+    },
+    {
+      "id": "jokRAwcJFh72ypJMskbJ4g",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_hoe",
+      "video": "videos/v4/Stone_Craft_a_stone_hoe/plains/success/2026_05_04_18_30_32_craft_stone_hoe_jokRAwcJFh72ypJMskbJ4g.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_hoe",
+          "goal": [
+            "stone_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1730
+    },
+    {
+      "id": "JHfWTVuzRcnW9zR6oLHRU8",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_hoe",
+      "video": "videos/v4/Stone_Craft_a_stone_hoe/plains/success/2026_05_05_05_00_15_craft_stone_hoe_JHfWTVuzRcnW9zR6oLHRU8.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_hoe",
+          "goal": [
+            "stone_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 2194
+    },
+    {
+      "id": "Vy9jC733hvKGJRnnFoJ62X",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_hoe",
+      "video": "videos/v6/Stone_Craft_a_stone_hoe/plains/success/2026_05_07_09_25_44_craft_stone_hoe_Vy9jC733hvKGJRnnFoJ62X.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_hoe",
+          "goal": [
+            "stone_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 2366
     }
   ]
 }

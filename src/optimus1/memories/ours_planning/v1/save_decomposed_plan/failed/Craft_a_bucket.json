@@ -147,6 +147,42 @@
       ],
       "status": "failed",
       "steps": 11896
+    },
+    {
+      "id": "BheTVjfT9vjKpGfHUnJenv",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "bucket",
+      "video": "videos/v4/Iron_Craft_a_bucket/plains/failed/2026_05_04_13_28_18_chop_a_tree_BheTVjfT9vjKpGfHUnJenv.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 111
+    },
+    {
+      "id": "Xi3hHQ99YXLfhYWhhpUUbS",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "bucket",
+      "video": "videos/v6/Iron_Craft_a_bucket/plains/failed/2026_05_07_12_10_10_chop_a_tree_Xi3hHQ99YXLfhYWhhpUUbS.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }

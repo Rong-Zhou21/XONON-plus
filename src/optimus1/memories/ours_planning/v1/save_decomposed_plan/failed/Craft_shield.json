@@ -38,6 +38,94 @@
       ],
       "status": "failed",
       "steps": 1919
+    },
+    {
+      "id": "FrSkicTg2o3cB9FspMkMMM",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "shield",
+      "video": "videos/v5/Armor_Craft_shield/forest/failed/2026_05_05_15_58_18_chop_a_tree_FrSkicTg2o3cB9FspMkMMM.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 159
+    },
+    {
+      "id": "iLQMYDLWsWzQnNTmYPuobF",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "shield",
+      "video": "videos/v5/Armor_Craft_shield/forest/failed/2026_05_05_16_04_19_chop_a_tree_iLQMYDLWsWzQnNTmYPuobF.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 149
+    },
+    {
+      "id": "VwgCEgzeDgXwHK6r6YNQxv",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "shield",
+      "video": "videos/v5/Armor_Craft_shield/forest/failed/2026_05_05_16_28_25_Craft_shield_VwgCEgzeDgXwHK6r6YNQxv.mp4",
+      "planning": [
+        {
+          "task": "Craft shield",
+          "goal": "shield",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 36000
+    },
+    {
+      "id": "3MRsanXbWb8NzLMkAdwp9c",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "shield",
+      "video": "videos/v5/Armor_Craft_shield/forest/failed/2026_05_06_04_43_33_chop_a_tree_3MRsanXbWb8NzLMkAdwp9c.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 161
+    },
+    {
+      "id": "eahWF4ptZXzmVUMxrcW4qn",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "shield",
+      "video": "videos/v5/Armor_Craft_shield/forest/failed/2026_05_06_10_35_50_chop_a_tree_eahWF4ptZXzmVUMxrcW4qn.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 100
     }
   ]
 }

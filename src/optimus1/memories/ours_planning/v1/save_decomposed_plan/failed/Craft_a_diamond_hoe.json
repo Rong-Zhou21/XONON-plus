@@ -1,0 +1,22 @@
+{
+  "plan": [
+    {
+      "id": "8Cbsd8ohBnvvvYGbFNDkNz",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_hoe",
+      "video": "videos/v4/Diamond_Craft_a_diamond_hoe/forest/failed/2026_05_05_10_24_29_chop_a_tree_8Cbsd8ohBnvvvYGbFNDkNz.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 146
+    }
+  ]
+}

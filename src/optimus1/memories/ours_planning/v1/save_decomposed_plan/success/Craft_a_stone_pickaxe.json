@@ -172,6 +172,186 @@
       ],
       "status": "success",
       "steps": 1876
+    },
+    {
+      "id": "k2fHd8TxnFfxY3TLqGAtPS",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_pickaxe",
+      "video": "videos/v4/Stone_Craft_a_stone_pickaxe/plains/success/2026_05_04_12_02_28_craft_stone_pickaxe_k2fHd8TxnFfxY3TLqGAtPS.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            3
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 2181
+    },
+    {
+      "id": "SMLfUaiiUTfYifzWnai4Kg",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_pickaxe",
+      "video": "videos/v4/Stone_Craft_a_stone_pickaxe/plains/success/2026_05_05_04_45_56_craft_stone_pickaxe_SMLfUaiiUTfYifzWnai4Kg.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            3
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1866
+    },
+    {
+      "id": "WtGbfZL8WVXLqXLvPZxoNY",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_pickaxe",
+      "video": "videos/v6/Stone_Craft_a_stone_pickaxe/plains/success/2026_05_07_09_15_27_craft_stone_pickaxe_WtGbfZL8WVXLqXLvPZxoNY.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            13
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            3
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 2884
     }
   ]
 }

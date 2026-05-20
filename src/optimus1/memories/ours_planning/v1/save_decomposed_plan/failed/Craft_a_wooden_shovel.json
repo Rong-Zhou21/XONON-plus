@@ -1,0 +1,20 @@
+{
+  "plan": [
+    {
+      "id": "Yn3kNZUTnww2Mv2KsYmveW",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v4/Wood_Craft_a_wooden_shovel/forest/failed/2026_05_04_04_16_03_Craft_a_wooden_shovel_Yn3kNZUTnww2Mv2KsYmveW.mp4",
+      "planning": [
+        {
+          "task": "Craft a wooden shovel",
+          "goal": "wooden_shovel",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 651
+    }
+  ]
+}

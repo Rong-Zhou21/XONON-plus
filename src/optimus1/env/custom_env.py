@@ -104,7 +104,7 @@ class CustomBaseEnvSpec(HumanSurvival):
         return []
 
     def create_server_world_generators(self) -> List[handlers.Handler]:
-        # TODO the original biome forced is not implemented yet. Use this for now.
+        # Keep the same world generator baseline as XENON-main.
         return [handlers.DefaultWorldGenerator(force_reset=True)]
 
     def create_server_quit_producers(self) -> List[handlers.Handler]:

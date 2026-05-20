@@ -183,6 +183,282 @@
       ],
       "status": "success",
       "steps": 1081
+    },
+    {
+      "id": "3zxL32uS3sNdoToFtpTCux",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v4/Wood_Craft_a_wooden_shovel/forest/success/2026_05_04_04_29_03_craft_wooden_shovel_3zxL32uS3sNdoToFtpTCux.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 958
+    },
+    {
+      "id": "PhZZ64VwQL4tvGgrUefJFB",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v4/Wood_Craft_a_wooden_shovel/forest/success/2026_05_04_11_13_10_craft_wooden_shovel_PhZZ64VwQL4tvGgrUefJFB.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 958
+    },
+    {
+      "id": "X2idKB8TnA4MQ9cCfs2z8N",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v4/Wood_Craft_a_wooden_shovel/forest/success/2026_05_04_17_07_15_craft_wooden_shovel_X2idKB8TnA4MQ9cCfs2z8N.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1502
+    },
+    {
+      "id": "LM42Kdidzf73CrWJp54xQY",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v4/Wood_Craft_a_wooden_shovel/forest/success/2026_05_05_03_24_51_craft_wooden_shovel_LM42Kdidzf73CrWJp54xQY.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 875
+    },
+    {
+      "id": "9ekuMN6KSo96QSXiJwYKjt",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v4/Wood_Craft_a_wooden_shovel/forest/success/2026_05_05_03_58_42_craft_wooden_shovel_9ekuMN6KSo96QSXiJwYKjt.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 970
+    },
+    {
+      "id": "cWm8CsheXeQ274z9Lsyphk",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/v6/Wood_Craft_a_wooden_shovel/forest/success/2026_05_07_08_49_07_craft_wooden_shovel_cWm8CsheXeQ274z9Lsyphk.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_shovel",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 1488
     }
   ]
 }
