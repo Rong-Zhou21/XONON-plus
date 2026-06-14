@@ -3058,10 +3058,41 @@ def new_agent_do(
                             # (target ore layer or observed surface), then
                             # require a real horizontal displacement before
                             # STEVE-1 may resume dig-down.
-                            relevel_result = _maybe_relevel_for_overshoot(
-                                env, mining_target_ore, overshot_seen, logger,
-                                target_y=first_target_ore_y,
-                                surface_y=initial_ypos,
+                            # Encapsulated as the scheduled skill
+                            # ``option:vertical_relevel``. The hard trigger
+                            # above (``can_switch``/``can_relevel_forward`` +
+                            # ``should_pillar_up``) is the *sole* trigger and
+                            # is unchanged; the decisioner selects this
+                            # mandatory candidate (so it is genuinely
+                            # scheduled) and always executes it, then records
+                            # the Δ outcome. Trigger timing and execution
+                            # effect are identical to the direct call.
+                            relevel_result = env.run_scheduled_option(
+                                name="option:vertical_relevel",
+                                goal=(mining_target_ore, mining_required),
+                                prompt=current_sg_prompt,
+                                action=action,
+                                reason={
+                                    "cur_y": (
+                                        float(cur_y_value)
+                                        if cur_y_value is not None
+                                        else None
+                                    ),
+                                    "target_y": (
+                                        float(first_target_ore_y)
+                                        if first_target_ore_y is not None
+                                        else None
+                                    ),
+                                    "overshot_layer": bool(overshot_layer),
+                                    "y_overshoot": bool(y_overshoot),
+                                    "bedrock_stuck": bool(bedrock_stuck),
+                                },
+                                recovery_event_key="vertical_relevel",
+                                execute_fn=lambda: _maybe_relevel_for_overshoot(
+                                    env, mining_target_ore, overshot_seen, logger,
+                                    target_y=first_target_ore_y,
+                                    surface_y=initial_ypos,
+                                ),
                             )
                             trigger_reason = []
                             if overshot_layer:

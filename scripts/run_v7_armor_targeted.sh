@@ -21,21 +21,25 @@ DECISIONER_MIN_P="${DECISIONER_MIN_P:-0.20}"
 
 EXP_NUM_BASE="${EXP_NUM_BASE:-480000}"
 RUN_LABEL="${RUN_LABEL:-v7_fair_surface_relevel}"
+RUN_VERSION_LABEL="${RUN_VERSION_LABEL:-XENON-plus V7}"
+LOG_PREFIX="${LOG_PREFIX:-xenon_v7}"
 GPU="${GPU:-0}"
 SERVER_PORT="${SERVER_PORT:-9100}"
 SEED_BASE="${SEED_BASE:-0}"
 TRIALS="${TRIALS:-10}"
 TASK_COOLDOWN_SEC="${TASK_COOLDOWN_SEC:-3}"
 SKIP_DONE="${SKIP_DONE:-0}"
-MAX_RETRIES_ON_CRASH="${MAX_RETRIES_ON_CRASH:-0}"
+MAX_RETRIES_ON_CRASH="${MAX_RETRIES_ON_CRASH:-2}"
 MAX_RETRIES_ON_INFRA_EARLY_STOP="${MAX_RETRIES_ON_INFRA_EARLY_STOP:-2}"
 CRASH_RETRY_COOLDOWN_SEC="${CRASH_RETRY_COOLDOWN_SEC:-15}"
-DELETE_ABNORMAL_ARTIFACTS="${DELETE_ABNORMAL_ARTIFACTS:-0}"
+DELETE_ABNORMAL_ARTIFACTS="${DELETE_ABNORMAL_ARTIFACTS:-1}"
+STOP_ON_ABNORMAL_EXHAUSTED="${STOP_ON_ABNORMAL_EXHAUSTED:-1}"
 PERCEPTION_ACTION_SUITE="${PERCEPTION_ACTION_SUITE:-1}"
 START_APP_SERVER="${START_APP_SERVER:-1}"
 APP_START_TIMEOUT_SEC="${APP_START_TIMEOUT_SEC:-120}"
 CHECK_PLANNER_SERVER="${CHECK_PLANNER_SERVER:-1}"
 PLANNER_START_TIMEOUT_SEC="${PLANNER_START_TIMEOUT_SEC:-30}"
+GLOBAL_CLEANUP="${GLOBAL_CLEANUP:-1}"
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_DIR" || exit 1
@@ -118,7 +122,12 @@ export XENON_TUNNEL_SCRIPTED_DIGDOWN_MAX_STEPS="${XENON_TUNNEL_SCRIPTED_DIGDOWN_
 export XENON_TUNNEL_SCRIPTED_DIGDOWN_GENERATE_ORE="${XENON_TUNNEL_SCRIPTED_DIGDOWN_GENERATE_ORE:-0}"
 export XENON_SCRIPTED_DIGDOWN_FORCE_TARGET_ORE="${XENON_SCRIPTED_DIGDOWN_FORCE_TARGET_ORE:-0}"
 export XENON_ENABLE_RANDOM_ORE_ONCE="${XENON_ENABLE_RANDOM_ORE_ONCE:-1}"
-export XENON_RANDOM_ORE_GOLD_MULTIPLIER="${XENON_RANDOM_ORE_GOLD_MULTIPLIER:-1.5}"
+export XENON_RANDOM_ORE_RARE_MULTIPLIER="${XENON_RANDOM_ORE_RARE_MULTIPLIER:-1.0}"
+export XENON_RANDOM_ORE_COAL_MULTIPLIER="${XENON_RANDOM_ORE_COAL_MULTIPLIER:-1.0}"
+export XENON_RANDOM_ORE_IRON_MULTIPLIER="${XENON_RANDOM_ORE_IRON_MULTIPLIER:-1.0}"
+export XENON_RANDOM_ORE_GOLD_MULTIPLIER="${XENON_RANDOM_ORE_GOLD_MULTIPLIER:-$XENON_RANDOM_ORE_RARE_MULTIPLIER}"
+export XENON_RANDOM_ORE_REDSTONE_MULTIPLIER="${XENON_RANDOM_ORE_REDSTONE_MULTIPLIER:-$XENON_RANDOM_ORE_RARE_MULTIPLIER}"
+export XENON_RANDOM_ORE_DIAMOND_MULTIPLIER="${XENON_RANDOM_ORE_DIAMOND_MULTIPLIER:-$XENON_RANDOM_ORE_RARE_MULTIPLIER}"
 export XENON_SCRIPTED_DIGDOWN_FORCE_ORE_DYS="${XENON_SCRIPTED_DIGDOWN_FORCE_ORE_DYS:--3,-4,-5,-2,-1}"
 export XENON_SCRIPTED_DIGDOWN_ORE_THRESHOLD="${XENON_SCRIPTED_DIGDOWN_ORE_THRESHOLD:-0.0}"
 export XENON_SCRIPTED_DIGDOWN_MIN_Y="${XENON_SCRIPTED_DIGDOWN_MIN_Y:-4.0}"
@@ -143,10 +152,14 @@ VIDEO_DIR="${VIDEO_DIR:-videos/v7}"
 RESULTS_DIR="${RESULTS_DIR:-exp_results/v7}"
 mkdir -p "$VIDEO_DIR" "$RESULTS_DIR"
 
-SUMMARY_FILE="${SUMMARY_FILE:-/tmp/xenon_v7_${RUN_LABEL}_$(date +%Y%m%d_%H%M%S)_summary.log}"
-APP_SERVER_LOG="${APP_SERVER_LOG:-/tmp/xenon_v7_${RUN_LABEL}_app_$(date +%Y%m%d_%H%M%S).log}"
+SUMMARY_FILE="${SUMMARY_FILE:-/tmp/${LOG_PREFIX}_${RUN_LABEL}_$(date +%Y%m%d_%H%M%S)_summary.log}"
+APP_SERVER_LOG="${APP_SERVER_LOG:-/tmp/${LOG_PREFIX}_${RUN_LABEL}_app_$(date +%Y%m%d_%H%M%S).log}"
 
-TASK_IDS=(12 10 6)
+if [ -n "${TASK_IDS_OVERRIDE:-}" ]; then
+  read -r -a TASK_IDS <<< "$TASK_IDS_OVERRIDE"
+else
+  TASK_IDS=(12 10 6)
+fi
 declare -A TASK_NAMES=(
   [6]="diamond_chestplate"
   [10]="golden_leggings"
@@ -154,6 +167,9 @@ declare -A TASK_NAMES=(
 )
 
 cleanup() {
+  if [ "$GLOBAL_CLEANUP" != "1" ]; then
+    return 0
+  fi
   pkill -f "[j]ava.*(GradleStart|Minecraft|Malmo)" 2>/dev/null || true
   pkill -f "[x]vfb-run|[X]vfb" 2>/dev/null || true
   pkill -9 -f "[l]aunchClient" 2>/dev/null || true
@@ -238,19 +254,21 @@ is_abnormal_status() {
   esac
 }
 
-is_timeout_runtime_result() {
-  local result_file="$1"
-  [ -n "$result_file" ] && [ -f "$result_file" ] || return 1
-  "$PYTHON_BIN" - "$result_file" <<'PY' 2>/dev/null
-import json, sys
+is_low_level_interaction_abnormal() {
+  local log_file="$1"
+  [ -n "$log_file" ] && [ -f "$log_file" ] || return 1
+  "$PYTHON_BIN" - "$log_file" <<'PY' 2>/dev/null
+import re
+import sys
 
 try:
-    data = json.load(open(sys.argv[1]))
+    text = open(sys.argv[1], errors="ignore").read()
 except Exception:
     sys.exit(1)
 
-payload = json.dumps(data, ensure_ascii=False, default=str)
-if data.get("status_detailed") == "crash_RuntimeError" and "Timeout" in payload:
+unknown_failures = len(re.findall(r"fail for unkown reason", text))
+interaction_prompt = re.search(r"Subgoal Prompt:\s*(craft|smelt)\b", text)
+if unknown_failures >= 3 and interaction_prompt:
     sys.exit(0)
 sys.exit(1)
 PY
@@ -295,7 +313,7 @@ NORESULT=0
 
 cat <<INFO | tee "$SUMMARY_FILE"
 ============================================================
- XENON-plus V7 — targeted Armor run
+ $RUN_VERSION_LABEL — targeted Armor run
 ============================================================
  run_label              : $RUN_LABEL
  python                 : $PYTHON_BIN
@@ -352,7 +370,12 @@ blocked_up_pitch       : $XENON_CORRIDOR_UP_PITCH
  scripted_digdown_ore   : $XENON_TUNNEL_SCRIPTED_DIGDOWN_GENERATE_ORE
 scripted_force_target  : $XENON_SCRIPTED_DIGDOWN_FORCE_TARGET_ORE
 random_ore_once        : $XENON_ENABLE_RANDOM_ORE_ONCE
+random_ore_rare_mult   : $XENON_RANDOM_ORE_RARE_MULTIPLIER
+random_ore_coal_mult   : $XENON_RANDOM_ORE_COAL_MULTIPLIER
+random_ore_iron_mult   : $XENON_RANDOM_ORE_IRON_MULTIPLIER
 random_ore_gold_mult   : $XENON_RANDOM_ORE_GOLD_MULTIPLIER
+random_ore_redstone_mult: $XENON_RANDOM_ORE_REDSTONE_MULTIPLIER
+random_ore_diamond_mult: $XENON_RANDOM_ORE_DIAMOND_MULTIPLIER
 scripted_force_dys     : $XENON_SCRIPTED_DIGDOWN_FORCE_ORE_DYS
 scripted_ore_threshold : $XENON_SCRIPTED_DIGDOWN_ORE_THRESHOLD
 scripted_digdown_min_y : $XENON_SCRIPTED_DIGDOWN_MIN_Y
@@ -391,7 +414,9 @@ cmd_craft_fallback     : $XENON_ENABLE_COMMAND_CRAFT_FALLBACK
 	 max_abnormal_retries   : $MAX_RETRIES_ON_CRASH
 	 max_infra_retries      : $MAX_RETRIES_ON_INFRA_EARLY_STOP
  delete_abnormal_artifacts: $DELETE_ABNORMAL_ARTIFACTS
+ stop_on_abnormal_exhausted: $STOP_ON_ABNORMAL_EXHAUSTED
  skip_done              : $SKIP_DONE
+ global_cleanup         : $GLOBAL_CLEANUP
  start_time             : $(date)
 ============================================================
 INFO
@@ -441,7 +466,7 @@ PY
         sleep "$CRASH_RETRY_COOLDOWN_SEC"
       fi
 
-      LOG_FILE="/tmp/xenon_v7_${RUN_LABEL}_armor_t${TID}_rep${REP}_exp${EXP_NUM}_$(date +%Y%m%d_%H%M%S).log"
+      LOG_FILE="/tmp/${LOG_PREFIX}_${RUN_LABEL}_armor_t${TID}_rep${REP}_exp${EXP_NUM}_$(date +%Y%m%d_%H%M%S).log"
 
       if [ "$attempt" -eq 0 ]; then
         printf "[%2d/%d] armor task=%-2s %-20s rep=%-2s exp=%-6s seed=%-2s start=%s log=%s\n" \
@@ -502,7 +527,9 @@ PY
         if [ "$IS_SUCCESS" -eq 0 ] && [ "$INFRA_EARLY_STOP" = "1" ]; then
           abnormal_exit=1
           retry_limit="$MAX_RETRIES_ON_INFRA_EARLY_STOP"
-        elif [ "$IS_SUCCESS" -eq 0 ] && is_abnormal_status "$STATUS_DETAILED" && ! is_timeout_runtime_result "$RESULT_FILE"; then
+        elif [ "$IS_SUCCESS" -eq 0 ] && is_abnormal_status "$STATUS_DETAILED"; then
+          abnormal_exit=1
+        elif [ "$IS_SUCCESS" -eq 0 ] && is_low_level_interaction_abnormal "$LOG_FILE"; then
           abnormal_exit=1
         fi
       fi
@@ -520,6 +547,13 @@ PY
             STATUS="NO_RESULT_ABNORMAL_RETRIES_EXHAUSTED last=$STATUS"
           else
             STATUS="$STATUS abnormal_no_retry"
+          fi
+          if [ "$STOP_ON_ABNORMAL_EXHAUSTED" = "1" ]; then
+            T_ELAPSED=$(( $(date +%s) - T_START ))
+            printf "       result=%s elapsed=%ds (abnormal retries exhausted; stopping)\n" \
+              "$STATUS" "$T_ELAPSED" | tee -a "$SUMMARY_FILE"
+            cleanup
+            exit 2
           fi
         fi
       fi
@@ -557,7 +591,7 @@ done
 cat <<INFO | tee -a "$SUMMARY_FILE"
 
 ============================================================
- V7 targeted Armor — end summary
+ $RUN_VERSION_LABEL targeted Armor — end summary
  end_time   : $(date)
  total      : $TOTAL_TASKS
  success    : $SUCCESS

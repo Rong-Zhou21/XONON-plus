@@ -59,4 +59,7 @@ wandb/
 minerl/minerl/MCP-Reborn/
 minerl/minerl/MCP-Reborn.bak/
 
+# nested packaging snapshot (full repo copy, not source)
+XENON-plus/
+
 .vscode/

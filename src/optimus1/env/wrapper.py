@@ -1,5 +1,6 @@
 import copy
 import logging
+import math
 import os
 import random
 import threading
@@ -12,9 +13,16 @@ import gym
 import numpy as np
 from omegaconf import DictConfig
 
+from ..decisioner.option_selector import OptionDecisioner
 from ..util.server_api import MultiThreadServerAPI
 
 from .mods import RecorderMod, StatusMod, TaskCheckerMod
+from .options import (
+    EnvOptionCandidate,
+    activate_env_option,
+    build_env_option_candidates,
+    build_option_context,
+)
 
 
 # ── Monitor push: 把最新 POV 异步推送到宿主机 monitor_server ──
@@ -93,77 +101,114 @@ def _push_pov_to_monitor(observation):
         t.start()
 
 
-def _dynamic_gold_ore_multiplier() -> float:
+_DYNAMIC_ORE_MULTIPLIER_ENV = {
+    "coal_ore": "XENON_RANDOM_ORE_COAL_MULTIPLIER",
+    "iron_ore": "XENON_RANDOM_ORE_IRON_MULTIPLIER",
+    "gold_ore": "XENON_RANDOM_ORE_GOLD_MULTIPLIER",
+    "redstone_ore": "XENON_RANDOM_ORE_REDSTONE_MULTIPLIER",
+    "diamond_ore": "XENON_RANDOM_ORE_DIAMOND_MULTIPLIER",
+}
+_RARE_DYNAMIC_ORES = {"gold_ore", "redstone_ore", "diamond_ore"}
+
+
+def _env_float(name: str, default: float) -> float:
     try:
-        return max(0.0, float(os.environ.get("XENON_RANDOM_ORE_GOLD_MULTIPLIER", "1.5")))
+        return max(0.0, float(os.environ.get(name, str(default))))
     except ValueError:
-        return 1.5
+        return default
+
+
+def _dynamic_ore_multiplier(ore_name: str) -> float:
+    default = _env_float("XENON_RANDOM_ORE_RARE_MULTIPLIER", 1.0) if ore_name in _RARE_DYNAMIC_ORES else 1.0
+    env_var = _DYNAMIC_ORE_MULTIPLIER_ENV.get(ore_name)
+    if env_var is None:
+        return default
+    return _env_float(env_var, default)
 
 
 def _should_place_dynamic_ore(ore_name: str, thresold: float) -> bool:
     place_chance = max(0.0, min(1.0, 1.0 - thresold))
-    if ore_name == "gold_ore":
-        place_chance = min(1.0, place_chance * _dynamic_gold_ore_multiplier())
+    place_chance = min(1.0, place_chance * _dynamic_ore_multiplier(ore_name))
     return random.random() > 1.0 - place_chance
 
 
-def random_ore(env, ORE_MAP, ypos: float, thresold: float = 0.9):
+def _block_coord(value: float) -> int:
+    return int(math.floor(float(value)))
+
+
+def _ore_map_key(ypos: float, xpos: float | None = None, zpos: float | None = None) -> Tuple[Any, ...]:
+    y_key = _block_coord(ypos)
+    if xpos is None or zpos is None:
+        return ("global", y_key)
+    return (_block_coord(xpos), y_key, _block_coord(zpos))
+
+
+def random_ore(
+    env,
+    ORE_MAP,
+    ypos: float,
+    thresold: float = 0.9,
+    xpos: float | None = None,
+    zpos: float | None = None,
+):
     dy = random.randint(-5, -3)
     new_pos = int(ypos + dy)
+    current_key = _ore_map_key(ypos, xpos, zpos)
+    new_key = _ore_map_key(new_pos, xpos, zpos)
     if 45 <= ypos <= 50:  # max: 6
         # coal_ore
         if (
-            ypos not in ORE_MAP
-            and new_pos not in ORE_MAP
+            current_key not in ORE_MAP
+            and new_key not in ORE_MAP
             and new_pos >= 45
             and _should_place_dynamic_ore("coal_ore", thresold)
         ):
-            ORE_MAP[new_pos] = "coal_ore"
-            ORE_MAP[ypos] = 1
+            ORE_MAP[new_key] = "coal_ore"
+            ORE_MAP[current_key] = 1
             env.execute_cmd("/setblock ~ ~{} ~ minecraft:coal_ore".format(dy))
             print(f"coal ore at {new_pos}")
     elif 26 <= ypos <= 43:  # max: 17
         if (
-            ypos not in ORE_MAP
-            and new_pos not in ORE_MAP
+            current_key not in ORE_MAP
+            and new_key not in ORE_MAP
             and new_pos >= 26
             and _should_place_dynamic_ore("iron_ore", thresold)
         ):
-            ORE_MAP[new_pos] = "iron_ore"
-            ORE_MAP[ypos] = 1
+            ORE_MAP[new_key] = "iron_ore"
+            ORE_MAP[current_key] = 1
             env.execute_cmd("/setblock ~ ~{} ~ minecraft:iron_ore".format(dy))
             print(f"iron ore at {new_pos}")
 
     elif 14 < ypos <= 26:
         if (
-            ypos not in ORE_MAP
-            and new_pos not in ORE_MAP
+            current_key not in ORE_MAP
+            and new_key not in ORE_MAP
             and new_pos >= 17
             and _should_place_dynamic_ore("gold_ore", thresold)
         ):  # max: 10
-            ORE_MAP[new_pos] = "gold_ore"
-            ORE_MAP[ypos] = 1
+            ORE_MAP[new_key] = "gold_ore"
+            ORE_MAP[current_key] = 1
             env.execute_cmd("/setblock ~ ~{} ~ minecraft:gold_ore".format(dy))
             print(f"gold ore at {new_pos}")
         elif (
-            ypos not in ORE_MAP
-            and new_pos not in ORE_MAP
+            current_key not in ORE_MAP
+            and new_key not in ORE_MAP
             and new_pos <= 16
             and _should_place_dynamic_ore("redstone_ore", thresold)
         ):  # max:12
-            ORE_MAP[new_pos] = "redstone_ore"
-            ORE_MAP[ypos] = 1
+            ORE_MAP[new_key] = "redstone_ore"
+            ORE_MAP[current_key] = 1
             env.execute_cmd("/setblock ~ ~{} ~ minecraft:redstone_ore".format(dy))
             print(f"redstone ore at {new_pos}")
     elif (
         ypos <= 14
-        and ypos not in ORE_MAP
-        and new_pos not in ORE_MAP
+        and current_key not in ORE_MAP
+        and new_key not in ORE_MAP
         and new_pos >= 1
         and _should_place_dynamic_ore("diamond_ore", thresold)
     ):  # max: 14
-        ORE_MAP[new_pos] = "diamond_ore"
-        ORE_MAP[ypos] = 1
+        ORE_MAP[new_key] = "diamond_ore"
+        ORE_MAP[current_key] = 1
         env.execute_cmd("/setblock ~ ~{} ~ minecraft:diamond_ore".format(dy))
         print(f"diamond ore at {new_pos}")
 
@@ -209,6 +254,25 @@ class CustomEnvWrapper(gym.Wrapper):
 
         self.cfg = cfg
         self.logger = logger
+        option_cfg = (
+            cfg.get("memory", {})
+            .get("case_memory", {})
+            .get("option_decisioner", {})
+            or {}
+        )
+        self.option_decisioner = OptionDecisioner(
+            str(cfg["memory"]["path"]),
+            logger,
+            enabled=bool(option_cfg.get("enabled", True)),
+            min_score=float(option_cfg.get("min_score", 0.35)),
+            default_score=float(option_cfg.get("default_score", 0.65)),
+            prior_success=float(option_cfg.get("prior_success", 1.0)),
+            prior_total=float(option_cfg.get("prior_total", 2.0)),
+            min_context_total=int(option_cfg.get("min_context_total", 3)),
+            min_option_total=int(option_cfg.get("min_option_total", 3)),
+        )
+        self._active_option_events: Dict[str, Dict[str, Any]] = {}
+        self._last_option_skip_steps: Dict[str, int] = {}
 
         self.record_mod = RecorderMod(cfg["record"], logger)
         self.status_mod = StatusMod(cfg, logger)
@@ -286,6 +350,8 @@ class CustomEnvWrapper(gym.Wrapper):
                 "surface_log_jump_lock": 0,
             },
         }
+        self._active_option_events = {}
+        self._last_option_skip_steps = {}
 
         self._only_once = False
 
@@ -433,6 +499,318 @@ class CustomEnvWrapper(gym.Wrapper):
         self._maybe_log_action_debug(stage, before, action, goal, prompt)
         self._tick_surface_log_jump_lock()
         return action
+
+    def _option_progress_snapshot(
+        self,
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> Dict[str, Any]:
+        goal_items = self._goal_item_names(goal)
+        ledger = self.cache.get("resource_ledger", {}) or {}
+        status = self.status_mod.get_status() if self.status_mod is not None else {}
+        inventory = status.get("inventory", {}) or {}
+        loc = status.get("location_stats", {}) or {}
+        observed_goal_total = 0
+        if goal_items:
+            observed_goal_total = max(
+                self._items_total(inventory, goal_items),
+                self._items_total(ledger.get("max_inventory", {}) or {}, goal_items),
+                self._items_total(ledger.get("pickup", {}) or {}, goal_items),
+                self._items_total(ledger.get("collected", {}) or {}, goal_items),
+            )
+        x = float(loc.get("xpos", 0.0) or 0.0)
+        y = float(loc.get("ypos", 0.0) or 0.0)
+        z = float(loc.get("zpos", 0.0) or 0.0)
+        return {
+            "step": int(getattr(self, "num_steps", 0)),
+            "goal_items": goal_items,
+            "goal_observed_total": int(observed_goal_total),
+            "goal_mined_total": int(self._items_total(ledger.get("mined_blocks", {}) or {}, goal_items)) if goal_items else 0,
+            "pending_relevant_drops": int(self._pending_relevant_drops(goal)),
+            "inventory_slots_used": int(self._used_inventory_slots()),
+            "x": x,
+            "y": y,
+            "z": z,
+            "air": int(self._current_air()),
+            "health": float(self._current_health()),
+            "prompt": prompt or "",
+        }
+
+    def _evaluate_option_outcome(
+        self,
+        option_name: str,
+        before: Dict[str, Any],
+        after: Dict[str, Any],
+    ) -> Dict[str, Any]:
+        """Unified state-change (progress) function for option effectiveness.
+
+        A skill's effect is a single scalar progress
+
+            Δ = [Φ(s_after) − Φ(s_before)]  +  λ · disp_term
+
+        where Φ(s) = goal_obtained(s) is the *primary potential* (number
+        of goal items obtained so far — monotone, directly observable,
+        zero-rollout), and ``disp_term`` is the displacement the skill
+        caused (did the recovery physically relocate / unstick the
+        agent). λ is small (``XENON_OPTION_ESC_WEIGHT``, default 0.01) so
+        any real goal progress dominates pure movement; movement only
+        decides effectiveness when the goal potential is flat — exactly
+        the primary/secondary priority the old branchy logic encoded,
+        now as one formula.
+
+        A skill is effective iff Δ > τ (``XENON_OPTION_TAU``, default 0),
+        and Δ itself is the reward. No air/health terms: the agent has no
+        escape mechanic (it drowns and respawns), so those are not part
+        of skill effectiveness.
+
+        This is the zero-rollout embodied analogue of progress-based step
+        value (PAV): instead of Monte-Carlo estimating the increment in
+        final-success probability, we read an observable potential
+        difference plus an observable displacement directly. The result
+        keeps every legacy field so existing logs/analysis still work.
+        """
+        lam = float(os.environ.get("XENON_OPTION_ESC_WEIGHT", "0.01"))
+        scale = float(os.environ.get("XENON_OPTION_DISP_SCALE", "5.0"))
+        tau = float(os.environ.get("XENON_OPTION_TAU", "0.0"))
+
+        # Primary potential Φ: goal items obtained so far (observed + mined).
+        goal_before = int(before.get("goal_observed_total", 0)) + int(before.get("goal_mined_total", 0))
+        goal_after = int(after.get("goal_observed_total", 0)) + int(after.get("goal_mined_total", 0))
+        d_goal = goal_after - goal_before
+
+        # Secondary term: 3D displacement caused by the skill (a transition
+        # quantity, not a state potential), normalised by ``scale`` blocks.
+        dx = float(after.get("x", 0.0)) - float(before.get("x", 0.0))
+        dy = float(after.get("y", 0.0)) - float(before.get("y", 0.0))
+        dz = float(after.get("z", 0.0)) - float(before.get("z", 0.0))
+        horizontal_delta = (dx * dx + dz * dz) ** 0.5
+        displacement = (dx * dx + dy * dy + dz * dz) ** 0.5
+        disp_term = (displacement / scale) if scale > 0 else 0.0
+
+        progress_delta = float(d_goal) + lam * disp_term
+        success = progress_delta > tau
+        if d_goal > 0:
+            success_reason = "goal_progress"
+        elif success:
+            success_reason = "position_changed"
+        else:
+            success_reason = "none"
+
+        # Legacy/diagnostic deltas (kept for backward-compatible logging).
+        observed_delta = int(after.get("goal_observed_total", 0)) - int(before.get("goal_observed_total", 0))
+        mined_delta = int(after.get("goal_mined_total", 0)) - int(before.get("goal_mined_total", 0))
+        pending_drop_delta = int(after.get("pending_relevant_drops", 0)) - int(before.get("pending_relevant_drops", 0))
+        slot_delta = int(after.get("inventory_slots_used", 0)) - int(before.get("inventory_slots_used", 0))
+        elapsed_ticks = int(after.get("step", 0)) - int(before.get("step", 0))
+
+        return {
+            "success": bool(success),
+            "success_reason": success_reason,
+            # --- progress function Δ ---
+            "reward": float(progress_delta),
+            "progress_delta": float(progress_delta),
+            "progress_goal_delta": float(d_goal),
+            "progress_disp_term": float(lam * disp_term),
+            "potential_before": float(goal_before),
+            "potential_after": float(goal_after),
+            "displacement": float(displacement),
+            # --- legacy fields ---
+            "elapsed_ticks": max(0, elapsed_ticks),
+            "goal_observed_delta": observed_delta,
+            "goal_mined_delta": mined_delta,
+            "pending_drop_delta": pending_drop_delta,
+            "inventory_slot_delta": slot_delta,
+            "horizontal_delta": horizontal_delta,
+            "vertical_delta": dy,
+        }
+
+    def _start_option_event(
+        self,
+        candidate: EnvOptionCandidate,
+        context: Dict[str, Any],
+        decision_trace: Dict[str, Any],
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> None:
+        before = self._option_progress_snapshot(goal, prompt)
+        event_id = self.option_decisioner.record_invocation(
+            candidate.name,
+            context,
+            candidate.reason,
+            decision_trace,
+            before,
+            candidate.planned_ticks,
+        )
+        self._active_option_events[candidate.control_key] = {
+            "event_id": event_id,
+            "candidate": candidate,
+            "context": context,
+            "before": before,
+            "started_step": int(getattr(self, "num_steps", 0)),
+        }
+
+    def _finalize_option_events(
+        self,
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> None:
+        if not self._active_option_events:
+            return
+        for control_key, event in list(self._active_option_events.items()):
+            candidate = event["candidate"]
+            remaining = int(self._control_state.get(control_key, 0))
+            elapsed = int(getattr(self, "num_steps", 0)) - int(event.get("started_step", 0))
+            if remaining > 0 and elapsed < int(candidate.planned_ticks):
+                continue
+            after = self._option_progress_snapshot(goal, prompt)
+            outcome = self._evaluate_option_outcome(candidate.name, event["before"], after)
+            self.option_decisioner.record_outcome(
+                event["event_id"],
+                candidate.name,
+                event["context"],
+                event["before"],
+                after,
+                outcome,
+            )
+            if self.logger:
+                self.logger.info(
+                    "[option] outcome: option=%s success=%s reason=%s elapsed=%s observed_delta=%s mined_delta=%s",
+                    candidate.name,
+                    outcome["success"],
+                    outcome["success_reason"],
+                    outcome["elapsed_ticks"],
+                    outcome["goal_observed_delta"],
+                    outcome["goal_mined_delta"],
+                )
+            del self._active_option_events[control_key]
+
+    def _select_and_activate_option(
+        self,
+        action: Dict[str, Any],
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+    ) -> None:
+        candidates = build_env_option_candidates(self, action, goal, prompt)
+        if not candidates:
+            return
+        context = build_option_context(self, action, goal, prompt)
+        selection = self.option_decisioner.select(candidates, context)
+        if not selection.execute or selection.option is None:
+            skip_key = "|".join(candidate.name for candidate in candidates)
+            skip_interval = int(os.environ.get("XENON_OPTION_SKIP_LOG_INTERVAL_TICKS", "40"))
+            last_skip = int(self._last_option_skip_steps.get(skip_key, -1000000))
+            should_log_skip = self.num_steps - last_skip >= skip_interval
+            if should_log_skip:
+                self.option_decisioner.record_skip(context, candidates, selection)
+                self._last_option_skip_steps[skip_key] = int(self.num_steps)
+            if should_log_skip and self.logger:
+                self.logger.info(
+                    "[option] skipped candidates=%s reason=%s",
+                    [candidate.name for candidate in candidates],
+                    selection.reason,
+                )
+            return
+        selected = next(
+            candidate for candidate in candidates if candidate.name == selection.option
+        )
+        trace = selection.to_trace()
+        self._start_option_event(selected, context, trace, goal, prompt)
+        activate_env_option(self, selected)
+        if self.logger:
+            ranking = ", ".join(
+                f"{item.option}={item.score:.3f}" for item in selection.rankings
+            )
+            self.logger.info(
+                "[option] activating: option=%s ranking=[%s] reason=%s rule_reason=%s",
+                selected.name,
+                ranking,
+                selection.reason,
+                selected.reason,
+            )
+
+    def run_scheduled_option(
+        self,
+        name: str,
+        goal: tuple[str, int] | None,
+        prompt: str | None,
+        action: Dict[str, Any],
+        execute_fn,
+        reason: Dict[str, Any] | None = None,
+        recovery_event_key: str | None = None,
+        mandatory: bool = True,
+    ):
+        """Route a synchronous, blocking skill through the option scheduler.
+
+        Unlike the tick-based options in ``_select_and_activate_option``
+        (which set a control field and are finalised later when the ticks
+        expire), this path is for skills whose *policy* is a scripted,
+        immediately-executing routine (e.g. the overshoot pillar-up +
+        lateral-shift chain). The caller keeps its own hard trigger
+        condition and must only call this when that condition is already
+        true, so the rule gate stays the sole trigger.
+
+        The decisioner genuinely selects the candidate (the skill is, in
+        fact, scheduled by the option decisioner), but a ``mandatory``
+        candidate is always executed -> trigger timing and execution
+        effect are identical to calling ``execute_fn`` directly. The only
+        additions are read-only before/after snapshots and option-event
+        logging.
+
+        Returns ``execute_fn()``'s result, or ``None`` if (only possible
+        for a non-mandatory candidate) the decisioner declines.
+        """
+        candidate = EnvOptionCandidate(
+            name=name,
+            control_key=recovery_event_key or name,
+            recovery_event_key=recovery_event_key or name,
+            planned_ticks=0,
+            reason=reason or {},
+            mandatory=bool(mandatory),
+        )
+        context = build_option_context(self, action, goal, prompt)
+        selection = self.option_decisioner.select([candidate], context)
+        if not selection.execute or selection.option != candidate.name:
+            self.option_decisioner.record_skip(context, [candidate], selection)
+            if self.logger:
+                self.logger.info(
+                    "[option] scheduled-skip: option=%s reason=%s",
+                    candidate.name,
+                    selection.reason,
+                )
+            return None
+
+        before = self._option_progress_snapshot(goal, prompt)
+        event_id = self.option_decisioner.record_invocation(
+            candidate.name,
+            context,
+            candidate.reason,
+            selection.to_trace(),
+            before,
+            candidate.planned_ticks,
+        )
+        events = self._control_state.setdefault("recovery_events", {})
+        events[candidate.recovery_event_key] = (
+            int(events.get(candidate.recovery_event_key, 0)) + 1
+        )
+
+        result = execute_fn()
+
+        after = self._option_progress_snapshot(goal, prompt)
+        outcome = self._evaluate_option_outcome(candidate.name, before, after)
+        self.option_decisioner.record_outcome(
+            event_id, candidate.name, context, before, after, outcome
+        )
+        if self.logger:
+            self.logger.info(
+                "[option] scheduled outcome: option=%s success=%s reward=%.4f "
+                "delta=%.4f reason=%s",
+                candidate.name,
+                outcome["success"],
+                outcome.get("reward", 0.0),
+                outcome.get("progress_delta", 0.0),
+                selection.reason,
+            )
+        return result
 
     def _attack_hold_ticks(self, goal: tuple[str, int] | None, prompt: str | None) -> int:
         text = self._prompt_text(goal, prompt)
@@ -1196,87 +1574,7 @@ class CustomEnvWrapper(gym.Wrapper):
             self.cache["last_progress_step"] = self.num_steps
             self.cache["last_goal_progress_step"] = self.num_steps
 
-        if self._control_state["escape_ticks"] <= 0 and self._should_surface_escape():
-            self._control_state["escape_ticks"] = int(os.environ.get("XENON_ESCAPE_TICKS", "80"))
-            self._control_state["recovery_events"]["surface_escape"] += 1
-            self.logger.info(
-                "Activating surface recovery primitive: "
-                f"air={self._current_air()}, health={self._current_health()}"
-            )
-        elif self._control_state["escape_ticks"] <= 0 and self._should_movement_escape(action, goal, prompt):
-            self._control_state["escape_ticks"] = int(os.environ.get("XENON_ESCAPE_TICKS", "80"))
-            self._control_state["recovery_events"]["movement_escape"] += 1
-            self.logger.info(
-                "Activating movement recovery primitive: "
-                f"stagnant_ticks={self._control_state['movement_stagnant_ticks']}, "
-                f"stale_progress={self._stale_progress_ticks()}"
-            )
-        elif (
-            self._control_state["escape_ticks"] <= 0
-            and self._control_state["collect_drop_ticks"] <= 0
-            and self._control_state["surface_search_ticks"] <= 0
-            and self._should_collect_drops(action, goal, prompt)
-        ):
-            self._control_state["collect_drop_ticks"] = int(os.environ.get("XENON_COLLECT_DROPS_TICKS", "24"))
-            self._control_state["attack_hold"] = 0
-            self.cache["last_collect_drop_step"] = self.num_steps
-            self.cache["last_goal_progress_step"] = self.num_steps
-            self._control_state["recovery_events"]["collect_drops"] += 1
-            self.logger.info(
-                "Activating resource drop collection primitive: "
-                f"pending={self._pending_relevant_drops(goal)}, "
-                f"stale_goal_progress={self._stale_goal_progress_ticks()}, prompt={prompt}"
-            )
-        elif (
-            self._control_state["escape_ticks"] <= 0
-            and self._control_state["collect_drop_ticks"] <= 0
-            and self._control_state["surface_search_ticks"] <= 0
-            and self._should_surface_search(goal, prompt)
-        ):
-            self._control_state["surface_search_ticks"] = int(os.environ.get("XENON_SURFACE_SEARCH_TICKS", "90"))
-            self._control_state["attack_hold"] = 0
-            self.cache["last_surface_search_step"] = self.num_steps
-            self.cache["last_goal_progress_step"] = self.num_steps
-            self._control_state["recovery_events"]["surface_search"] += 1
-            self.logger.info(
-                "Activating surface resource search primitive: "
-                f"stale_goal_progress={self._stale_goal_progress_ticks()}, prompt={prompt}, goal={goal}"
-            )
-        elif (
-            self._control_state["escape_ticks"] <= 0
-            and self._control_state["tunnel_recovery_ticks"] <= 0
-            and self._should_tunnel_recovery(action, goal, prompt)
-        ):
-            self._control_state["tunnel_recovery_ticks"] = int(os.environ.get("XENON_TUNNEL_RECOVERY_TICKS", "70"))
-            self._control_state["recovery_events"]["tunnel_recovery"] += 1
-            self.logger.info(
-                "Activating tunnel clearance primitive: "
-                f"resource_stagnant_ticks={self._control_state['resource_stagnant_ticks']}, "
-                f"stale_progress={self._stale_progress_ticks()}, prompt={prompt}"
-            )
-        elif (
-            self._control_state["escape_ticks"] <= 0
-            and self._control_state["collect_drop_ticks"] <= 0
-            and self._control_state["surface_search_ticks"] <= 0
-            and self._control_state["surface_turn_around_ticks"] <= 0
-            and self._should_surface_turn_around(action, goal, prompt)
-        ):
-            # Flip the rotation direction every activation so consecutive
-            # triggers don't keep banging the agent into the same hill.
-            self._control_state["escape_turn"] *= -1
-            self._control_state["surface_turn_around_ticks"] = int(
-                os.environ.get("XENON_SURFACE_TURNAROUND_TICKS", "30")
-            )
-            self._control_state["attack_hold"] = 0
-            self.cache["last_surface_turn_around_step"] = self.num_steps
-            self.cache["last_goal_progress_step"] = self.num_steps
-            self._control_state["recovery_events"]["surface_turn_around"] += 1
-            horizontal_now, _ = self._position_delta()
-            self.logger.info(
-                "Activating surface 180-deg turn-around primitive: "
-                f"horizontal_delta={horizontal_now:.2f}, "
-                f"stale_goal_progress={self._stale_goal_progress_ticks()}, prompt={prompt}"
-            )
+        self._select_and_activate_option(action, goal, prompt)
 
         if self._control_state["escape_ticks"] > 0:
             action = self._escape_action(action)
@@ -1506,6 +1804,7 @@ class CustomEnvWrapper(gym.Wrapper):
         self.record_mod.step(observation, None, action)
         self.status_mod.step(observation, action, self.num_steps)
         self._record_step_state(observation)
+        self._finalize_option_events(None, None)
 
         info.update(self.status_mod.get_status())
 
@@ -1553,6 +1852,7 @@ class CustomEnvWrapper(gym.Wrapper):
         self.record_mod.step(observation, None, action)
         self.status_mod.step(observation, action, self.num_steps)
         self._record_step_state(observation, goal, prompt)
+        self._finalize_option_events(goal, prompt)
 
         info.update(self.status_mod.get_status())
         info.update({"killed": 0})
@@ -1586,7 +1886,11 @@ class CustomEnvWrapper(gym.Wrapper):
 
         if self._only_once:
             if os.environ.get("XENON_ENABLE_RANDOM_ORE_ONCE", "1") == "1":
-                random_ore(self.env, self.ORE_MAP, ypos)
+                try:
+                    xpos, _, zpos = self.status_mod.get_position()
+                except Exception:
+                    xpos = zpos = None
+                random_ore(self.env, self.ORE_MAP, ypos, xpos=xpos, zpos=zpos)
             self._only_once = False
 
         try:
@@ -3904,7 +4208,14 @@ class CustomEnvWrapper(gym.Wrapper):
         elif generate_ore:
             try:
                 ore_map = {} if os.environ.get("XENON_SCRIPTED_DIGDOWN_ORE_LOCAL_MAP", "1") == "1" else self.ORE_MAP
-                random_ore(self.env, ore_map, start_y, thresold=ore_threshold)
+                random_ore(
+                    self.env,
+                    ore_map,
+                    start_y,
+                    thresold=ore_threshold,
+                    xpos=start_x,
+                    zpos=start_z,
+                )
             except Exception as exc:
                 if self.logger:
                     self.logger.warning("[dig_down_blocks] random_ore failed: %s", exc)

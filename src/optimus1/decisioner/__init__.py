@@ -1,12 +1,13 @@
 """XENON-plus decisioner: retrieval-augmented decision scorer (RADS).
 
-This package is intentionally self-contained. It depends only on PyTorch and
-the on-disk case library (`src/optimus1/memories/.../cases.json`). It does not
-modify the case library schema, the env wrapper, or the planner.
+RADS is intentionally self-contained. The lightweight option selector in this
+package is used by the env wrapper to schedule environment-aware skills and
+write option-event records next to the case library.
 
 Modules:
 - feature: vocabularies + structured feature extraction (~50d)
 - encoder: QueryEncoder / CaseEncoder
 - rads:    main RADS model + multi-task losses
 - runtime: lightweight inference wrapper (loaded by future case_memory hook)
+- option_selector: rule-gated environment skill scheduler
 """

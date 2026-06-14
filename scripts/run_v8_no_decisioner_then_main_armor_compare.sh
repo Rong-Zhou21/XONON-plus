@@ -135,7 +135,10 @@ run_plus_until_valid() {
       RESULTS_DIR="$PLUS_RESULTS_DIR" \
       VIDEO_DIR="$PLUS_VIDEO_DIR" \
       SKIP_DONE=1 \
-      XENON_RANDOM_ORE_GOLD_MULTIPLIER=1.5 \
+      XENON_RANDOM_ORE_RARE_MULTIPLIER=1.0 \
+      XENON_RANDOM_ORE_GOLD_MULTIPLIER=1.0 \
+      XENON_RANDOM_ORE_REDSTONE_MULTIPLIER=1.0 \
+      XENON_RANDOM_ORE_DIAMOND_MULTIPLIER=1.0 \
       QWEN_VLLM_BASE_URL="$QWEN_VLLM_BASE_URL" \
       QWEN_VLLM_MODEL="$QWEN_VLLM_MODEL" \
       bash scripts/run_v7_armor_targeted.sh
@@ -169,7 +172,10 @@ run_main_until_valid() {
       VIDEO_DIR="$MAIN_VIDEO_DIR" \
       CLEAR_RESULTS=0 \
       SKIP_DONE=1 \
-      XENON_RANDOM_ORE_GOLD_MULTIPLIER=1.5 \
+      XENON_RANDOM_ORE_RARE_MULTIPLIER=1.0 \
+      XENON_RANDOM_ORE_GOLD_MULTIPLIER=1.0 \
+      XENON_RANDOM_ORE_REDSTONE_MULTIPLIER=1.0 \
+      XENON_RANDOM_ORE_DIAMOND_MULTIPLIER=1.0 \
       QWEN_VLLM_BASE_URL="$QWEN_VLLM_BASE_URL" \
       QWEN_VLLM_MODEL="$QWEN_VLLM_MODEL" \
       bash scripts/run_v7_dynamic_gold15x_armor.sh
@@ -191,7 +197,7 @@ log "V8 comparison supervisor start"
 log "tasks=${TASK_IDS[*]} trials=$TRIALS seed_base=$SEED_BASE"
 log "plus: decisioner=disabled exp_base=$PLUS_EXP_NUM_BASE gpu=$PLUS_GPU results=$PLUS_REPO/$PLUS_RESULTS_DIR videos=$PLUS_REPO/$PLUS_VIDEO_DIR"
 log "main: exp_base=$MAIN_EXP_NUM_BASE gpu=$MAIN_GPU results=$MAIN_REPO/$MAIN_RESULTS_DIR videos=$MAIN_REPO/$MAIN_VIDEO_DIR"
-log "shared: DefaultWorldGenerator, random_ore_gold_multiplier=1.5, mobs disabled/peaceful via evaluate.yaml, planner=$QWEN_VLLM_BASE_URL model=$QWEN_VLLM_MODEL"
+log "shared: DefaultWorldGenerator, random_ore_multiplier=1.0 (all ores ~=10% per eligible call), mobs disabled/peaceful via evaluate.yaml, planner=$QWEN_VLLM_BASE_URL model=$QWEN_VLLM_MODEL"
 
 cleanup_minecraft
 reset_output_dir "$PLUS_REPO" "$PLUS_RESULTS_DIR" || exit 1
