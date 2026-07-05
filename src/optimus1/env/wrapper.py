@@ -150,7 +150,14 @@ def random_ore(
     thresold: float = 0.9,
     xpos: float | None = None,
     zpos: float | None = None,
+    prob_scale: float = 1.0,
 ):
+    # Global spawn-probability scale (e.g. halved after the agent has
+    # triggered the underground pillar-up skill). Applied multiplicatively
+    # on top of the per-ore chance: effective = prob_scale * per_ore_chance.
+    # Guarded so prob_scale == 1.0 consumes no RNG (identical to original).
+    if prob_scale < 1.0 and random.random() >= max(0.0, prob_scale):
+        return
     dy = random.randint(-5, -3)
     new_pos = int(ypos + dy)
     current_key = _ore_map_key(ypos, xpos, zpos)
@@ -1890,7 +1897,8 @@ class CustomEnvWrapper(gym.Wrapper):
                     xpos, _, zpos = self.status_mod.get_position()
                 except Exception:
                     xpos = zpos = None
-                random_ore(self.env, self.ORE_MAP, ypos, xpos=xpos, zpos=zpos)
+                _ore_scale = float(self.cache.get("ore_spawn_scale", 1.0))
+                random_ore(self.env, self.ORE_MAP, ypos, xpos=xpos, zpos=zpos, prob_scale=_ore_scale)
             self._only_once = False
 
         try:
@@ -4215,6 +4223,7 @@ class CustomEnvWrapper(gym.Wrapper):
                     thresold=ore_threshold,
                     xpos=start_x,
                     zpos=start_z,
+                    prob_scale=float(self.cache.get("ore_spawn_scale", 1.0)),
                 )
             except Exception as exc:
                 if self.logger:

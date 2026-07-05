@@ -762,6 +762,2263 @@
       ],
       "status": "success",
       "steps": 7816
+    },
+    {
+      "id": "BDiVaZHeDsaPt5hWPhU4eg",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_17_22_52_32_craft_golden_hoe_BDiVaZHeDsaPt5hWPhU4eg.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7487
+    },
+    {
+      "id": "gxkKcDddC2JzH2kpZYYhbD",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_18_04_25_14_craft_golden_hoe_gxkKcDddC2JzH2kpZYYhbD.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            3
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6849
+    },
+    {
+      "id": "SJJUGjeAGyrgnSbCwE2Ggb",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_18_10_21_44_craft_golden_hoe_SJJUGjeAGyrgnSbCwE2Ggb.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 8699
+    },
+    {
+      "id": "PfBaiyVYYCLpov7JiMWRiz",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_18_15_46_18_craft_golden_hoe_PfBaiyVYYCLpov7JiMWRiz.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6795
+    },
+    {
+      "id": "hD9bB2ecKejHKonck2XHb9",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_18_20_26_33_craft_golden_hoe_hD9bB2ecKejHKonck2XHb9.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7776
+    },
+    {
+      "id": "X4fqBz5pwCMAyEhuMCvYz2",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_19_01_19_18_craft_golden_hoe_X4fqBz5pwCMAyEhuMCvYz2.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6267
+    },
+    {
+      "id": "DK2x2uZHbf9YrBDH3ubV5x",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_19_06_49_37_craft_golden_hoe_DK2x2uZHbf9YrBDH3ubV5x.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6438
+    },
+    {
+      "id": "bxNq7sRhxLReqLFed3xDiF",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_19_13_31_58_craft_golden_hoe_bxNq7sRhxLReqLFed3xDiF.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5913
+    },
+    {
+      "id": "JLuARSCwcouP3HM3GE7Moc",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_19_21_32_26_craft_golden_hoe_JLuARSCwcouP3HM3GE7Moc.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5857
+    },
+    {
+      "id": "Bi3XdiENf3tuVPrgBnK6sH",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/success/2026_06_20_03_18_25_craft_golden_hoe_Bi3XdiENf3tuVPrgBnK6sH.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 10353
+    },
+    {
+      "id": "DJQycc7FMDaF2GMNWzgdeW",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_28_03_36_49_craft_golden_hoe_DJQycc7FMDaF2GMNWzgdeW.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6278
+    },
+    {
+      "id": "NJeLh9X7rTKSWKWzuPeqms",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_28_09_40_52_craft_golden_hoe_NJeLh9X7rTKSWKWzuPeqms.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6829
+    },
+    {
+      "id": "KN8GgvB8MJFbyqidvMANU6",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_28_18_11_31_craft_golden_hoe_KN8GgvB8MJFbyqidvMANU6.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7044
+    },
+    {
+      "id": "HSHaZUjJ9J4YXtYoy3MyhE",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_29_04_15_52_craft_golden_hoe_HSHaZUjJ9J4YXtYoy3MyhE.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7924
+    },
+    {
+      "id": "QcctZBSGSz5r3eNSRvbPk9",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_29_10_41_50_craft_golden_hoe_QcctZBSGSz5r3eNSRvbPk9.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6794
+    },
+    {
+      "id": "VGgpZnqro6TWmqJHWv2Uzi",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_29_16_54_03_craft_golden_hoe_VGgpZnqro6TWmqJHWv2Uzi.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7677
+    },
+    {
+      "id": "EzqsMEnGwdUS27NN7n6zNq",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_29_22_40_55_craft_golden_hoe_EzqsMEnGwdUS27NN7n6zNq.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5586
+    },
+    {
+      "id": "bZJWbXBxD3oaUVi6kBW7JJ",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_30_04_50_58_craft_golden_hoe_bZJWbXBxD3oaUVi6kBW7JJ.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6902
+    },
+    {
+      "id": "CxniRReez3isBmPVEhLNGW",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_30_12_14_56_craft_golden_hoe_CxniRReez3isBmPVEhLNGW.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            4
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            5
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7224
+    },
+    {
+      "id": "2Ui3JCAq6RpyTZQsTW65ae",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/success/2026_06_30_19_56_25_craft_golden_hoe_2Ui3JCAq6RpyTZQsTW65ae.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine gold_ore",
+          "goal": [
+            "gold_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt gold ore",
+          "goal": [
+            "gold_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft golden_hoe",
+          "goal": [
+            "golden_hoe",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 12434
     }
   ]
 }

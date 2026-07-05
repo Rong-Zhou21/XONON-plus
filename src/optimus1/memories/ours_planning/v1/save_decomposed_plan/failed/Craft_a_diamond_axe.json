@@ -263,6 +263,60 @@
       ],
       "status": "failed",
       "steps": 21583
+    },
+    {
+      "id": "XVtij6ET4Y8bDqbTMe5JvR",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_axe",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_diamond_axe/forest/failed/2026_06_17_23_23_19_chop_a_tree_XVtij6ET4Y8bDqbTMe5JvR.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
+    },
+    {
+      "id": "55mVz2AzDsdkxewh7bDFxQ",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_axe",
+      "video": "videos/mainexp_plus_full/Diamond_Craft_a_diamond_axe/forest/failed/2026_06_28_19_06_56_chop_a_tree_55mVz2AzDsdkxewh7bDFxQ.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
+    },
+    {
+      "id": "o2t5V2jyVutmcXzgS8n2QY",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_axe",
+      "video": "videos/mainexp_plus_full/Diamond_Craft_a_diamond_axe/forest/failed/2026_06_29_23_04_42_chop_a_tree_o2t5V2jyVutmcXzgS8n2QY.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 138
     }
   ]
 }

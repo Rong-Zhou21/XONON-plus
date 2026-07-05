@@ -17,6 +17,60 @@
       ],
       "status": "failed",
       "steps": 151
+    },
+    {
+      "id": "WHSWkzwmxEyPL9vcyWnFgT",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "ladder",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_ladder/forest/failed/2026_06_28_07_08_08_chop_a_tree_WHSWkzwmxEyPL9vcyWnFgT.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            2
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 106
+    },
+    {
+      "id": "99Cu44LBDdBMBhhmPS78Zi",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "ladder",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_ladder/forest/failed/2026_06_28_07_12_31_chop_a_tree_99Cu44LBDdBMBhhmPS78Zi.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            2
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
+    },
+    {
+      "id": "dgPScjntbCtdDuq3s8SrJB",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "ladder",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_ladder/forest/failed/2026_06_30_02_22_11_chop_a_tree_dgPScjntbCtdDuq3s8SrJB.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            2
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
     }
   ]
 }

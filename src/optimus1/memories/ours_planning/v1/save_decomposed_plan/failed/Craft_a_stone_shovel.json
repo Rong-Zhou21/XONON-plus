@@ -1,0 +1,94 @@
+{
+  "plan": [
+    {
+      "id": "VVDxMCuNWSPsXGw95EhAoh",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_shovel",
+      "video": "videos/coldstart_plus/Stone_Craft_a_stone_shovel/plains/failed/2026_06_17_20_17_02_chop_a_tree_VVDxMCuNWSPsXGw95EhAoh.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "2uX6jEKKyqk9jEicj5mqvK",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_shovel",
+      "video": "videos/coldstart_plus/Stone_Craft_a_stone_shovel/plains/failed/2026_06_17_21_04_01_chop_a_tree_2uX6jEKKyqk9jEicj5mqvK.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "LzSYDzkkZjW9hXHFB9sVWB",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_shovel",
+      "video": "videos/coldstart_plus/Stone_Craft_a_stone_shovel/plains/failed/2026_06_18_01_51_05_chop_a_tree_LzSYDzkkZjW9hXHFB9sVWB.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "GN8WD5N4UPSUQGDTWsmNcw",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_shovel",
+      "video": "videos/coldstart_plus/Stone_Craft_a_stone_shovel/plains/failed/2026_06_19_17_08_24_chop_a_tree_GN8WD5N4UPSUQGDTWsmNcw.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "EQWKLf7QdVnUKN3aTwtwoS",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_shovel",
+      "video": "videos/mainexp_plus_full/Stone_Craft_a_stone_shovel/plains/failed/2026_06_28_15_58_34_chop_a_tree_EQWKLf7QdVnUKN3aTwtwoS.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 133
+    }
+  ]
+}

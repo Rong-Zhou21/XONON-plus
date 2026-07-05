@@ -15,6 +15,86 @@
       ],
       "status": "failed",
       "steps": 146
+    },
+    {
+      "id": "grZWFrrXMq4JbaHdfY66gQ",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/coldstart_plus/Wood_Craft_a_crafting_table/forest/failed/2026_06_17_20_03_29_achieve_logs_grZWFrrXMq4JbaHdfY66gQ.mp4",
+      "planning": [
+        "achieve logs"
+      ],
+      "status": "failed",
+      "steps": 0
+    },
+    {
+      "id": "dNeUHVsafNeDARD5SVrVPN",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_crafting_table/forest/failed/2026_06_29_07_44_52_chop_a_tree_dNeUHVsafNeDARD5SVrVPN.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 148
+    },
+    {
+      "id": "CD6oQnzvwP93GLa4xeCJtX",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_crafting_table/forest/failed/2026_06_29_07_50_11_Craft_a_crafting_table_CD6oQnzvwP93GLa4xeCJtX.mp4",
+      "planning": [
+        {
+          "task": "Craft a crafting table",
+          "goal": "crafting_table",
+          "error": "Attempted to step an environment server with done=True"
+        }
+      ],
+      "status": "failed",
+      "steps": 146
+    },
+    {
+      "id": "HDKnYvqX9qev2AZACb35Ah",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_crafting_table/forest/failed/2026_06_29_07_55_28_Craft_a_crafting_table_HDKnYvqX9qev2AZACb35Ah.mp4",
+      "planning": [
+        {
+          "task": "Craft a crafting table",
+          "goal": "crafting_table",
+          "error": "Attempted to step an environment server with done=True"
+        }
+      ],
+      "status": "failed",
+      "steps": 150
+    },
+    {
+      "id": "UPSV5ALyWMNqzvNu5mGujh",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "crafting_table",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_crafting_table/forest/failed/2026_06_30_02_11_44_chop_a_tree_UPSV5ALyWMNqzvNu5mGujh.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
     }
   ]
 }

@@ -17,6 +17,54 @@
       ],
       "status": "failed",
       "steps": 178
+    },
+    {
+      "id": "JbvdBBGtNSdLTCngiVgNEp",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "chest",
+      "video": "videos/coldstart_plus/Wood_Craft_a_chest/forest/failed/2026_06_17_20_04_45_achieve_logs_JbvdBBGtNSdLTCngiVgNEp.mp4",
+      "planning": [
+        "achieve logs"
+      ],
+      "status": "failed",
+      "steps": 0
+    },
+    {
+      "id": "3iardAdUzmWAFBhwGnkkKj",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "chest",
+      "video": "videos/coldstart_plus/Wood_Craft_a_chest/forest/failed/2026_06_17_20_54_26_chop_a_tree_3iardAdUzmWAFBhwGnkkKj.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 136
+    },
+    {
+      "id": "Hx4bhq6N9yovt8ywpCeAjG",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "chest",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_chest/forest/failed/2026_06_28_07_00_06_chop_a_tree_Hx4bhq6N9yovt8ywpCeAjG.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
     }
   ]
 }

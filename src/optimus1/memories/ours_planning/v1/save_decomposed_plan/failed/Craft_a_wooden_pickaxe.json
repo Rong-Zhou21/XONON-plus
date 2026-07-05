@@ -35,6 +35,52 @@
       ],
       "status": "failed",
       "steps": 157
+    },
+    {
+      "id": "Xw5FEGEHu8LUzkF45iXTQB",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_pickaxe",
+      "video": "videos/coldstart_plus/Wood_Craft_a_wooden_pickaxe/forest/failed/2026_06_17_20_00_55_achieve_logs_Xw5FEGEHu8LUzkF45iXTQB.mp4",
+      "planning": [
+        "achieve logs"
+      ],
+      "status": "failed",
+      "steps": 0
+    },
+    {
+      "id": "K5RLcFJqQjj6ej49CYco2b",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_pickaxe",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_wooden_pickaxe/forest/failed/2026_06_28_06_19_27_Craft_a_wooden_pickaxe_K5RLcFJqQjj6ej49CYco2b.mp4",
+      "planning": [
+        {
+          "task": "Craft a wooden pickaxe",
+          "goal": "wooden_pickaxe",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 3601
+    },
+    {
+      "id": "RkCnxYmFUeupFkhD65sUTx",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_pickaxe",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_wooden_pickaxe/forest/failed/2026_06_28_06_23_32_chop_a_tree_RkCnxYmFUeupFkhD65sUTx.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
     }
   ]
 }

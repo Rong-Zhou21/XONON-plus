@@ -217,6 +217,60 @@
       ],
       "status": "failed",
       "steps": 11955
+    },
+    {
+      "id": "6eS4kGPtZbxEfKkYn6dgJv",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_axe",
+      "video": "videos/coldstart_plus/Iron_Craft_a_iron_axe/plains/failed/2026_06_18_08_52_47_chop_a_tree_6eS4kGPtZbxEfKkYn6dgJv.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 129
+    },
+    {
+      "id": "2HtpivDVgts27HxBqDcU8U",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_axe",
+      "video": "videos/coldstart_plus/Iron_Craft_a_iron_axe/plains/failed/2026_06_19_11_41_27_chop_a_tree_2HtpivDVgts27HxBqDcU8U.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    },
+    {
+      "id": "KBs5DKjS4fTrB4hB4QAdfq",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_axe",
+      "video": "videos/coldstart_plus/Iron_Craft_a_iron_axe/plains/failed/2026_06_19_18_52_27_chop_a_tree_KBs5DKjS4fTrB4hB4QAdfq.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }

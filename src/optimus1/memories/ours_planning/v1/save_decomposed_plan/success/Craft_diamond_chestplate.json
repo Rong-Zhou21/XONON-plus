@@ -625,6 +625,1986 @@
       ],
       "status": "success",
       "steps": 8719
+    },
+    {
+      "id": "9RgeZFgVzz7i2grN3K6HLK",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_18_00_59_01_craft_diamond_chestplate_9RgeZFgVzz7i2grN3K6HLK.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 20560
+    },
+    {
+      "id": "oGtFH4Dkbgmvf4GQWYe6i3",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_18_06_26_42_craft_diamond_chestplate_oGtFH4Dkbgmvf4GQWYe6i3.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7817
+    },
+    {
+      "id": "3teiiRiqy58yrNAnyYbRuN",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_18_11_56_38_craft_diamond_chestplate_3teiiRiqy58yrNAnyYbRuN.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            3
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 11822
+    },
+    {
+      "id": "btnszsUYSTM2rH85zwHi72",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_18_17_40_32_craft_diamond_chestplate_btnszsUYSTM2rH85zwHi72.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 10886
+    },
+    {
+      "id": "gHHfpdHqiG6v9PteV2PEZ5",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_18_22_06_18_craft_diamond_chestplate_gHHfpdHqiG6v9PteV2PEZ5.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 8768
+    },
+    {
+      "id": "FXujXqbEyXo2DwWYEaJaHo",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_19_03_42_07_craft_diamond_chestplate_FXujXqbEyXo2DwWYEaJaHo.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 8405
+    },
+    {
+      "id": "8dBqTaoDL7XBDE3QJdV6Fb",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_19_09_20_47_craft_diamond_chestplate_8dBqTaoDL7XBDE3QJdV6Fb.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 12323
+    },
+    {
+      "id": "8Ji3LkKtnoYLZTqTByxVMD",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_19_15_51_57_craft_diamond_chestplate_8Ji3LkKtnoYLZTqTByxVMD.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 10415
+    },
+    {
+      "id": "mQmFdwWoBi7qRUZrZSf3tF",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_19_23_39_10_craft_diamond_chestplate_mQmFdwWoBi7qRUZrZSf3tF.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 8236
+    },
+    {
+      "id": "5GALCCRoiwtDfqxUusFAnG",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_chestplate/forest/success/2026_06_20_05_55_03_craft_diamond_chestplate_5GALCCRoiwtDfqxUusFAnG.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 13480
+    },
+    {
+      "id": "H8dyM64sdey4xtuDEeyzSd",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/mainexp_plus_full/Armor_Craft_diamond_chestplate/forest/success/2026_06_28_05_25_09_craft_diamond_chestplate_H8dyM64sdey4xtuDEeyzSd.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 9075
+    },
+    {
+      "id": "RWQxy8JBvSDMmip2HqriJy",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/mainexp_plus_full/Armor_Craft_diamond_chestplate/forest/success/2026_06_28_13_57_58_craft_diamond_chestplate_RWQxy8JBvSDMmip2HqriJy.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 10431
+    },
+    {
+      "id": "NL643vgcvN7p8zTm8JvVLy",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/mainexp_plus_full/Armor_Craft_diamond_chestplate/forest/success/2026_06_28_21_16_55_craft_diamond_chestplate_NL643vgcvN7p8zTm8JvVLy.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 10117
+    },
+    {
+      "id": "gN8HpvjQxp6NpvwggZtYsX",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/mainexp_plus_full/Armor_Craft_diamond_chestplate/forest/success/2026_06_29_06_26_17_craft_diamond_chestplate_gN8HpvjQxp6NpvwggZtYsX.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7316
+    },
+    {
+      "id": "VtxjCGkGwDxP383XUXWiVh",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/mainexp_plus_full/Armor_Craft_diamond_chestplate/forest/success/2026_06_29_19_08_25_craft_diamond_chestplate_VtxjCGkGwDxP383XUXWiVh.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7661
+    },
+    {
+      "id": "DpqzJULQvuN9VhZ5ZZxLGP",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/mainexp_plus_full/Armor_Craft_diamond_chestplate/forest/success/2026_06_30_00_49_12_craft_diamond_chestplate_DpqzJULQvuN9VhZ5ZZxLGP.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 13974
+    },
+    {
+      "id": "hjjKnGeWnNj5UuwFGR5KWo",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/mainexp_plus_full/Armor_Craft_diamond_chestplate/forest/success/2026_06_30_08_35_52_craft_diamond_chestplate_hjjKnGeWnNj5UuwFGR5KWo.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 9535
+    },
+    {
+      "id": "TM7stYsMinvu7ReMfkFeFj",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/mainexp_plus_full/Armor_Craft_diamond_chestplate/forest/success/2026_06_30_15_20_18_craft_diamond_chestplate_TM7stYsMinvu7ReMfkFeFj.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 13325
+    },
+    {
+      "id": "mmPgihox7jFQcEDMDTPhbT",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_chestplate",
+      "video": "videos/mainexp_plus_full/Armor_Craft_diamond_chestplate/forest/success/2026_06_30_22_15_02_craft_diamond_chestplate_mmPgihox7jFQcEDMDTPhbT.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            25
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            8
+          ]
+        },
+        {
+          "task": "craft diamond_chestplate",
+          "goal": [
+            "diamond_chestplate",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 11671
     }
   ]
 }

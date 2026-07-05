@@ -109,6 +109,24 @@
       ],
       "status": "failed",
       "steps": 35833
+    },
+    {
+      "id": "fZPQE3XEWGTsQZutrCLXNg",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_boots",
+      "video": "videos/coldstart_plus/Armor_Craft_diamond_boots/forest/failed/2026_06_18_06_57_30_chop_a_tree_fZPQE3XEWGTsQZutrCLXNg.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
     }
   ]
 }

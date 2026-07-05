@@ -56,6 +56,24 @@
       ],
       "status": "failed",
       "steps": 3597
+    },
+    {
+      "id": "bAdbfypCJwSuMbxcpPndzZ",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "bowl",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_bowl/forest/failed/2026_06_30_02_19_00_chop_a_tree_bAdbfypCJwSuMbxcpPndzZ.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            2
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
     }
   ]
 }

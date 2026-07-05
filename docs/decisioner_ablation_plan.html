@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>决策器消融实验方案(含原因)</title>
+<style>
+  :root{
+    --bg:#0f1220;--bg2:#171a2b;--card:#1c2036;--line:#2b3050;
+    --text:#e8ebf5;--muted:#9aa3c4;--accent:#6c8cff;--accent2:#39d3bb;
+    --good:#3ddc84;--warn:#ffb454;--bad:#ff6b6b;--train:#6c8cff;--eval:#39d3bb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:linear-gradient(160deg,#0c0e1a,#12152a 40%,#0c0e1a);color:var(--text);line-height:1.65;padding-bottom:60px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+  header.hero{padding:54px 0 26px;border-bottom:1px solid var(--line);margin-bottom:26px;
+    background:radial-gradient(900px 300px at 70% -10%,rgba(108,140,255,.18),transparent)}
+  .eyebrow{color:var(--accent2);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+  h1{font-size:31px;margin:8px 0 6px;line-height:1.25}
+  h1 .grad{background:linear-gradient(90deg,#6c8cff,#39d3bb);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:15px}
+  h2{font-size:21px;margin:38px 0 12px;display:flex;align-items:center;gap:10px}
+  h2::before{content:"";width:5px;height:21px;border-radius:3px;background:linear-gradient(180deg,var(--accent),var(--accent2))}
+  h3{font-size:15px;color:var(--muted);margin:20px 0 8px;font-weight:600}
+  p{color:#cdd3ee}
+  .answer{background:linear-gradient(180deg,rgba(57,211,187,.12),rgba(108,140,255,.08));border:1px solid rgba(57,211,187,.4);
+    border-radius:14px;padding:20px 22px;margin:6px 0 8px}
+  .answer .q{color:var(--accent2);font-weight:700;font-size:13px;letter-spacing:.05em;text-transform:uppercase}
+  .answer p{margin:8px 0 0;font-size:16px;color:#eaf6f2}
+  .card{background:linear-gradient(180deg,var(--card),#171a2c);border:1px solid var(--line);border-radius:14px;padding:20px;margin:14px 0}
+  .why{background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:10px;padding:14px 16px;margin:12px 0;font-size:14px}
+  .why b{color:#ffe2b8}
+  .analogy{background:linear-gradient(180deg,rgba(255,180,84,.10),transparent);border:1px solid rgba(255,180,84,.32);border-radius:12px;padding:16px 18px;margin:14px 0}
+  .analogy .t{color:var(--warn);font-weight:700;margin-bottom:4px}
+  /* split diagram */
+  .reps{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+  .rep{flex:1;min-width:70px;text-align:center;padding:12px 6px;border-radius:10px;font-size:13px;font-weight:600;border:1px solid var(--line)}
+  .rep.train{background:rgba(108,140,255,.16);border-color:rgba(108,140,255,.5);color:#cdd9ff}
+  .rep.eval{background:rgba(57,211,187,.16);border-color:rgba(57,211,187,.55);color:#bdf5ea}
+  .rep small{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:3px}
+  .legend{display:flex;gap:18px;margin-top:8px;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+  .legend .sw{display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+  /* steps */
+  ol.flow{list-style:none;counter-reset:s;padding:0;margin:0}
+  ol.flow li{counter-increment:s;position:relative;padding:14px 0 14px 50px;border-bottom:1px solid var(--line)}
+  ol.flow li::before{content:counter(s);position:absolute;left:0;top:12px;width:32px;height:32px;border-radius:50%;
+    background:linear-gradient(180deg,var(--accent),var(--accent2));color:#0c0e1a;font-weight:800;display:flex;align-items:center;justify-content:center}
+  ol.flow li b{color:#fff}
+  ol.flow li .meta{color:var(--muted);font-size:13px}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+  .pill{display:inline-block;font-size:11.5px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+  .pill.a{background:rgba(176,124,255,.14);border-color:rgba(176,124,255,.4);color:#e3d4ff}
+  .pill.b{background:rgba(108,140,255,.14);border-color:rgba(108,140,255,.45);color:#cdd9ff}
+  .pill.key{background:rgba(57,211,187,.14);border-color:rgba(57,211,187,.45);color:#bdf5ea}
+  code{background:#0c0e1a;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12.5px;color:#a8d8ff}
+  .faq dt{font-weight:700;color:#fff;margin-top:14px}
+  .faq dd{margin:4px 0 0;color:#cdd3ee;font-size:14px}
+  footer{margin-top:46px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Decisioner Ablation · Experiment Design</div>
+  <h1>决策器消融实验方案 <span class="grad">(含每步原因)</span></h1>
+  <div class="sub">为什么要在"没训练过的 seed"上评测,以及不用生成新 seed 的做法</div>
+</div></header>
+
+<div class="wrap">
+
+<div class="answer">
+  <div class="q">你的问题:训练决策器后,应该在不同的 seed 上做实验才合理吗?</div>
+  <p><b>是的。</b>决策器(RADS)是一个会"学习"的模型,必须在它<b>训练时没见过的 seed(世界)</b>上评测,成绩才可信。<br>
+  但<b>不需要生成新 seed</b> —— 你已经跑了 10 个不同世界(rep 0–9),只要把其中 2 个<b>留出来不参与训练、专门评测</b>即可。</p>
+</div>
+
+<h2>一、为什么必须在"没训练过的 seed"上评测</h2>
+<div class="analogy">
+  <div class="t">🎓 一个类比</div>
+  在<b>考前就把考卷答案给学生</b>,他考 100 分 —— 但这不能证明他学会了,只证明他背了答案。<br>
+  决策器也一样:如果它<b>训练用过的 seed</b> = <b>评测用的 seed</b>,它在评测时会"检索到自己训练过的那条案例",成绩虚高,<b>无法证明它真的学会了泛化</b>。审稿人一定会问这点。
+</div>
+<div class="why">
+  <b>术语:数据泄漏(data leakage)。</b> 训练集和评测集重叠,导致成绩偏乐观、不可信。避免它的唯一办法:<b>评测数据是模型没见过的</b>。
+</div>
+
+<h2>二、怎么做到"没见过"——留出已有的 rep(不用新 seed)</h2>
+<p>你的冷启动已经在 10 个不同世界各跑了一遍(rep 0–9,每个 rep 一个 world seed)。把它们这样切:</p>
+<div class="card">
+  <div class="reps">
+    <div class="rep train">rep 0</div><div class="rep train">rep 1</div><div class="rep train">rep 2</div>
+    <div class="rep train">rep 3</div><div class="rep train">rep 4</div><div class="rep train">rep 5</div>
+    <div class="rep train">rep 6</div><div class="rep train">rep 7</div>
+    <div class="rep eval">rep 8<small>评测</small></div><div class="rep eval">rep 9<small>评测</small></div>
+  </div>
+  <div class="legend">
+    <span><span class="sw" style="background:rgba(108,140,255,.6)"></span><b style="color:#cdd9ff">训练 RADS</b>:rep 0–7 的案例(8 个世界)</span>
+    <span><span class="sw" style="background:rgba(57,211,187,.6)"></span><b style="color:#bdf5ea">评测</b>:rep 8–9(2 个世界,RADS 没见过)</span>
+  </div>
+</div>
+<div class="why">
+  这样<b>一个新 seed 都不用生成</b>(rep 8–9 是你早就跑过的世界),却满足了"评测 seed 决策器没训练过"。而且 —— 评测的<b>无决策器那一臂,rep 8–9 的冷启动结果你已经有了,不用重跑</b>,只需补跑"有决策器"这一臂。
+</div>
+
+<h2>三、实验流程(4 步)</h2>
+<ol class="flow">
+  <li><b>切分数据</b><div class="meta">训练集 = rep 0–7 的案例;留出评测集 = rep 8–9。无新 seed。</div></li>
+  <li><b>训练 RADS 决策器</b><div class="meta"><code>scripts/train_rads.py</code> 在 rep 0–7 案例上训练(内部再分 train/val 选模型)→ 得到 ckpt。确认训练集不含 rep 8–9。</div></li>
+  <li><b>在 rep 8–9 上跑两臂对照</b><div class="meta">同任务、同世界、同冻结案例库、技能库都开;<b>唯一变量是决策器开/关</b>。</div></li>
+  <li><b>统计指标</b><div class="meta">不只看成功率,还要看效率与可靠性(见第五节)。</div></li>
+</ol>
+
+<h2>四、两臂对照(只切一个开关)</h2>
+<table>
+  <tr><th>臂</th><th>配置</th><th>开关</th><th>是否要重跑</th></tr>
+  <tr><td><span class="pill a">A 无决策器</span></td><td>案例精确复用 + planner 兜底</td><td><code>DECISIONER_ENABLED=0</code></td><td><b style="color:var(--good)">不用</b>(冷启动 rep 8–9 已有)</td></tr>
+  <tr><td><span class="pill b">B 有决策器(满血)</span></td><td>RADS 检索打分 + 弃权 + 精确复用 + planner</td><td><code>DECISIONER_ENABLED=1</code> + ckpt</td><td>需补跑 rep 8–9(67×2=134 次)</td></tr>
+</table>
+
+<h2>五、指标:别只看成功率(关键)</h2>
+<div class="why">
+  <b>为什么?</b> 你的无决策器基线已经 <b>0.88</b>(因为案例精确复用 + planner 本就很强),SR 几乎到顶 —— 决策器很难再把 SR 大幅拉高。<b>决策器的真正价值在效率和泛化</b>,要用对应指标才能体现。
+</div>
+<table>
+  <tr><th>类别</th><th>指标</th><th>这项要证明什么 / 预期</th></tr>
+  <tr><td>任务级</td><td>SR · AS(平均步数)· AT(平均时长)</td><td>B 大致持平 A 即可(不掉就行)</td></tr>
+  <tr><td><span class="pill key">效率(主卖点)</span></td><td>planner / VLM 调用次数、单步决策延迟</td><td><b>B 明显低于 A</b> —— 高置信时直接复用、省去大模型调用</td></tr>
+  <tr><td>泛化</td><td>长尾 / 分布外 waypoint 上的 SR</td><td>精确复用失效处,RADS 是否仍能复用相似经验</td></tr>
+  <tr><td>可靠性(离线)</td><td>RADS 的 AUC、ECE 校准、弃权率–准确率曲线</td><td>在留出案例上算,证明"案例库有用 + 决策可信"</td></tr>
+</table>
+
+<h2>六、常见疑问</h2>
+<dl class="faq">
+  <dt>Q:那到底是"用新 seed"还是"不用新 seed"?</dt>
+  <dd>不用生成新 seed。要的是"决策器没训练过的 seed",而 rep 8–9 是<b>已有 seed</b>,只要把它们排除在训练之外即可,两者不矛盾。</dd>
+  <dt>Q:为什么无决策器臂不用重跑?</dt>
+  <dd>因为冷启动本来就是"决策器关"的状态,rep 8–9 的结果(含 SR/AS/AT)已经在 <code>exp_results/coldstart_plus</code> 里,直接拿来当 A 臂。</dd>
+  <dt>Q:为什么要"冻结案例库"?</dt>
+  <dd>评测时若让案例库继续增长,两臂的库就不一样了,无法判断差异是来自决策器还是来自"多记了几条案例"。冻结 → 唯一变量是决策器开/关。</dd>
+  <dt>Q:留 2 个 rep 够吗?</dt>
+  <dd>67 任务 × 2 rep = 134 次评测,够算分组成功率。想要每组样本更厚,可改成留 3 个(训练 rep 0–6 / 评测 rep 7–9),代价是 B 臂多跑一轮。</dd>
+</dl>
+
+<h2>七、一句话总结</h2>
+<div class="answer">
+  <p><b>训练用 rep 0–7,评测用 rep 8–9(已有 seed、决策器没训练过)。</b> A 臂(无决策器)直接用冷启动结果,只补跑 B 臂(有决策器),对比 <b>SR/AS/AT + planner 调用数 + 离线 AUC/ECE</b>。既不用新 seed,又避免了数据泄漏,决策器的价值(省调用 + 泛化)也能讲清楚。</p>
+</div>
+
+<footer>
+  决策器消融实验方案 · 配套数据:plus 冷启动 7035 案例 / 670 次评测结果 · 2026-06
+</footer>
+
+</div>
+</body>
+</html>

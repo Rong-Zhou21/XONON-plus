@@ -15,6 +15,64 @@
       ],
       "status": "failed",
       "steps": 651
+    },
+    {
+      "id": "S6LatudN7zGHM3B5YiRuU5",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/coldstart_plus/Wood_Craft_a_wooden_shovel/forest/failed/2026_06_17_20_00_16_achieve_logs_S6LatudN7zGHM3B5YiRuU5.mp4",
+      "planning": [
+        "achieve logs"
+      ],
+      "status": "failed",
+      "steps": 0
+    },
+    {
+      "id": "KLzMYyoszVkZSacvFjkNws",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_shovel",
+      "video": "videos/mainexp_vlm/Wood_Craft_a_wooden_shovel/forest/failed/2026_07_05_16_11_25_chop_a_tree_KLzMYyoszVkZSacvFjkNws.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            7
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "chop a tree",
+          "goal": [
+            "wooden_shovel",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
     }
   ]
 }

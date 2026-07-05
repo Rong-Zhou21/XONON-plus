@@ -17,6 +17,164 @@
       ],
       "status": "failed",
       "steps": 110
+    },
+    {
+      "id": "LWnS5Nr2j6f8J7U5WAnPRU",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/coldstart_plus/Stone_Craft_a_furnace/plains/failed/2026_06_18_02_21_26_chop_a_tree_LWnS5Nr2j6f8J7U5WAnPRU.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            4
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "TeEB7RkjfvmanJo9xDQ6Qk",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/coldstart_plus/Stone_Craft_a_furnace/plains/failed/2026_06_18_08_36_17_chop_a_tree_TeEB7RkjfvmanJo9xDQ6Qk.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            4
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "majQckdZ3Ri34tGWveW7Nt",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/coldstart_plus/Stone_Craft_a_furnace/plains/failed/2026_06_18_14_14_06_chop_a_tree_majQckdZ3Ri34tGWveW7Nt.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            4
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 177
+    },
+    {
+      "id": "R6cA4Qj3VC5qs2orP6YJFR",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/coldstart_plus/Stone_Craft_a_furnace/plains/failed/2026_06_18_23_33_43_chop_a_tree_R6cA4Qj3VC5qs2orP6YJFR.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            4
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "oHU3MHV9AEKYGzd5E6dvyV",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/coldstart_plus/Stone_Craft_a_furnace/plains/failed/2026_06_19_05_01_25_chop_a_tree_oHU3MHV9AEKYGzd5E6dvyV.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            4
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "knKryaKr6a7Yc4rro3MBLb",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/coldstart_plus/Stone_Craft_a_furnace/plains/failed/2026_06_19_11_15_32_chop_a_tree_knKryaKr6a7Yc4rro3MBLb.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            4
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "JQnz38kf5V6zntXYU6EHco",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/coldstart_plus/Stone_Craft_a_furnace/plains/failed/2026_06_19_18_07_23_chop_a_tree_JQnz38kf5V6zntXYU6EHco.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            4
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "3Z2ivjBh6wjM3YKZwG2e68",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/mainexp_plus_full/Stone_Craft_a_furnace/plains/failed/2026_06_28_23_43_59_Craft_a_furnace_3Z2ivjBh6wjM3YKZwG2e68.mp4",
+      "planning": [
+        {
+          "task": "Craft a furnace",
+          "goal": "furnace",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 7201
+    },
+    {
+      "id": "69LWC76FyRoFqa5GLjwQMk",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "furnace",
+      "video": "videos/mainexp_plus_full/Stone_Craft_a_furnace/plains/failed/2026_06_28_23_51_34_Craft_a_furnace_69LWC76FyRoFqa5GLjwQMk.mp4",
+      "planning": [
+        {
+          "task": "Craft a furnace",
+          "goal": "furnace",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 7201
     }
   ]
 }

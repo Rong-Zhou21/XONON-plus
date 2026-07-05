@@ -168,6 +168,24 @@
       ],
       "status": "failed",
       "steps": 5007
+    },
+    {
+      "id": "RNqgZCQKGC8pa5Va6ERXzB",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_shovel",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_diamond_shovel/forest/failed/2026_06_19_22_05_10_chop_a_tree_RNqgZCQKGC8pa5Va6ERXzB.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
     }
   ]
 }

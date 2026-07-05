@@ -36,6 +36,18 @@ def render_subgoal(subgoal: str, wp_num: int = 1) -> str:
     except json.JSONDecodeError as e:
         return [], None, str(e)
 
+    # Some models wrap the answer, e.g.
+    #   {"item_name": "logs", "task_planning": {"task": ..., "goal": ...}}
+    # instead of the bare {"task": ..., "goal": ...} this renderer expects.
+    # Unwrap to the inner dict so the (otherwise correct) plan is usable.
+    # This only tolerates the output format; it does not change planning.
+    if isinstance(temp, dict) and "goal" not in temp:
+        for _key in ("task_planning", "task_plan", "plan", "subgoal", "task planning"):
+            _inner = temp.get(_key)
+            if isinstance(_inner, dict) and "goal" in _inner:
+                temp = _inner
+                break
+
     temp["goal"][1] = wp_num
 
     return temp, temp["task"], None

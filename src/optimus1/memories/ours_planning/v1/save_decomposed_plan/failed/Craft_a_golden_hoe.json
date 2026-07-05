@@ -82,6 +82,42 @@
       ],
       "status": "failed",
       "steps": 36000
+    },
+    {
+      "id": "XYjY9UE5NevYL7Bun943jB",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_hoe/forest/failed/2026_06_19_21_28_13_chop_a_tree_XYjY9UE5NevYL7Bun943jB.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 142
+    },
+    {
+      "id": "NaRmJVvn5AMUasw2fSnuD2",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_hoe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_hoe/forest/failed/2026_06_29_10_36_09_chop_a_tree_NaRmJVvn5AMUasw2fSnuD2.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 127
     }
   ]
 }

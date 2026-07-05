@@ -128,6 +128,60 @@
       ],
       "status": "failed",
       "steps": 36000
+    },
+    {
+      "id": "dSnW2vzDkJs4uDnYKp9gPS",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_helmet",
+      "video": "videos/coldstart_plus/Armor_Craft_iron_helmet/forest/failed/2026_06_18_00_33_59_chop_a_tree_dSnW2vzDkJs4uDnYKp9gPS.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 160
+    },
+    {
+      "id": "EjarGiT9i3JuWMcz78KwgH",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_helmet",
+      "video": "videos/coldstart_plus/Armor_Craft_iron_helmet/forest/failed/2026_06_18_17_18_24_chop_a_tree_EjarGiT9i3JuWMcz78KwgH.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 162
+    },
+    {
+      "id": "Rqqb6gzDgb9iJUBYNw2Ax7",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_helmet",
+      "video": "videos/mainexp_plus_full/Armor_Craft_iron_helmet/forest/failed/2026_06_28_13_37_37_chop_a_tree_Rqqb6gzDgb9iJUBYNw2Ax7.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
     }
   ]
 }

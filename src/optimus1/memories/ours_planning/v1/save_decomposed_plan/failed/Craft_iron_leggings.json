@@ -147,6 +147,24 @@
       ],
       "status": "failed",
       "steps": 35585
+    },
+    {
+      "id": "GopwZcUqS2kFLTrcFtcsKZ",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "iron_leggings",
+      "video": "videos/mainexp_plus_full/Armor_Craft_iron_leggings/forest/failed/2026_06_28_13_13_09_chop_a_tree_GopwZcUqS2kFLTrcFtcsKZ.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
     }
   ]
 }

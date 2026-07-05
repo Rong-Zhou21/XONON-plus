@@ -71,6 +71,60 @@
       ],
       "status": "failed",
       "steps": 150
+    },
+    {
+      "id": "EL64rvvLgoyvgyCDrU6qFD",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_axe",
+      "video": "videos/coldstart_plus/Stone_Craft_a_stone_axe/plains/failed/2026_06_17_20_24_00_chop_a_tree_EL64rvvLgoyvgyCDrU6qFD.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
+    },
+    {
+      "id": "gyMgAjeinc6Y9kpewx9JW7",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_axe",
+      "video": "videos/coldstart_plus/Stone_Craft_a_stone_axe/plains/failed/2026_06_18_13_58_13_chop_a_tree_gyMgAjeinc6Y9kpewx9JW7.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 134
+    },
+    {
+      "id": "aubxnAA2iHYiFX5HkZ6fJ6",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "stone_axe",
+      "video": "videos/coldstart_plus/Stone_Craft_a_stone_axe/plains/failed/2026_06_19_17_29_09_chop_a_tree_aubxnAA2iHYiFX5HkZ6fJ6.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            5
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 7197
     }
   ]
 }

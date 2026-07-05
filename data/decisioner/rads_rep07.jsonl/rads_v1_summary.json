@@ -1,0 +1,159 @@
+{
+  "generated_at": "2026-06-27T17:07:38.738392+00:00",
+  "source_cases_path": "/tmp/cases_rep07.json",
+  "raw_case_total": 5787,
+  "valid_sample_total": 5750,
+  "drop_counts": {
+    "crash_RuntimeError": 27,
+    "pending": 10
+  },
+  "splits": {
+    "train": 4025,
+    "val": 887,
+    "test": 838
+  },
+  "split_runs": {
+    "train": 388,
+    "val": 83,
+    "test": 84
+  },
+  "split_label_counts": {
+    "test_label_1": 817,
+    "train_label_1": 3930,
+    "val_label_1": 879,
+    "train_label_0": 95,
+    "val_label_0": 8,
+    "test_label_0": 21
+  },
+  "waypoint_count": 77,
+  "action_count": 83,
+  "top_waypoints": [
+    [
+      "stick",
+      581
+    ],
+    [
+      "logs",
+      559
+    ],
+    [
+      "crafting_table",
+      541
+    ],
+    [
+      "planks",
+      528
+    ],
+    [
+      "cobblestone",
+      470
+    ],
+    [
+      "wooden_pickaxe",
+      457
+    ],
+    [
+      "iron_ingot",
+      410
+    ],
+    [
+      "furnace",
+      407
+    ],
+    [
+      "stone_pickaxe",
+      381
+    ],
+    [
+      "iron_ore",
+      370
+    ],
+    [
+      "iron_pickaxe",
+      245
+    ],
+    [
+      "gold_ore",
+      105
+    ],
+    [
+      "diamond",
+      85
+    ],
+    [
+      "gold_ingot",
+      75
+    ],
+    [
+      "redstone",
+      49
+    ]
+  ],
+  "top_actions": [
+    [
+      "craft stick",
+      581
+    ],
+    [
+      "chop a tree",
+      559
+    ],
+    [
+      "craft crafting_table",
+      541
+    ],
+    [
+      "craft planks",
+      528
+    ],
+    [
+      "dig down and mine cobblestone",
+      470
+    ],
+    [
+      "craft wooden_pickaxe",
+      457
+    ],
+    [
+      "smelt iron ore",
+      410
+    ],
+    [
+      "craft furnace",
+      407
+    ],
+    [
+      "craft stone_pickaxe",
+      381
+    ],
+    [
+      "dig down and mine iron_ore",
+      370
+    ],
+    [
+      "craft iron_pickaxe",
+      245
+    ],
+    [
+      "dig down and mine gold_ore",
+      105
+    ],
+    [
+      "dig down and mine diamond",
+      85
+    ],
+    [
+      "smelt gold ore",
+      75
+    ],
+    [
+      "dig down and mine redstone",
+      49
+    ]
+  ],
+  "args": {
+    "train": 0.7,
+    "val": 0.15,
+    "seed": 20260501
+  }
+}

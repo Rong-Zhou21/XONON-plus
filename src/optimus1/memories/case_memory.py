@@ -138,6 +138,34 @@ class CaseBasedMemory:
                     )
                 self.decisioner = None
 
+        # ----- Digi-Q-style plain Q decisioner (comparison arm) -------------
+        # Boolean gate: XENON_QDECIDER=1. Same features/data as RADS but no
+        # retrieval and no abstention (always argmax over candidates). Takes
+        # precedence over RADS when both are enabled (they should not be).
+        self.qdecider = None
+        if os.environ.get("XENON_QDECIDER", "0") == "1":
+            q_ckpt = os.environ.get(
+                "XENON_QDECIDER_CKPT", "artifacts/decisioner/qnet_coldstart.pt"
+            )
+            try:
+                from ..decisioner.qnet import QRuntime
+                self.qdecider = QRuntime.load(q_ckpt, device="cpu")
+                if self.logger:
+                    self.logger.info(
+                        f"QDECIDER enabled (Digi-Q-style comparison arm). "
+                        f"checkpoint={q_ckpt}; retrieval=off abstention=off"
+                    )
+                if self.decisioner is not None and self.logger:
+                    self.logger.warning(
+                        "QDECIDER and RADS both enabled; QDECIDER takes precedence."
+                    )
+            except Exception as exc:
+                if self.logger:
+                    self.logger.warning(
+                        f"QDECIDER load failed ({exc}); arm NOT active"
+                    )
+                self.qdecider = None
+
     def _load_cases(self) -> List[Dict[str, Any]]:
         if not os.path.exists(self.case_file_path):
             return []
@@ -458,6 +486,13 @@ class CaseBasedMemory:
         run_uuid: str,
         original_final_goal: str,
     ) -> Dict[str, Any] | None:
+        if self.qdecider is not None:
+            # Digi-Q-style arm: argmax over candidates, no abstention. Returns
+            # None only when the candidate set is empty (cold waypoint).
+            return self._select_case_decision_q(
+                waypoint, wp_num, state_snapshot, run_uuid, original_final_goal
+            )
+
         if self.decisioner is not None:
             decision = self._select_case_decision_rads(
                 waypoint, wp_num, state_snapshot, run_uuid, original_final_goal
@@ -535,6 +570,81 @@ class CaseBasedMemory:
             if existing is None or (this_success and not existing_success):
                 by_action[action] = case
         return by_action
+
+    def _select_case_decision_q(
+        self,
+        waypoint: str,
+        wp_num: int,
+        state_snapshot: Dict[str, Any],
+        run_uuid: str,
+        original_final_goal: str,
+    ) -> Dict[str, Any] | None:
+        """Digi-Q-style selection: plain Q scores, Best-of-N argmax.
+
+        Faithful to the Digi-Q (ICLR 2025) essence: an offline-trained Q
+        function ranks candidate actions and the best one is executed. No
+        retrieval context, no low-confidence abstention — the planner is
+        consulted only when there are no candidates at all.
+        """
+        candidates = self._candidate_actions_with_reps(waypoint)
+        if not candidates:
+            return None
+
+        position_in_run = sum(1 for c in self.cases if c.get("run_uuid") == run_uuid)
+        scored: List[tuple[str, Dict[str, Any], Any]] = []
+        for action, rep_case in candidates.items():
+            query_case = {
+                "waypoint": waypoint,
+                "waypoint_num": wp_num,
+                "original_final_goal": original_final_goal,
+                "selected_action": action,
+                "state_snapshot": state_snapshot,
+                "id": f"{run_uuid}:query",
+                "run_uuid": run_uuid,
+                "_position_in_run": position_in_run,
+            }
+            try:
+                result = self.qdecider.score(query_case)
+            except Exception as exc:
+                if self.logger:
+                    self.logger.warning(
+                        f"QDECIDER score failed for action={action!r}: {exc}"
+                    )
+                continue
+            scored.append((action, rep_case, result))
+
+        if not scored:
+            return None
+
+        scored.sort(key=lambda x: x[2].p_success, reverse=True)
+        best_action, best_rep, best_result = scored[0]
+
+        if self.logger:
+            ranking = ", ".join(f"{a}={r.p_success:.3f}" for a, _, r in scored)
+            self.logger.info(
+                f"QDECIDER waypoint={waypoint} ranking=[{ranking}] "
+                f"best={best_action!r} p={best_result.p_success:.3f} (argmax, no abstain)"
+            )
+
+        trace = {
+            "source": "q_decider",
+            "p_success": float(best_result.p_success),
+            "abstention": "disabled",
+            "retrieval": "disabled",
+            "selected_case_id": best_rep.get("id"),
+            "candidates": [
+                {"action": a, "p_success": float(r.p_success)} for a, _, r in scored
+            ],
+        }
+        return self._decision_from_case(
+            best_rep,
+            waypoint,
+            wp_num,
+            state_snapshot,
+            run_uuid,
+            original_final_goal,
+            trace,
+        )
 
     def _select_case_decision_rads(
         self,
@@ -737,6 +847,10 @@ class CaseBasedMemory:
         run_uuid: str,
         original_final_goal: str,
     ) -> str:
+        # Advanced-VLM comparison arm: never write to the case library
+        # (this arm must neither pollute nor exploit it).
+        if os.environ.get("XENON_ADVANCED_VLM", "0") == "1":
+            return "advanced_vlm_noop"
         case_id = f"{run_uuid}:{len(self.cases):06d}:{int(time.time() * 1000)}"
         case = {
             "id": case_id,
@@ -800,6 +914,9 @@ class CaseBasedMemory:
         create_if_missing: bool = True,
     ):
         if not waypoint or not action_str:
+            return
+        # Advanced-VLM comparison arm: suppress outcome writes as well.
+        if os.environ.get("XENON_ADVANCED_VLM", "0") == "1":
             return
 
         key = (_normalise_waypoint(waypoint), action_str)

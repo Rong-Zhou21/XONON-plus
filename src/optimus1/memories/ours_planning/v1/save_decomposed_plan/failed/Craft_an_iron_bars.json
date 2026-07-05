@@ -366,6 +366,242 @@
       ],
       "status": "failed",
       "steps": 11908
+    },
+    {
+      "id": "YivTuvgxzWfe3tqWkpmzXG",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_bars",
+      "video": "videos/coldstart_plus/Iron_Craft_an_iron_bars/plains/failed/2026_06_19_06_05_46_chop_a_tree_YivTuvgxzWfe3tqWkpmzXG.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    },
+    {
+      "id": "ivgjTDr2jYo6bEByQDNCSd",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_bars",
+      "video": "videos/coldstart_plus/Iron_Craft_an_iron_bars/plains/failed/2026_06_19_12_41_11_Craft_an_iron_bars_ivgjTDr2jYo6bEByQDNCSd.mp4",
+      "planning": [
+        {
+          "task": "Craft an iron bars",
+          "goal": "iron_bars",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 12000
+    },
+    {
+      "id": "neGkh53hzT64tzjewdXegr",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_bars",
+      "video": "videos/coldstart_plus/Iron_Craft_an_iron_bars/plains/failed/2026_06_19_20_28_35_dig_down_and_mine_iron_ore_neGkh53hzT64tzjewdXegr.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11912
+    },
+    {
+      "id": "BWFrtY3BkkbwcDwNnWddfY",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_bars",
+      "video": "videos/mainexp_plus_full/Iron_Craft_an_iron_bars/plains/failed/2026_06_29_02_29_12_chop_a_tree_BWFrtY3BkkbwcDwNnWddfY.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    },
+    {
+      "id": "bDSiF2FufSxY3P9qL6Kf84",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_bars",
+      "video": "videos/mainexp_plus_full/Iron_Craft_an_iron_bars/plains/failed/2026_06_29_09_59_23_dig_down_and_mine_iron_ore_bDSiF2FufSxY3P9qL6Kf84.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 10208
+    },
+    {
+      "id": "9ftBhEQT3t7zcJpSD3sDMR",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_bars",
+      "video": "videos/mainexp_plus_full/Iron_Craft_an_iron_bars/plains/failed/2026_06_30_18_52_02_chop_a_tree_9ftBhEQT3t7zcJpSD3sDMR.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 125
+    },
+    {
+      "id": "6YfDaSBXpMMmw3F6CgAnWm",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "iron_bars",
+      "video": "videos/mainexp_plus_full/Iron_Craft_an_iron_bars/plains/failed/2026_06_30_19_00_08_chop_a_tree_6YfDaSBXpMMmw3F6CgAnWm.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }

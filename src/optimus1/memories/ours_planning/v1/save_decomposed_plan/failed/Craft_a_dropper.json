@@ -154,6 +154,42 @@
       ],
       "status": "failed",
       "steps": 35865
+    },
+    {
+      "id": "6vQcHXQh7LqQ9ZULRoRt3k",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "dropper",
+      "video": "videos/coldstart_plus/Redstone_Craft_a_dropper/forest/failed/2026_06_18_00_02_10_chop_a_tree_6vQcHXQh7LqQ9ZULRoRt3k.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 162
+    },
+    {
+      "id": "mwMxjd4w45BXgVMQSZCVSA",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "dropper",
+      "video": "videos/coldstart_plus/Redstone_Craft_a_dropper/forest/failed/2026_06_18_00_07_14_chop_a_tree_mwMxjd4w45BXgVMQSZCVSA.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 167
     }
   ]
 }

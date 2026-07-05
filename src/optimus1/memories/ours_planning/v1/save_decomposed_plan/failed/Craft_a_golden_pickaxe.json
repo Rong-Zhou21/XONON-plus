@@ -397,6 +397,60 @@
       ],
       "status": "failed",
       "steps": 180
+    },
+    {
+      "id": "hbtGuTLQ7LbeQZDXZ6kenq",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_pickaxe",
+      "video": "videos/coldstart_plus/Gold_Craft_a_golden_pickaxe/forest/failed/2026_06_18_10_10_42_chop_a_tree_hbtGuTLQ7LbeQZDXZ6kenq.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 176
+    },
+    {
+      "id": "b65bXLFmQXUFHhEdYVHcCk",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_pickaxe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_pickaxe/forest/failed/2026_06_29_16_32_40_chop_a_tree_b65bXLFmQXUFHhEdYVHcCk.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 176
+    },
+    {
+      "id": "RgnKiKEYiopaptnffEkmGD",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "golden_pickaxe",
+      "video": "videos/mainexp_plus_full/Gold_Craft_a_golden_pickaxe/forest/failed/2026_06_30_04_27_53_chop_a_tree_RgnKiKEYiopaptnffEkmGD.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 115
     }
   ]
 }

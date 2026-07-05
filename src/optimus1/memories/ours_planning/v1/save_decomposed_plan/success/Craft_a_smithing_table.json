@@ -439,6 +439,1488 @@
       ],
       "status": "success",
       "steps": 9182
+    },
+    {
+      "id": "PvUDLYJ5ZoL9aGZVkRypCj",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/coldstart_plus/Iron_Craft_a_smithing_table/plains/success/2026_06_17_22_10_12_craft_smithing_table_PvUDLYJ5ZoL9aGZVkRypCj.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5064
+    },
+    {
+      "id": "MG8LzqF6vXrVT7a2W8GT8Q",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/coldstart_plus/Iron_Craft_a_smithing_table/plains/success/2026_06_18_03_22_58_craft_smithing_table_MG8LzqF6vXrVT7a2W8GT8Q.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4417
+    },
+    {
+      "id": "b4bScE3FUrSi4f7MbMnviK",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/coldstart_plus/Iron_Craft_a_smithing_table/plains/success/2026_06_18_09_32_35_craft_smithing_table_b4bScE3FUrSi4f7MbMnviK.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4209
+    },
+    {
+      "id": "iMsDFQQwjmJrpJHvxQdz69",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/coldstart_plus/Iron_Craft_a_smithing_table/plains/success/2026_06_18_15_06_24_craft_smithing_table_iMsDFQQwjmJrpJHvxQdz69.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4049
+    },
+    {
+      "id": "FWwMtX3Dc4nhSXxPG664QP",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/coldstart_plus/Iron_Craft_a_smithing_table/plains/success/2026_06_18_19_40_01_craft_smithing_table_FWwMtX3Dc4nhSXxPG664QP.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3958
+    },
+    {
+      "id": "HTnWgW3vG92TvNdBC4U2dK",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/coldstart_plus/Iron_Craft_a_smithing_table/plains/success/2026_06_19_00_36_18_craft_smithing_table_HTnWgW3vG92TvNdBC4U2dK.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3935
+    },
+    {
+      "id": "EM7FNSnAiDdo9R5eRVBWeC",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/coldstart_plus/Iron_Craft_a_smithing_table/plains/success/2026_06_19_05_48_40_craft_smithing_table_EM7FNSnAiDdo9R5eRVBWeC.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5724
+    },
+    {
+      "id": "hC5NNZyLKxVH9FxLDAAeAv",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/coldstart_plus/Iron_Craft_a_smithing_table/plains/success/2026_06_19_12_25_11_craft_smithing_table_hC5NNZyLKxVH9FxLDAAeAv.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 11459
+    },
+    {
+      "id": "kmAwvkyskojnnsjG6TPDMN",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/coldstart_plus/Iron_Craft_a_smithing_table/plains/success/2026_06_20_02_25_17_craft_smithing_table_kmAwvkyskojnnsjG6TPDMN.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4158
+    },
+    {
+      "id": "a5sMJxLwxtExbWgZqGUdyP",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_smithing_table/plains/success/2026_06_28_02_54_58_craft_smithing_table_a5sMJxLwxtExbWgZqGUdyP.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4592
+    },
+    {
+      "id": "P3MNviEaudF8ciNif7X6RX",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_smithing_table/plains/success/2026_06_28_08_33_13_craft_smithing_table_P3MNviEaudF8ciNif7X6RX.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6617
+    },
+    {
+      "id": "H9ioFiQsZ37TsbSdNd988m",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_smithing_table/plains/success/2026_06_28_17_18_34_craft_smithing_table_H9ioFiQsZ37TsbSdNd988m.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4663
+    },
+    {
+      "id": "Xbmt5n7Rx5geLJZM47toFS",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_smithing_table/plains/success/2026_06_29_09_35_21_craft_smithing_table_Xbmt5n7Rx5geLJZM47toFS.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4416
+    },
+    {
+      "id": "nAmfnXFashCkqk7GmXdeQV",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_smithing_table/plains/success/2026_06_29_15_56_27_craft_smithing_table_nAmfnXFashCkqk7GmXdeQV.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4367
+    },
+    {
+      "id": "Xvaj9EPzGSpTneVgTBTPnB",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_smithing_table/plains/success/2026_06_29_21_43_18_craft_smithing_table_Xvaj9EPzGSpTneVgTBTPnB.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3960
+    },
+    {
+      "id": "mKxmME8TYphwZsbb8Rk4pg",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_smithing_table/plains/success/2026_06_30_03_33_30_craft_smithing_table_mKxmME8TYphwZsbb8Rk4pg.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4024
+    },
+    {
+      "id": "8kkLprEpMyTkeGVfmoiRvs",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "smithing_table",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_smithing_table/plains/success/2026_06_30_11_12_28_craft_smithing_table_8kkLprEpMyTkeGVfmoiRvs.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            7
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            2
+          ]
+        },
+        {
+          "task": "craft smithing_table",
+          "goal": [
+            "smithing_table",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4201
     }
   ]
 }

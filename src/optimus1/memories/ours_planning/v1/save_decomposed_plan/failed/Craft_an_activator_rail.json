@@ -188,6 +188,128 @@
       ],
       "status": "failed",
       "steps": 8682
+    },
+    {
+      "id": "7JcA7uaFyi2wQLrvgEFmmX",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "activator_rail",
+      "video": "videos/coldstart_plus/Redstone_Craft_an_activator_rail/forest/failed/2026_06_18_16_38_38_chop_a_tree_7JcA7uaFyi2wQLrvgEFmmX.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 136
+    },
+    {
+      "id": "CRx3HMP5gPRYf7Z47tDqqx",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "activator_rail",
+      "video": "videos/coldstart_plus/Redstone_Craft_an_activator_rail/forest/failed/2026_06_20_04_51_14_Craft_an_activator_rail_CRx3HMP5gPRYf7Z47tDqqx.mp4",
+      "planning": [
+        {
+          "task": "Craft an activator rail",
+          "goal": "activator_rail",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 36000
+    },
+    {
+      "id": "9bx6MbywhxmbRsDBnGXBtf",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "activator_rail",
+      "video": "videos/mainexp_plus_full/Redstone_Craft_an_activator_rail/forest/failed/2026_06_28_04_32_41_smelt_iron_ore_9bx6MbywhxmbRsDBnGXBtf.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            29
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            9
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            7
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 13513
     }
   ]
 }

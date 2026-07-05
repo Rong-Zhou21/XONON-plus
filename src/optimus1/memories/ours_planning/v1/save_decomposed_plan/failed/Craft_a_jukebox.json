@@ -17,6 +17,187 @@
       ],
       "status": "failed",
       "steps": 161
+    },
+    {
+      "id": "9RoA9C23k3jcsYQ4WWb72u",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "jukebox",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_jukebox/forest/failed/2026_06_17_23_36_46_chop_a_tree_9RoA9C23k3jcsYQ4WWb72u.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 154
+    },
+    {
+      "id": "SXHALF5pgJ98Tgb7rAtVPK",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "jukebox",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_jukebox/forest/failed/2026_06_19_08_00_49_chop_a_tree_SXHALF5pgJ98Tgb7rAtVPK.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 120
+    },
+    {
+      "id": "b8prg67cYYuhFNtBR5Ho2f",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "jukebox",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_jukebox/forest/failed/2026_06_19_08_15_32_Craft_a_jukebox_b8prg67cYYuhFNtBR5Ho2f.mp4",
+      "planning": [
+        {
+          "task": "Craft a jukebox",
+          "goal": "jukebox",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 36000
+    },
+    {
+      "id": "gYCeD4Crw6r5evwAsuXEnh",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "jukebox",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_jukebox/forest/failed/2026_06_19_14_26_18_Craft_a_jukebox_gYCeD4Crw6r5evwAsuXEnh.mp4",
+      "planning": [
+        {
+          "task": "Craft a jukebox",
+          "goal": "jukebox",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 36000
+    },
+    {
+      "id": "4KciLZUK23AGcB5TeAaLZV",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "jukebox",
+      "video": "videos/mainexp_plus_full/Diamond_Craft_a_jukebox/forest/failed/2026_06_28_19_46_01_chop_a_tree_4KciLZUK23AGcB5TeAaLZV.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            33
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            3
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35864
+    },
+    {
+      "id": "58SzQjRGNyDGE6fztvAcXr",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "jukebox",
+      "video": "videos/mainexp_plus_full/Diamond_Craft_a_jukebox/forest/failed/2026_06_29_23_29_13_chop_a_tree_58SzQjRGNyDGE6fztvAcXr.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            10
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 179
     }
   ]
 }

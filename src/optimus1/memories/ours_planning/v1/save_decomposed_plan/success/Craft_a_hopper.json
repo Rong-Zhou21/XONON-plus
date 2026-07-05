@@ -684,6 +684,1538 @@
       ],
       "status": "success",
       "steps": 6763
+    },
+    {
+      "id": "nCok5ncFMZnDcDFrN5mJLX",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/coldstart_plus/Iron_Craft_a_hopper/plains/success/2026_06_17_21_49_30_craft_hopper_nCok5ncFMZnDcDFrN5mJLX.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6419
+    },
+    {
+      "id": "oHp9giuS5JMZiy5ASrXD8E",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/coldstart_plus/Iron_Craft_a_hopper/plains/success/2026_06_18_02_59_34_craft_hopper_oHp9giuS5JMZiy5ASrXD8E.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7530
+    },
+    {
+      "id": "n4nUyb4XU6jhsuRNu8jsvs",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/coldstart_plus/Iron_Craft_a_hopper/plains/success/2026_06_18_09_08_42_craft_hopper_n4nUyb4XU6jhsuRNu8jsvs.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7715
+    },
+    {
+      "id": "GcdVcXASsayQP8upBCh8cL",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/coldstart_plus/Iron_Craft_a_hopper/plains/success/2026_06_18_14_45_50_craft_hopper_GcdVcXASsayQP8upBCh8cL.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5441
+    },
+    {
+      "id": "ZXC89DmBCnqXE7yR9fUM6L",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/coldstart_plus/Iron_Craft_a_hopper/plains/success/2026_06_18_19_23_32_craft_hopper_ZXC89DmBCnqXE7yR9fUM6L.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5399
+    },
+    {
+      "id": "Q7vUyVQWrwL62C2JCUkm8A",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/coldstart_plus/Iron_Craft_a_hopper/plains/success/2026_06_19_00_01_26_craft_hopper_Q7vUyVQWrwL62C2JCUkm8A.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5825
+    },
+    {
+      "id": "DjjrawdLGFzbkQYa4hQDQB",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/coldstart_plus/Iron_Craft_a_hopper/plains/success/2026_06_19_05_31_47_craft_hopper_DjjrawdLGFzbkQYa4hQDQB.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5381
+    },
+    {
+      "id": "eFnL54jiWdeigRa2BMrcVY",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/coldstart_plus/Iron_Craft_a_hopper/plains/success/2026_06_19_11_52_23_craft_hopper_eFnL54jiWdeigRa2BMrcVY.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            23
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6122
+    },
+    {
+      "id": "FMoyUtJiZb7Uxr4gFVrr8C",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/coldstart_plus/Iron_Craft_a_hopper/plains/success/2026_06_20_02_10_13_craft_hopper_FMoyUtJiZb7Uxr4gFVrr8C.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5243
+    },
+    {
+      "id": "7K4NcRdXPhnoFBCWoNs7B3",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_hopper/plains/success/2026_06_28_02_34_58_craft_hopper_7K4NcRdXPhnoFBCWoNs7B3.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5449
+    },
+    {
+      "id": "8tbTkcHVvsLcbqWPf5dJnk",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_hopper/plains/success/2026_06_28_08_00_15_craft_hopper_8tbTkcHVvsLcbqWPf5dJnk.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5173
+    },
+    {
+      "id": "mMMsNCjPprTwgB4y4N5JTz",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_hopper/plains/success/2026_06_28_16_58_22_Craft_a_hopper_mMMsNCjPprTwgB4y4N5JTz.mp4",
+      "planning": [
+        {
+          "task": "Craft a hopper",
+          "goal": [
+            "hopper",
+            1
+          ],
+          "recovered_after_exception": "Timeout!"
+        }
+      ],
+      "status": "success",
+      "steps": 12001
+    },
+    {
+      "id": "RqUsQynECRrJNjyYAr4GD5",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_hopper/plains/success/2026_06_29_01_00_39_craft_hopper_RqUsQynECRrJNjyYAr4GD5.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7388
+    },
+    {
+      "id": "Pqo5AEvbkdDjnjbtbZVozk",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_hopper/plains/success/2026_06_29_15_33_44_craft_hopper_Pqo5AEvbkdDjnjbtbZVozk.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6178
+    },
+    {
+      "id": "38uymm4zBNcNEj22UDhnJG",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_hopper/plains/success/2026_06_30_03_16_56_craft_hopper_38uymm4zBNcNEj22UDhnJG.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5335
+    },
+    {
+      "id": "K2fS4ZgdUHoRk76QAfbsi6",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_hopper/plains/success/2026_06_30_10_55_28_craft_hopper_K2fS4ZgdUHoRk76QAfbsi6.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6394
+    },
+    {
+      "id": "oEfwFHLnx8BLjW9DavNCFU",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "hopper",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_hopper/plains/success/2026_06_30_18_03_39_craft_hopper_oEfwFHLnx8BLjW9DavNCFU.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft chest",
+          "goal": [
+            "chest",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            5
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            5
+          ]
+        },
+        {
+          "task": "craft hopper",
+          "goal": [
+            "hopper",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6448
     }
   ]
 }

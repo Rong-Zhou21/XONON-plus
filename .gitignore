@@ -63,3 +63,8 @@ minerl/minerl/MCP-Reborn.bak/
 XENON-plus/
 
 .vscode/
+
+# case-library archival snapshots (large; live cases.json is the canonical copy)
+src/optimus1/memories/**/case_memory/cases_AFTER_*.json
+src/optimus1/memories/**/case_memory/cases_FULL*.json
+data/decisioner/*.OLD_*.jsonl

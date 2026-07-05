@@ -215,6 +215,96 @@
       ],
       "status": "failed",
       "steps": 12001
+    },
+    {
+      "id": "BdkcY464C5TTr7eBYvysme",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/coldstart_plus/Iron_Craft_a_tripwire_hook/plains/failed/2026_06_19_20_06_08_chop_a_tree_BdkcY464C5TTr7eBYvysme.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    },
+    {
+      "id": "eCA3WJz7ugssD27VuMFmvv",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_tripwire_hook/plains/failed/2026_06_28_08_41_20_chop_a_tree_eCA3WJz7ugssD27VuMFmvv.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    },
+    {
+      "id": "5nVD4v6uFqvH9AwpPoCMMa",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_tripwire_hook/plains/failed/2026_06_28_17_26_46_chop_a_tree_5nVD4v6uFqvH9AwpPoCMMa.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    },
+    {
+      "id": "Gb5q2StLTZCphzugzsMPcp",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_tripwire_hook/plains/failed/2026_06_29_02_08_19_chop_a_tree_Gb5q2StLTZCphzugzsMPcp.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
+    },
+    {
+      "id": "hxkfyEWjfeRxQsgv639S7X",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "tripwire_hook",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_tripwire_hook/plains/failed/2026_06_30_18_40_59_chop_a_tree_hxkfyEWjfeRxQsgv639S7X.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            8
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 11997
     }
   ]
 }

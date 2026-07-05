@@ -1,0 +1,94 @@
+{
+  "plan": [
+    {
+      "id": "Gyqb2B4mH4KybGGiJBhnTc",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_sword",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_diamond_sword/forest/failed/2026_06_18_05_16_30_chop_a_tree_Gyqb2B4mH4KybGGiJBhnTc.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 120
+    },
+    {
+      "id": "A4QwCsZ9d8din9kse43NBu",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_sword",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_diamond_sword/forest/failed/2026_06_18_20_56_08_chop_a_tree_A4QwCsZ9d8din9kse43NBu.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 110
+    },
+    {
+      "id": "LcNLiUhEHF5F8bhYkGLES8",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_sword",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_diamond_sword/forest/failed/2026_06_19_07_29_12_chop_a_tree_LcNLiUhEHF5F8bhYkGLES8.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 136
+    },
+    {
+      "id": "PVyDALNrQjjzNy2zTVQQkz",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_sword",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_diamond_sword/forest/failed/2026_06_19_07_51_46_chop_a_tree_PVyDALNrQjjzNy2zTVQQkz.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
+    },
+    {
+      "id": "7KRto5CbDcTPK8Ezb4TVMi",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_sword",
+      "video": "videos/mainexp_plus_full/Diamond_Craft_a_diamond_sword/forest/failed/2026_06_28_11_16_10_chop_a_tree_7KRto5CbDcTPK8Ezb4TVMi.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
+    }
+  ]
+}

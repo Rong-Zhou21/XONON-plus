@@ -15,6 +15,36 @@
       ],
       "status": "failed",
       "steps": 180
+    },
+    {
+      "id": "JBuEwxkkkVhJQ9yZRh6iD4",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "stick",
+      "video": "videos/coldstart_plus/Wood_Craft_a_stick/forest/failed/2026_06_17_20_02_51_achieve_logs_JBuEwxkkkVhJQ9yZRh6iD4.mp4",
+      "planning": [
+        "achieve logs"
+      ],
+      "status": "failed",
+      "steps": 0
+    },
+    {
+      "id": "DqweCFRQGFL4vH4Ma2qpXb",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "stick",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_stick/forest/failed/2026_06_30_02_08_42_chop_a_tree_DqweCFRQGFL4vH4Ma2qpXb.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            1
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
     }
   ]
 }

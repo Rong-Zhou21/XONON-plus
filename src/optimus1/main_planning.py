@@ -27,6 +27,7 @@ from optimus1.env import CustomEnvWrapper, PerceptionActionSuite, env_make, regi
 from optimus1.helper import NewHelper
 from optimus1.memories import CaseBasedMemory
 from optimus1.memories import KnowledgeGraph as OracleGraph
+from optimus1.models.advanced_vlm import AdvancedVLMClient, advanced_vlm_enabled
 
 from optimus1.monitor import Monitors, StepMonitor, SuccessMonitor
 from optimus1.util import (
@@ -427,6 +428,35 @@ def make_plan(
             "Stopped prerequisite expansion after 4 hops; "
             f"current waypoint={wp}:{wp_num}, hops={prereq_hops}"
         )
+
+    # ---- Advanced-VLM comparison arm (XENON_ADVANCED_VLM=1) -------------
+    # Decision point D is taken over by the external VLM: case library, RADS
+    # decisioner and the local Qwen planner are all bypassed. On API/parse
+    # failure the deterministic semantic fallback is used (NOT the planner),
+    # keeping this arm purely big-model-controlled.
+    if advanced_vlm_enabled():
+        try:
+            _vlm = AdvancedVLMClient.get(logger)
+            subgoal, language_action_str = _vlm.decide(
+                obs["pov"], wp, wp_num, inventory, original_final_goal
+            )
+            if _subgoal_action_is_feasible(wp, subgoal, language_action_str):
+                logger.info(
+                    f"ADV_VLM D-decision: waypoint={wp} "
+                    f"action={language_action_str} "
+                    f"(decide_calls={_vlm.n_decide_calls})"
+                )
+                return wp, subgoal, language_action_str, None
+            logger.warning(
+                f"ADV_VLM infeasible action for {wp}: "
+                f"{language_action_str}; using semantic fallback"
+            )
+        except Exception as exc:
+            logger.warning(
+                f"ADV_VLM decide failed ({exc}); using semantic fallback"
+            )
+        subgoal, language_action_str = _fallback_subgoal_for_waypoint(wp, wp_num)
+        return wp, subgoal, language_action_str, None
 
     state_snapshot = action_memory.create_state_snapshot(env_status, obs, cfg)
     case_decision = action_memory.select_case_decision(
@@ -3094,6 +3124,18 @@ def new_agent_do(
                                     surface_y=initial_ypos,
                                 ),
                             )
+                            # Underground pillar-up has been triggered: halve
+                            # the dig-down ore-spawn probability for the rest
+                            # of this episode (initial -> 50%). Idempotent, so
+                            # repeated triggers stay at 50% (not compounding).
+                            try:
+                                env.cache["ore_spawn_scale"] = float(
+                                    os.environ.get(
+                                        "XENON_ORE_SPAWN_SCALE_AFTER_PILLAR", "0.5"
+                                    )
+                                )
+                            except Exception:
+                                env.cache["ore_spawn_scale"] = 0.5
                             trigger_reason = []
                             if overshot_layer:
                                 trigger_reason.append(f"deeper_ores={overshot_seen}")
@@ -3296,9 +3338,34 @@ def new_agent_do(
                     ) and not suppress_mining_reasoning:
                         current_sg_prompt = copy.deepcopy(temp_sg_prompt)
                         logger.info(f"Current timestep: {env.num_steps}. Calling get_context_aware_reasoning ...")
-                        reasoning_dict, visual_description, render_error = call_reasoning_with_retry(
-                            cfg, obs, temp_sg_prompt, waypoint, hydra_path, run_uuid, logger
-                        )
+                        if advanced_vlm_enabled():
+                            # Real-time intervention by the external VLM
+                            # (same contract as render_context_aware_reasoning).
+                            try:
+                                _vlm = AdvancedVLMClient.get(logger)
+                                reasoning_dict, visual_description = _vlm.reflect(
+                                    obs["pov"], temp_sg_prompt, waypoint
+                                )
+                                render_error = None
+                                logger.info(
+                                    f"ADV_VLM reflect: intervene="
+                                    f"{reasoning_dict['need_intervention']} "
+                                    f"(reflect_calls={_vlm.n_reflect_calls})"
+                                )
+                            except Exception as exc:
+                                logger.warning(
+                                    f"ADV_VLM reflect failed ({exc}); "
+                                    "continuing without intervention"
+                                )
+                                reasoning_dict = {
+                                    "need_intervention": False,
+                                    "task": temp_sg_prompt,
+                                }
+                                visual_description, render_error = "", None
+                        else:
+                            reasoning_dict, visual_description, render_error = call_reasoning_with_retry(
+                                cfg, obs, temp_sg_prompt, waypoint, hydra_path, run_uuid, logger
+                            )
                         if render_error is not None:
                             logger.error(f"Error message: {render_error}")
                             status = "cannot generate reasoning"

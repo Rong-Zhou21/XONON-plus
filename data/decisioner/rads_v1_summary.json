@@ -1,156 +1,154 @@
 {
-  "generated_at": "2026-05-01T12:37:14.931146+00:00",
+  "generated_at": "2026-06-27T17:01:52.469117+00:00",
   "source_cases_path": "src/optimus1/memories/ours_planning/v1/case_memory/cases.json",
-  "raw_case_total": 2660,
-  "valid_sample_total": 2574,
+  "raw_case_total": 7035,
+  "valid_sample_total": 6994,
   "drop_counts": {
-    "legacy": 35,
-    "excluded_infra": 44,
-    "crash_RuntimeError": 6,
-    "pending": 1
+    "crash_RuntimeError": 27,
+    "pending": 14
   },
   "splits": {
-    "train": 1847,
-    "val": 351,
-    "test": 376
+    "train": 4830,
+    "val": 1025,
+    "test": 1139
   },
   "split_runs": {
-    "train": 170,
-    "val": 36,
-    "test": 38
+    "train": 482,
+    "val": 103,
+    "test": 104
   },
   "split_label_counts": {
-    "train_label_1": 1542,
-    "test_label_1": 307,
-    "train_label_0": 305,
-    "val_label_1": 330,
-    "test_label_0": 69,
-    "val_label_0": 21
+    "train_label_1": 4731,
+    "val_label_1": 994,
+    "train_label_0": 99,
+    "val_label_0": 31,
+    "test_label_1": 1109,
+    "test_label_0": 30
   },
-  "waypoint_count": 74,
-  "action_count": 82,
+  "waypoint_count": 77,
+  "action_count": 83,
   "top_waypoints": [
     [
-      "cobblestone",
-      450
+      "stick",
+      699
     ],
     [
       "logs",
-      275
-    ],
-    [
-      "stick",
-      255
+      693
     ],
     [
       "crafting_table",
-      229
+      658
     ],
     [
       "planks",
-      219
+      639
+    ],
+    [
+      "cobblestone",
+      564
     ],
     [
       "wooden_pickaxe",
-      195
-    ],
-    [
-      "furnace",
-      177
-    ],
-    [
-      "stone_pickaxe",
-      164
-    ],
-    [
-      "iron_ore",
-      157
+      551
     ],
     [
       "iron_ingot",
-      129
+      497
+    ],
+    [
+      "furnace",
+      494
+    ],
+    [
+      "stone_pickaxe",
+      464
+    ],
+    [
+      "iron_ore",
+      451
     ],
     [
       "iron_pickaxe",
-      84
+      302
     ],
     [
       "gold_ore",
-      34
+      129
     ],
     [
       "diamond",
-      28
+      105
     ],
     [
       "gold_ingot",
-      18
+      95
     ],
     [
-      "chest",
-      12
+      "redstone",
+      61
     ]
   ],
   "top_actions": [
     [
-      "dig down and mine cobblestone",
-      446
+      "craft stick",
+      699
     ],
     [
       "chop a tree",
-      275
-    ],
-    [
-      "craft stick",
-      255
+      693
     ],
     [
       "craft crafting_table",
-      229
+      658
     ],
     [
       "craft planks",
-      219
+      639
+    ],
+    [
+      "dig down and mine cobblestone",
+      564
     ],
     [
       "craft wooden_pickaxe",
-      195
+      551
+    ],
+    [
+      "smelt iron ore",
+      497
     ],
     [
       "craft furnace",
-      177
+      494
     ],
     [
       "craft stone_pickaxe",
-      164
+      464
     ],
     [
       "dig down and mine iron_ore",
-      157
-    ],
-    [
-      "smelt iron_ingot",
-      129
+      451
     ],
     [
       "craft iron_pickaxe",
-      84
+      302
     ],
     [
       "dig down and mine gold_ore",
-      34
+      129
     ],
     [
       "dig down and mine diamond",
-      28
+      105
     ],
     [
-      "smelt gold_ingot",
-      18
+      "smelt gold ore",
+      95
     ],
     [
-      "craft chest",
-      12
+      "dig down and mine redstone",
+      61
     ]
   ],
   "args": {

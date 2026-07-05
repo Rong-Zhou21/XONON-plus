@@ -65,6 +65,9 @@ fi
 
 GPU="${GPU:-0}"
 SERVER_PORT="${SERVER_PORT:-9100}"
+# Use the conda env that actually has hydra/minerl/etc (matches run_v7); bare
+# `python` on PATH lacks hydra -> ModuleNotFoundError.
+PYTHON_BIN="${PYTHON_BIN:-/home/yzb/.conda/envs/vllm_qwen2_5_vl/bin/python}"
 SEED="${SEED:-0}"
 TASK_COOLDOWN_SEC="${TASK_COOLDOWN_SEC:-3}"    # 每任务结束后清进程的等待秒数（10→3，节省 67×7s≈8min）
 SKIP_DONE="${SKIP_DONE:-1}"                    # 1=跳过 exp_results/v4 已有的 exp_num
@@ -85,7 +88,7 @@ cd "$REPO_DIR" || exit 1
 
 # ===== 运行时环境 =====
 export PYTHONPATH="$REPO_DIR:$REPO_DIR/src:$REPO_DIR/minerl:${PYTHONPATH:-}"
-export HF_HOME="${HF_HOME:-/app/LLM}"
+export HF_HOME="${HF_HOME:-/home/yzb/.cache/huggingface}"
 export HF_ENDPOINT="${HF_ENDPOINT:-https://hf-mirror.com}"
 export HF_HUB_OFFLINE="${HF_HUB_OFFLINE:-1}"
 export CUDA_VISIBLE_DEVICES="$GPU"
@@ -235,7 +238,7 @@ ensure_app_server() {
   fi
 
   printf " app_server             : starting app.py on port %s log=%s\n" "$SERVER_PORT" "$APP_SERVER_LOG" | tee -a "$SUMMARY_FILE"
-  nohup python -u app.py --port "$SERVER_PORT" > "$APP_SERVER_LOG" 2>&1 < /dev/null &
+  nohup "$PYTHON_BIN" -u app.py --port "$SERVER_PORT" > "$APP_SERVER_LOG" 2>&1 < /dev/null &
   APP_SERVER_PID=$!
   printf " app_server_pid         : %s\n" "$APP_SERVER_PID" | tee -a "$SUMMARY_FILE"
 
@@ -297,7 +300,9 @@ TOTAL_TASKS="${#JOBS[@]}"
 for JOB in "${JOBS[@]}"; do
   read -r BENCH TID MAXMIN OFF <<< "$JOB"
   EXP_NUM=$((EXP_NUM_BASE + OFF + TID))
-  WORLD_SEED="$TID"
+  # WORLD_SEED_BASE (default 0) lets a wrapper vary the world per repetition
+  # while keeping per-task structure. Backward compatible: base 0 -> TID.
+  WORLD_SEED=$(( ${WORLD_SEED_BASE:-0} + TID ))
 
   DONE=$((DONE + 1))
 
@@ -345,7 +350,7 @@ for JOB in "${JOBS[@]}"; do
       printf "       retry log=%s\n" "$LOG_FILE" | tee -a "$SUMMARY_FILE"
     fi
 
-    xvfb-run -a python -u src/optimus1/main_planning.py \
+    xvfb-run -a "$PYTHON_BIN" -u src/optimus1/main_planning.py \
       server.port="$SERVER_PORT" \
       env.times=1 \
       env.max_minutes="$MAXMIN" \

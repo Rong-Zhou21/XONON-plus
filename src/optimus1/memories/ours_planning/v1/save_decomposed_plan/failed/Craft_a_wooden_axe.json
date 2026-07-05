@@ -74,6 +74,88 @@
       ],
       "status": "failed",
       "steps": 161
+    },
+    {
+      "id": "7J8VevYL6gHKBWpUGmB76L",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_axe",
+      "video": "videos/coldstart_plus/Wood_Craft_a_wooden_axe/forest/failed/2026_06_17_20_01_33_achieve_logs_7J8VevYL6gHKBWpUGmB76L.mp4",
+      "planning": [
+        "achieve logs"
+      ],
+      "status": "failed",
+      "steps": 0
+    },
+    {
+      "id": "Z56LfyJzReDHPGqCFwmbrB",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_axe",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_wooden_axe/forest/failed/2026_06_28_06_27_50_chop_a_tree_Z56LfyJzReDHPGqCFwmbrB.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
+    },
+    {
+      "id": "ArEyrTTfbdqS2WgGko7iRm",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_axe",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_wooden_axe/forest/failed/2026_06_29_20_07_38_chop_a_tree_ArEyrTTfbdqS2WgGko7iRm.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 144
+    },
+    {
+      "id": "2EoThybJtm3QKsRY5f63M9",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_axe",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_wooden_axe/forest/failed/2026_06_30_01_58_59_Craft_a_wooden_axe_2EoThybJtm3QKsRY5f63M9.mp4",
+      "planning": [
+        {
+          "task": "Craft a wooden axe",
+          "goal": "wooden_axe",
+          "error": "Timeout!"
+        }
+      ],
+      "status": "failed",
+      "steps": 3601
+    },
+    {
+      "id": "no93W9UnzZQJmquVHisXTU",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "wooden_axe",
+      "video": "videos/mainexp_plus_full/Wood_Craft_a_wooden_axe/forest/failed/2026_06_30_02_02_26_chop_a_tree_no93W9UnzZQJmquVHisXTU.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 3597
     }
   ]
 }

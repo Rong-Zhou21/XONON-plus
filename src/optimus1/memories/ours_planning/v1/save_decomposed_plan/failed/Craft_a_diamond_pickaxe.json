@@ -1,0 +1,216 @@
+{
+  "plan": [
+    {
+      "id": "TGSjQi2s2sxqCLQJuCcAye",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_pickaxe",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_diamond_pickaxe/forest/failed/2026_06_18_05_05_30_dig_down_and_mine_diamond_TGSjQi2s2sxqCLQJuCcAye.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            27
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            8
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            3
+          ]
+        },
+        {
+          "task": "craft iron_pickaxe",
+          "goal": [
+            "iron_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "dig down and mine diamond",
+          "goal": [
+            "diamond",
+            3
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 31799
+    },
+    {
+      "id": "nyQjvWdAahVwV5G9epHHwP",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_pickaxe",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_diamond_pickaxe/forest/failed/2026_06_19_02_05_28_chop_a_tree_nyQjvWdAahVwV5G9epHHwP.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
+    },
+    {
+      "id": "9iQzJ5S2PSBvhDcWLaGa4Y",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_pickaxe",
+      "video": "videos/coldstart_plus/Diamond_Craft_a_diamond_pickaxe/forest/failed/2026_06_20_03_59_25_dig_down_and_mine_cobblestone_9iQzJ5S2PSBvhDcWLaGa4Y.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            6
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35947
+    },
+    {
+      "id": "2Rnq3JZYKS9RhQuhQVpTsJ",
+      "environment": "forest",
+      "visual_info": "",
+      "goal": "diamond_pickaxe",
+      "video": "videos/mainexp_plus_full/Diamond_Craft_a_diamond_pickaxe/forest/failed/2026_06_30_05_52_16_chop_a_tree_2Rnq3JZYKS9RhQuhQVpTsJ.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            9
+          ]
+        }
+      ],
+      "status": "failed",
+      "steps": 35997
+    }
+  ]
+}

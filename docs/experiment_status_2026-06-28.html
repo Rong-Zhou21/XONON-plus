@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>实验状况报告 · XENON-plus</title>
+<style>
+  :root{
+    --bg:#0f1220;--bg2:#171a2b;--card:#1c2036;--line:#2b3050;
+    --text:#e8ebf5;--muted:#9aa3c4;--accent:#6c8cff;--accent2:#39d3bb;
+    --good:#3ddc84;--warn:#ffb454;--bad:#ff6b6b;--run:#6c8cff;--pend:#5b6488;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:linear-gradient(160deg,#0c0e1a,#12152a 40%,#0c0e1a);color:var(--text);line-height:1.6;padding-bottom:60px}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+  header.hero{padding:50px 0 24px;border-bottom:1px solid var(--line);margin-bottom:24px;
+    background:radial-gradient(900px 300px at 70% -10%,rgba(108,140,255,.18),transparent)}
+  .eyebrow{color:var(--accent2);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+  h1{font-size:30px;margin:8px 0 6px;line-height:1.25}
+  h1 .grad{background:linear-gradient(90deg,#6c8cff,#39d3bb);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:15px}
+  .summary{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .chip{font-size:12.5px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg2);color:var(--muted)}
+  .chip b{color:var(--text)}
+  .chip.done{border-color:rgba(61,220,132,.4);color:#bff5d4}
+  .chip.run{border-color:rgba(108,140,255,.45);color:#cdd9ff}
+  .chip.pend{color:#aeb6d8}
+  h2{font-size:21px;margin:36px 0 14px;display:flex;align-items:center;gap:10px}
+  h2::before{content:"";width:5px;height:21px;border-radius:3px;background:linear-gradient(180deg,var(--accent),var(--accent2))}
+  /* experiment card */
+  .exp{background:linear-gradient(180deg,var(--card),#171a2c);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:14px 0;position:relative}
+  .exp.run{border-color:rgba(108,140,255,.45)}
+  .exp .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px}
+  .exp .name{font-weight:700;font-size:16px}
+  .exp .name .idx{color:var(--accent2);margin-right:6px}
+  .st{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;white-space:nowrap}
+  .st.done{background:rgba(61,220,132,.14);color:#bff5d4;border:1px solid rgba(61,220,132,.4)}
+  .st.run{background:rgba(108,140,255,.16);color:#cdd9ff;border:1px solid rgba(108,140,255,.45)}
+  .st.pend{background:rgba(91,100,136,.18);color:#aeb6d8;border:1px solid var(--line)}
+  .exp dl{display:grid;grid-template-columns:84px 1fr;gap:4px 12px;margin:8px 0 0;font-size:13.5px}
+  .exp dt{color:var(--muted)}
+  .exp dd{margin:0;color:#cdd3ee}
+  .exp dd b{color:#fff}
+  .pbar{height:12px;border-radius:7px;background:#23284a;overflow:hidden;margin:10px 0 4px}
+  .pbar>i{display:block;height:100%;background:linear-gradient(90deg,#6c8cff,#39d3bb);border-radius:7px}
+  table{width:100%;border-collapse:collapse;margin:8px 0;font-size:13px}
+  th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-size:11px;text-transform:uppercase;font-weight:600}
+  td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+  .note{background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--warn);border-radius:10px;padding:11px 14px;color:#cdd3ee;font-size:13px;margin:10px 0 0}
+  code{background:#0c0e1a;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12px;color:#a8d8ff}
+  footer{margin-top:42px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Experiment Status Report</div>
+  <h1>实验状况报告 · <span class="grad">XENON-plus 主对比</span></h1>
+  <div class="sub">做了哪些实验、各自配置与状况 · 快照 2026-06-28</div>
+  <div class="summary">
+    <span class="chip done">已完成 <b>5 项</b></span>
+    <span class="chip pend">待跑 <b>1 项</b></span>
+    <span class="chip">总体方案 <b>全 10rep 训练 RADS + 新 seed 三臂配对</b></span>
+  </div>
+</div></header>
+
+<div class="wrap">
+
+<h2>一、实验逐项说明</h2>
+
+<!-- EXP 1 -->
+<div class="exp">
+  <div class="head"><div class="name"><span class="idx">实验①</span>冷启动采集 · XENON-plus(无决策器)</div><span class="st done">已完成</span></div>
+  <dl>
+    <dt>目的</dt><dd>从零(空案例库)出发采集经验,<b>积累案例库</b>供训练决策器,同时得到"仅技能库、无决策器"的 plus 成绩。</dd>
+    <dt>配置</dt><dd>67 任务 × 10 次(rep 0–9)· 决策器<b>关</b> · 技能库<b>开</b> · Oracle 真值依赖图</dd>
+    <dt>状况</dt><dd><b>670/670 完成</b>,正常结束、无崩溃。</dd>
+    <dt>结果</dt><dd>总体 SR <b>0.88</b>;产出案例库 <b>7035 条</b>(success 6834 / 失败类 ≈190)。</dd>
+  </dl>
+</div>
+
+<!-- EXP 2 -->
+<div class="exp">
+  <div class="head"><div class="name"><span class="idx">实验②</span>冷启动采集 · XENON-main(原始基线)</div><span class="st done">已完成</span></div>
+  <dl>
+    <dt>目的</dt><dd>跑原始 XENON(DecomposedMemory,无决策器/无技能库)作为<b>基线</b>,并校验本套评测口径是否正确。</dd>
+    <dt>配置</dt><dd>67 任务 × 10 次(rep 0–9)· 原始 DecomposedMemory · Oracle 真值依赖图 · 与 plus 同一矿物环境</dd>
+    <dt>状况</dt><dd><b>670/670 完成</b>;首轮 106 个 Malmo 后端瞬时崩溃已全部补跑、0 残留。</dd>
+    <dt>结果</dt><dd>总体 SR <b>0.776</b>,几乎完美复现论文 <b>XENON*(0.79)</b> → <b>反向验证评测口径正确</b>。</dd>
+  </dl>
+</div>
+
+<!-- EXP 3 -->
+<div class="exp">
+  <div class="head"><div class="name"><span class="idx">实验③</span>训练 RADS 决策器</div><span class="st done">已完成</span></div>
+  <dl>
+    <dt>目的</dt><dd>在案例库上离线训练<b>检索增强决策打分器 RADS</b>,用于复用历史经验 / 低置信弃权。</dd>
+    <dt>配置</dt><dd>全 10 rep 案例(按 episode 划分 train/val/test,检索屏蔽同 run 防泄漏)· CPU</dd>
+    <dt>状况</dt><dd><b>训练完成</b>,checkpoint <code>rads_coldstart.pt</code>。</dd>
+    <dt>结果</dt><dd>留出 test <b>AUC 0.78</b>(确实学到判别力);校准 ECE 偏高(负样本少所致,已知改进点)。</dd>
+  </dl>
+</div>
+
+<!-- EXP 4 (running) -->
+<div class="exp">
+  <div class="head"><div class="name"><span class="idx">实验④</span>满血 plus 正式实验(主对比·第 1 臂)</div><span class="st done">已完成</span></div>
+  <dl>
+    <dt>目的</dt><dd>本工作<b>完整方法</b>的正式成绩:决策器 + 技能库全开。</dd>
+    <dt>配置</dt><dd>决策器<b>开</b>(<code>rads_coldstart.pt</code>,min_p=0.20)· 技能库<b>开</b> · 案例库<b>冻结</b>完整 7035 · <b>全新 seed rep 10–19</b>(与训练零重叠,无泄漏)</dd>
+    <dt>状况</dt><dd><b>670/670 完成</b>,正常结束、0 崩溃、Malmo 残留 0。</dd>
+    <dt>结果</dt><dd>总体 SR <b>0.912</b>(612/671)。</dd>
+  </dl>
+  <div class="pbar"><i style="width:100%"></i></div>
+  <table>
+    <tr><th>组</th><th class="r">SR</th><th class="r">AS(步)</th><th class="r">AT(分)</th></tr>
+    <tr><td>Wood</td><td class="r">0.90</td><td class="r">934</td><td class="r">0.78</td></tr>
+    <tr><td>Stone</td><td class="r">0.91</td><td class="r">2800</td><td class="r">2.33</td></tr>
+    <tr><td>Iron</td><td class="r">0.84</td><td class="r">5556</td><td class="r">4.63</td></tr>
+    <tr><td>Diamond</td><td class="r">0.94</td><td class="r">7143</td><td class="r">5.95</td></tr>
+    <tr><td>Gold</td><td class="r">0.97</td><td class="r">8681</td><td class="r">7.23</td></tr>
+    <tr><td>Armor</td><td class="r">0.94</td><td class="r">10183</td><td class="r">8.49</td></tr>
+    <tr><td>Redstone</td><td class="r">0.97</td><td class="r">9132</td><td class="r">7.61</td></tr>
+    <tr style="font-weight:700"><td>Overall</td><td class="r">0.912</td><td class="r">—</td><td class="r">—</td></tr>
+  </table>
+</div>
+
+<!-- EXP 5 -->
+<div class="exp">
+  <div class="head"><div class="name"><span class="idx">实验⑤</span>消融臂:无决策器 plus(新 seed)</div><span class="st pend">待跑</span></div>
+  <dl>
+    <dt>目的</dt><dd>决策器<b>消融</b>:技能库开、决策器关,与实验④在同一批新 seed 上配对,衡量决策器的净增益(成功率 / planner 调用数)。</dd>
+    <dt>配置</dt><dd>决策器关 · 技能库开 · 同 rep 10–19</dd>
+    <dt>状况</dt><dd>待实验④跑完后开跑。</dd>
+  </dl>
+</div>
+
+<!-- EXP 6 -->
+<div class="exp">
+  <div class="head"><div class="name"><span class="idx">实验⑥</span>基线臂:XENON-main(新 seed)</div><span class="st done">已完成</span></div>
+  <dl>
+    <dt>目的</dt><dd>原始基线在<b>同一批新 seed(rep 10–19)</b>上的成绩,与满血 plus 严格配对。</dd>
+    <dt>配置</dt><dd>原始 DecomposedMemory · seed=REP + world_seed=REP*1000+TID(与满血 plus 完全一致)</dd>
+    <dt>状况</dt><dd><b>670/670 完成</b>,0 崩溃、Malmo 残留 0。</dd>
+    <dt>结果</dt><dd>总体 SR <b>0.773</b>(≈ 冷启动 0.776 ≈ 论文 XENON* 0.79,跨 seed 稳定)。</dd>
+  </dl>
+  <table>
+    <tr><th>组</th><th class="r">SR</th><th class="r">AS</th><th class="r">AT</th><th class="r">vs 满血 plus</th></tr>
+    <tr><td>Wood</td><td class="r">0.89</td><td class="r">1010</td><td class="r">0.84</td><td class="r">+0.01</td></tr>
+    <tr><td>Stone</td><td class="r">0.93</td><td class="r">2395</td><td class="r">2.00</td><td class="r">−0.02</td></tr>
+    <tr><td>Iron</td><td class="r">0.89</td><td class="r">5574</td><td class="r">4.64</td><td class="r">−0.05</td></tr>
+    <tr><td>Diamond</td><td class="r">0.71</td><td class="r">9376</td><td class="r">7.81</td><td class="r" style="color:var(--good)">+0.23</td></tr>
+    <tr><td>Gold</td><td class="r">0.77</td><td class="r">9543</td><td class="r">7.95</td><td class="r" style="color:var(--good)">+0.20</td></tr>
+    <tr><td>Armor</td><td class="r">0.47</td><td class="r">7119</td><td class="r">5.93</td><td class="r" style="color:var(--good)">+0.47</td></tr>
+    <tr><td>Redstone</td><td class="r">0.75</td><td class="r">8136</td><td class="r">6.78</td><td class="r" style="color:var(--good)">+0.22</td></tr>
+    <tr style="font-weight:700"><td>Overall</td><td class="r">0.773</td><td class="r">—</td><td class="r">—</td><td class="r" style="color:var(--good)">+0.139</td></tr>
+  </table>
+</div>
+
+<h2>二、阶段性结论(截至当前)</h2>
+<table>
+  <tr><th>方法</th><th>设定</th><th class="r">Overall SR</th><th>状态</th></tr>
+  <tr><td><b>满血 plus</b>(本工作)</td><td>决策器+技能库,<b>新 seed rep 10–19</b></td><td class="r"><b>0.912</b></td><td>✅ 已完成</td></tr>
+  <tr><td><b>XENON-main</b>(基线)</td><td>原始,<b>同 新 seed rep 10–19</b>(配对)</td><td class="r">0.773</td><td>✅ 已完成</td></tr>
+  <tr><td>plus(无决策器)</td><td>仅技能库,rep 0–9</td><td class="r">0.88</td><td>待补(新 seed)</td></tr>
+  <tr><td>XENON*(论文)</td><td>真值依赖图</td><td class="r">0.79</td><td>引用</td></tr>
+</table>
+<div class="note" style="border-left-color:var(--good)">
+  <b>已可配对:</b> 满血 plus <b>0.912</b> vs XENON-main <b>0.773</b> 现处于<b>同一批新 seed(rep 10–19)</b>,严格可比 → <b>净提升 +0.139(相对 +18%)</b>,且增益集中在后期硬任务(Diamond +0.23 · Gold +0.20 · Armor +0.47 · Redstone +0.22)。<br>
+  仅差实验⑤(无决策器 plus 的新 seed 版)即可拆出"决策器 vs 技能库"各自贡献。
+</div>
+
+<footer>
+  实验状况报告 · XENON-plus 主对比 · 快照 2026-06-28<br>
+  数据源:<code>exp_results/mainexp_plus_full</code>(215,进行中)· <code>coldstart_plus</code>(670)· <code>coldstart_main</code>(670)· <code>rads_coldstart.pt</code>
+</footer>
+
+</div>
+</body>
+</html>

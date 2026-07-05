@@ -509,6 +509,1550 @@
       ],
       "status": "success",
       "steps": 8274
+    },
+    {
+      "id": "FQcsMR9rKbWkV4zwH6jysT",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/coldstart_plus/Iron_Craft_a_chain/plains/success/2026_06_18_15_12_08_craft_chain_FQcsMR9rKbWkV4zwH6jysT.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5313
+    },
+    {
+      "id": "WDtRa5ZV9kpa4TbrzJPF9R",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/coldstart_plus/Iron_Craft_a_chain/plains/success/2026_06_18_19_46_26_craft_chain_WDtRa5ZV9kpa4TbrzJPF9R.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5118
+    },
+    {
+      "id": "XfaQSyFp8etQi3p3w7KzTD",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/coldstart_plus/Iron_Craft_a_chain/plains/success/2026_06_19_00_45_01_craft_chain_XfaQSyFp8etQi3p3w7KzTD.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            15
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            2
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7018
+    },
+    {
+      "id": "Y2EYYBTkftdLS69fDrM3Lt",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/coldstart_plus/Iron_Craft_a_chain/plains/success/2026_06_19_05_58_01_craft_chain_Y2EYYBTkftdLS69fDrM3Lt.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            13
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            8
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 6300
+    },
+    {
+      "id": "UhPDqtpspvHDAVmsha3jMo",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/coldstart_plus/Iron_Craft_a_chain/plains/success/2026_06_19_12_33_34_craft_chain_UhPDqtpspvHDAVmsha3jMo.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5373
+    },
+    {
+      "id": "Y5QFx6jqxcjRtPTVptEJsR",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/coldstart_plus/Iron_Craft_a_chain/plains/success/2026_06_20_02_32_39_craft_chain_Y5QFx6jqxcjRtPTVptEJsR.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5801
+    },
+    {
+      "id": "aFxLcwk3Kb6T2cEhc4x6ov",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_chain/plains/success/2026_06_28_03_03_09_craft_chain_aFxLcwk3Kb6T2cEhc4x6ov.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4832
+    },
+    {
+      "id": "27QpoZjeohUL8YaXYnnYLj",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_chain/plains/success/2026_06_28_08_45_21_craft_chain_27QpoZjeohUL8YaXYnnYLj.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4885
+    },
+    {
+      "id": "LnQa3bnhqryvdbEEhUCavm",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_chain/plains/success/2026_06_28_17_33_11_craft_chain_LnQa3bnhqryvdbEEhUCavm.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7671
+    },
+    {
+      "id": "NA6jhtcVHW72uXDkShrs5u",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_chain/plains/success/2026_06_29_02_15_29_craft_chain_NA6jhtcVHW72uXDkShrs5u.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 7098
+    },
+    {
+      "id": "kJPvdfvzNxURUS2HGD6W6T",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_chain/plains/success/2026_06_29_09_51_47_craft_chain_kJPvdfvzNxURUS2HGD6W6T.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5254
+    },
+    {
+      "id": "DsMQGe8BswMfxGQZ3eeQ9A",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_chain/plains/success/2026_06_29_16_05_03_craft_chain_DsMQGe8BswMfxGQZ3eeQ9A.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5840
+    },
+    {
+      "id": "m99WC9cVeyBFrbskfxW8sT",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_chain/plains/success/2026_06_30_03_41_29_craft_chain_m99WC9cVeyBFrbskfxW8sT.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 3835
+    },
+    {
+      "id": "YjUyZSSTwxWHNTqSq9iRvQ",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_chain/plains/success/2026_06_30_11_21_10_craft_chain_YjUyZSSTwxWHNTqSq9iRvQ.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 4179
+    },
+    {
+      "id": "6XREBprB2v5Darmj7Wyrfb",
+      "environment": "plains",
+      "visual_info": "",
+      "goal": "chain",
+      "video": "videos/mainexp_plus_full/Iron_Craft_a_chain/plains/success/2026_06_30_18_47_01_craft_chain_6XREBprB2v5Darmj7Wyrfb.mp4",
+      "planning": [
+        {
+          "task": "chop a tree",
+          "goal": [
+            "logs",
+            6
+          ]
+        },
+        {
+          "task": "craft planks",
+          "goal": [
+            "planks",
+            19
+          ]
+        },
+        {
+          "task": "craft crafting_table",
+          "goal": [
+            "crafting_table",
+            1
+          ]
+        },
+        {
+          "task": "craft stick",
+          "goal": [
+            "stick",
+            4
+          ]
+        },
+        {
+          "task": "craft wooden_pickaxe",
+          "goal": [
+            "wooden_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine cobblestone",
+          "goal": [
+            "cobblestone",
+            11
+          ]
+        },
+        {
+          "task": "craft furnace",
+          "goal": [
+            "furnace",
+            1
+          ]
+        },
+        {
+          "task": "craft stone_pickaxe",
+          "goal": [
+            "stone_pickaxe",
+            1
+          ]
+        },
+        {
+          "task": "dig down and mine iron_ore",
+          "goal": [
+            "iron_ore",
+            2
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "smelt iron ore",
+          "goal": [
+            "iron_ingot",
+            1
+          ]
+        },
+        {
+          "task": "craft iron_nugget",
+          "goal": [
+            "iron_nugget",
+            2
+          ]
+        },
+        {
+          "task": "craft chain",
+          "goal": [
+            "chain",
+            1
+          ]
+        }
+      ],
+      "status": "success",
+      "steps": 5294
     }
   ]
 }
